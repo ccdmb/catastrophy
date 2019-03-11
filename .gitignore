@@ -1,0 +1,29 @@
+notebooks/fastas/**
+notebooks/01-run_hmms/**
+notebooks/data/**
+notebooks/02-count_cazymes/**
+notebooks/03-replicating_pca/**
+notebooks/04-distance_to_centroids/**
+
+
+# general things to ignore
+env/**
+build/**
+dist/
+*.egg-info/
+*.egg
+*.py[cod]
+__pycache__/
+*.so
+*~
+.eggs/**
+
+**/.ipynb_checkpoints
+
+# due to using tox and pytest
+.tox
+.cache
+.pytest_cache/**
+
+# Things to include that we ignored earlier
+!**/.gitinclude

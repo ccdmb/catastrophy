@@ -1,0 +1,6 @@
+include *.md
+include *.txt
+include LICENSE
+include tox.ini
+include .travis.yml
+include diseffected/data/*
