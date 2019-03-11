@@ -12,6 +12,7 @@ import pandas as pd
 from catas import utils # noqa
 from catas.data import cazy_list # noqa
 from catas.data import hmm_lengths # noqa
+from catas.data import Version # noqa
 from catas.data import LATEST_VERSION # noqa
 
 logger = logging.getLogger(__name__)
@@ -35,6 +36,10 @@ def cazy_counts(handle, label, version=None):
 
     if version is None:
         version = LATEST_VERSION
+    elif isinstance(version, str):
+        version = Version[version]
+    elif isinstance(version, int):
+        version = Version(version)
 
     required_cols = cazy_list(version)
 

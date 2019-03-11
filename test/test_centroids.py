@@ -7,6 +7,7 @@ from catas.counts import cazy_counts
 from catas.centroids import distances
 from catas.centroids import rcd
 
+from catas.data import Version
 from catas.data import test_dbcan
 from catas.data import models
 from catas.data import centroids
@@ -18,9 +19,9 @@ from numpy.testing import assert_almost_equal
 
 
 @pytest.mark.parametrize("version,clss,exp_val", [
-    ("v5", "biotroph 2", 51.57963882216139),
-    ("v5", "mesotroph - external", 70.20617822839525),
-    ("v5", "wilt", 141.11596086281014)
+    (Version.v5, "biotroph 2", 51.57963882216139),
+    (Version.v5, "mesotroph - external", 70.20617822839525),
+    (Version.v5, "wilt", 141.11596086281014)
 ])
 def test_distances(version, clss, exp_val):
     with open(test_dbcan(version=version), "r") as handle:
@@ -41,10 +42,10 @@ def test_distances(version, clss, exp_val):
 
 
 @pytest.mark.parametrize("version,clss,exp_val", [
-    ("v5", "biotroph 3", 0.9230486190150349),
-    ("v5", "saprotroph", 0.8919083654247382),
-    ("v5", "wilt", 0.0),
-    ("v5", "mesotroph - internal", 0.22047031254890714),
+    (Version.v5, "biotroph 3", 0.9230486190150349),
+    (Version.v5, "saprotroph", 0.8919083654247382),
+    (Version.v5, "wilt", 0.0),
+    (Version.v5, "mesotroph - internal", 0.22047031254890714),
 ])
 def test_rcd(version, clss, exp_val):
     with open(test_dbcan(version=version), "r") as handle:

@@ -12,6 +12,8 @@ from catas.centroids import distances
 from catas.centroids import rcd
 
 from catas import data
+from catas.data import Version
+from catas.data import Nomenclature
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +33,16 @@ def predict(
         available in data).
     nomenclature -- The nomenclature to use.
     """
+
+    if isinstance(version, str):
+        version = Version[version]
+    elif isinstance(version, int):
+        version = Version(version)
+
+    if isinstance(nomenclature, str):
+        nomenclature = Nomenclature[nomenclature]
+    elif isinstance(nomenclature, int):
+        nomenclature = Nomenclature(nomenclature)
 
     # load the sklearn pipeline that runs scaling and PCA
     model = data.models(version)

@@ -14,10 +14,10 @@ from catas.counts import cazy_counts # noqa
 from catas import parsers # noqa
 from catas.parsers import ParseError # noqa
 
-from catas.data import AVAILABLE_VERSIONS # noqa
+from catas.data import Version # noqa
 from catas.data import LATEST_VERSION # noqa
+from catas.data import Nomenclature # noqa
 from catas.data import DEFAULT_NOMENCLATURE # noqa
-from catas.data import AVAILABLE_NOMENCLATURES # noqa
 
 __program = "catastrophy"
 __version = "0.1.0"
@@ -120,7 +120,8 @@ def cli(prog, args):
         "-m", "--model",
         dest="model_version",
         default=LATEST_VERSION,
-        choices=AVAILABLE_VERSIONS,
+        type=Version.from_string,
+        choices=list(Version),
         help=(
             "The version of the model to use. If you're using old dbCAN "
             "predictions you may have to specify this. The version numbers "
@@ -134,7 +135,8 @@ def cli(prog, args):
         "-n", "--nomenclature",
         dest="nomenclature",
         default=DEFAULT_NOMENCLATURE,
-        choices=AVAILABLE_NOMENCLATURES,
+        type=Nomenclature.from_string,
+        choices=list(Nomenclature),
         help=(
             "The nomenclature type to use. "
             "Nomenclature1 is the classical symbiont, saprotroph, "

@@ -11,7 +11,6 @@ from numpy.linalg import norm
 # from catas import utils
 from catas.data import centroids
 
-
 logger = logging.getLogger(__name__)
 
 LATEST_CENTROIDS = centroids()
