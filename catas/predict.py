@@ -3,9 +3,6 @@ Functions to find the PCA-transformed values from cazyme counts.
 Functions to find distances to centroids in PCA space.
 """
 
-from __future__ import unicode_literals
-import logging
-
 import numpy as np
 from numpy.linalg import norm
 
@@ -17,8 +14,6 @@ from catas.data import Nomenclature
 
 LATEST_VERSION = Version.latest()
 DEFAULT_NOMENCLATURE = Nomenclature.default()
-
-logger = logging.getLogger(__name__)
 
 LATEST_MODEL = models()
 LATEST_CENTROIDS = centroids()
@@ -38,15 +33,8 @@ def predict(
     nomenclature -- The nomenclature to use.
     """
 
-    if isinstance(version, str):
-        version = Version[version]
-    elif isinstance(version, int):
-        version = Version(version)
-
-    if isinstance(nomenclature, str):
-        nomenclature = Nomenclature[nomenclature]
-    elif isinstance(nomenclature, int):
-        nomenclature = Nomenclature(nomenclature)
+    version = Version.from_other(version)
+    nomenclature = Nomenclature.from_other(nomenclature)
 
     # load the sklearn pipeline that runs scaling and PCA
     model = models(version)

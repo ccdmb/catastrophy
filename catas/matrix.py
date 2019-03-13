@@ -1,3 +1,7 @@
+"""
+A simpler alternative to a pandas dataframe for non-interactive work.
+"""
+
 import csv
 import numpy as np
 
@@ -102,3 +106,33 @@ class Matrix(object):
             if isinstance(filename, str):
                 handle.close()
         return
+
+    def as_serializable(self):
+        output = list()
+        for rowname, row in zip(self.rows, self.arr):
+            drow = {str(k): float(v) for k, v in zip(self.columns, row)}
+            drow["label"] = rowname
+            output.append(drow)
+        return output
+
+    @classmethod
+    def from_serialized(cls, ser):
+
+        if len(ser) == 0:
+            return cls([], [], np.zeros((0, 0)))
+
+        rows = list()
+        arr = list()
+        columns = [k for k, v in ser if k != "label"]
+        for row in ser:
+            arr_row = list()
+            rows.append(row["label"])
+            for column in columns:
+                arr_row.append(row[column])
+            arr.append(arr_row)
+
+        return cls(
+            rows,
+            columns,
+            np.array(arr),
+        )

@@ -41,6 +41,8 @@ class LineParseError(Exception):
 def parse(handle, format, version=None):
     """ Wrapper that directs parsing bases on enum. """
 
+    version = Version.from_other(version)
+
     if isinstance(format, str):
         format = FileType[format]
 
@@ -184,6 +186,8 @@ class HMMER(NamedTuple):
         generator -- A generator yielding named tuples corresponding to lines.
         """
 
+        version = Version.from_other(version)
+
         # This is the threshold used by dbcan to determine if to matches are
         # the same.
         overlap_thres = 0.5
@@ -227,9 +231,12 @@ class HMMER(NamedTuple):
                         yield winner
 
         except AssertionError:
-            msg = ("Couldn't parse file as domtab format. "
-                   "Double check that the input file is in the right format. "
-                   "If you believe this is an error, please contact us.")
+            msg = (
+                "Couldn't parse file as {} format.\n"
+                "Double check that the input file is in the right format "
+                "(i.e. hmmer_text vs hmmer_domtab).\n"
+                "If you believe this is an error, please contact us."
+            ).format(format)
             raise ParseError(handle.name, None, msg)
         return
 

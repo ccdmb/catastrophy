@@ -30,6 +30,17 @@ class MyEnum(Enum):
         except KeyError:
             raise ValueError
 
+    @classmethod
+    def from_other(cls, f):
+        if isinstance(f, cls):
+            return f
+        elif isinstance(f, str):
+            return cls.from_string(f)
+        elif isinstance(f, int):
+            return cls(f)
+        else:
+            raise ValueError("Expected an enum, string or integer.")
+
 
 class Version(MyEnum):
     v4 = 1
