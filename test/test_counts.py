@@ -3,10 +3,11 @@
 
 import pytest
 
-from catas.parsers import parse_dbcan_output
-from catas.counts import cazy_counts
+from catas.parsers import DBCAN
+from catas.count import cazy_counts
 from catas.data import Version
 from catas.data import test_dbcan
+from catas.data import cazy_list
 
 
 @pytest.mark.parametrize("version,hmm,exp_val", [
@@ -21,9 +22,11 @@ from catas.data import test_dbcan
     (Version.v6, "GH31", 0),
 ])
 def test_cazy_counts(version, hmm, exp_val):
+    required_cols = cazy_list(version)
     with open(test_dbcan(version=version), "r") as handle:
-        parsed = parse_dbcan_output(handle)
-        counts = cazy_counts(parsed, label="test", version=version)
+        parsed = DBCAN.from_file(handle)
+        counts = cazy_counts(parsed, required_cols)
 
-    assert counts[hmm] == exp_val
+    column_index = required_cols.index(hmm)
+    assert counts[column_index] == exp_val
     return

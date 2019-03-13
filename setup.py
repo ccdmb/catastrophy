@@ -78,7 +78,6 @@ setup(
     # versions of scikit-learn, so I have to keep it fixed.
     install_requires=[
         'numpy>=1.15.0',
-        'pandas>=0.23.0',
         'biopython>=1.70',
         ],
 

@@ -10,16 +10,12 @@ from __future__ import unicode_literals
 from pkg_resources import resource_filename
 
 from collections import defaultdict
-import logging
 import json
 from enum import Enum
 
-import pandas as pd
 import numpy as np
 
-# from catas import utils
-
-logger = logging.getLogger(__name__)
+from catas.matrix import Matrix
 
 
 class MyEnum(Enum):
@@ -39,9 +35,11 @@ class Version(MyEnum):
     v4 = 1
     v5 = 2
     v6 = 3
+    v7 = 4
 
-
-LATEST_VERSION = max(list(Version), key=lambda v: v.value)
+    @classmethod
+    def latest(cls):
+        return cls.v6
 
 
 class Nomenclature(MyEnum):
@@ -49,19 +47,20 @@ class Nomenclature(MyEnum):
     nomenclature2 = 2
     nomenclature3 = 3
 
+    @classmethod
+    def default(cls):
+        return cls.nomenclature3
 
-DEFAULT_NOMENCLATURE = Nomenclature(3)
 
-
-# @utils.log(logger, logging.DEBUG)
-def models(version=LATEST_VERSION):
+def models(version=Version.latest()):
     """ Loads pickled sklearn pipeline. """
 
     version_files = dict()
     filelist = [
-        (Version.v4, "v4-20180324-model.npz"),
-        (Version.v5, "v5-20180324-model.npz"),
-        (Version.v6, "v6-20180324-model.npz"),
+        (Version.v4, "v4-20190311-model.npz"),
+        (Version.v5, "v5-20190311-model.npz"),
+        (Version.v6, "v6-20190311-model.npz"),
+        (Version.v7, "v7-20190311-model.npz"),
     ]
 
     for vname, vfile in filelist:
@@ -70,31 +69,38 @@ def models(version=LATEST_VERSION):
     return np.load(version_files[version])
 
 
-# @utils.log(logger, logging.DEBUG)
-def principle_components(version=LATEST_VERSION):
+def principle_components(version=Version.latest()):
     """ Loads files containing PCs for training data. """
 
     version_files = dict()
     filelist = [
-        (Version.v4, "v4-20180324-principle_components.json"),
-        (Version.v5, "v5-20180324-principle_components.json"),
-        (Version.v6, "v6-20180324-principle_components.json"),
+        (Version.v4, "v4-20190311-principle_components.npz"),
+        (Version.v5, "v5-20190311-principle_components.npz"),
+        (Version.v6, "v6-20190311-principle_components.npz"),
+        (Version.v7, "v7-20190311-principle_components.npz"),
     ]
 
     for vname, vfile in filelist:
         version_files[vname] = resource_filename(__name__, vfile)
 
-    return pd.read_json(version_files[version])
+    mat_raw = np.load(version_files[version])
+    mat = Matrix.read(version_files[version])
+
+    mat.nomenclature1 = mat_raw["nomenclature1"]
+    mat.nomenclature2 = mat_raw["nomenclature2"]
+    mat.nomenclature3 = mat_raw["nomenclature3"]
+    return mat
 
 
-def cazy_list(version=LATEST_VERSION):
+def cazy_list(version=Version.latest()):
     """ Loads CAZY list of class names the in order that model was trained. """
 
     version_files = dict()
     filelist = [
-        (Version.v4, "v4-20180324-cazy_list.json"),
-        (Version.v5, "v5-20180324-cazy_list.json"),
-        (Version.v6, "v6-20180324-cazy_list.json"),
+        (Version.v4, "v4-20190311-cazy_list.json"),
+        (Version.v5, "v5-20190311-cazy_list.json"),
+        (Version.v6, "v6-20190311-cazy_list.json"),
+        (Version.v7, "v7-20190311-cazy_list.json"),
     ]
 
     for vname, vfile in filelist:
@@ -106,7 +112,7 @@ def cazy_list(version=LATEST_VERSION):
     return d
 
 
-def centroids(version=LATEST_VERSION, nomenclature=DEFAULT_NOMENCLATURE):
+def centroids(version=Version.latest(), nomenclature=Nomenclature.default()):
     """ Loads pandas dataframe containing centroids. """
 
     files = defaultdict(dict)
@@ -114,57 +120,72 @@ def centroids(version=LATEST_VERSION, nomenclature=DEFAULT_NOMENCLATURE):
         (
             Version.v4,
             Nomenclature.nomenclature1,
-            "v4-20180324-nomenclature1-centroids.json"
+            "v4-20190311-nomenclature1-centroids.npz"
         ),
         (
             Version.v4,
             Nomenclature.nomenclature2,
-            "v4-20180324-nomenclature2-centroids.json"
+            "v4-20190311-nomenclature2-centroids.npz"
         ),
         (
             Version.v4,
             Nomenclature.nomenclature3,
-            "v4-20180324-nomenclature3-centroids.json"
+            "v4-20190311-nomenclature3-centroids.npz"
         ),
         (
             Version.v5,
             Nomenclature.nomenclature1,
-            "v5-20180324-nomenclature1-centroids.json"
+            "v5-20190311-nomenclature1-centroids.npz"
         ),
         (
             Version.v5,
             Nomenclature.nomenclature2,
-            "v5-20180324-nomenclature2-centroids.json"
+            "v5-20190311-nomenclature2-centroids.npz"
         ),
         (
             Version.v5,
             Nomenclature.nomenclature3,
-            "v5-20180324-nomenclature3-centroids.json"
+            "v5-20190311-nomenclature3-centroids.npz"
         ),
         (
             Version.v6,
             Nomenclature.nomenclature1,
-            "v6-20180324-nomenclature1-centroids.json"
+            "v6-20190311-nomenclature1-centroids.npz"
         ),
         (
             Version.v6,
             Nomenclature.nomenclature2,
-            "v6-20180324-nomenclature2-centroids.json"
+            "v6-20190311-nomenclature2-centroids.npz"
         ),
         (
             Version.v6,
             Nomenclature.nomenclature3,
-            "v6-20180324-nomenclature3-centroids.json"
+            "v6-20190311-nomenclature3-centroids.npz"
+        ),
+        (
+            Version.v7,
+            Nomenclature.nomenclature1,
+            "v7-20190311-nomenclature1-centroids.npz"
+        ),
+        (
+            Version.v7,
+            Nomenclature.nomenclature2,
+            "v7-20190311-nomenclature2-centroids.npz"
+        ),
+        (
+            Version.v7,
+            Nomenclature.nomenclature3,
+            "v7-20190311-nomenclature3-centroids.npz"
         ),
     ]
 
     for vname, nname, vfile in filelist:
         files[vname][nname] = resource_filename(__name__, vfile)
 
-    return pd.read_json(files[version][nomenclature])
+    return Matrix.read(files[version][nomenclature])
 
 
-def hmm_lengths(version=LATEST_VERSION):
+def hmm_lengths(version=Version.latest()):
     """ Loads dict object containing lengths of HMMs.
 
     The raw HMMER output doesn't contain the length of the HMM, which we
@@ -173,9 +194,10 @@ def hmm_lengths(version=LATEST_VERSION):
 
     version_files = dict()
     filelist = [
-        (Version.v4, "v4-20180324-hmm_lengths.json"),
-        (Version.v5, "v5-20180324-hmm_lengths.json"),
-        (Version.v6, "v6-20180324-hmm_lengths.json"),
+        (Version.v4, "v4-20190311-hmm_lengths.json"),
+        (Version.v5, "v5-20190311-hmm_lengths.json"),
+        (Version.v6, "v6-20190311-hmm_lengths.json"),
+        (Version.v7, "v7-20190311-hmm_lengths.json"),
     ]
 
     for vname, vfile in filelist:
@@ -187,7 +209,7 @@ def hmm_lengths(version=LATEST_VERSION):
     return d
 
 
-def trophic_classes(nomenclature=DEFAULT_NOMENCLATURE):
+def trophic_classes(nomenclature=Nomenclature.default()):
     """ Loads list containing names and correct order to display classes. """
 
     files = dict()
@@ -210,14 +232,14 @@ def sample_fasta():
     return resource_filename(__name__, "test_data.fasta")
 
 
-# @utils.log(logger, logging.DEBUG)
-def test_dbcan(version=LATEST_VERSION):
+def test_dbcan(version=Version.latest()):
 
     version_files = dict()
     filelist = [
-        (Version.v4, "v4-20180324-test_dbcan.csv"),
-        (Version.v5, "v5-20180324-test_dbcan.csv"),
-        (Version.v6, "v6-20180324-test_dbcan.csv"),
+        (Version.v4, "v4-20190311-test_dbcan.csv"),
+        (Version.v5, "v5-20190311-test_dbcan.csv"),
+        (Version.v6, "v6-20190311-test_dbcan.csv"),
+        (Version.v7, "v7-20190311-test_dbcan.csv"),
     ]
 
     for vname, vfile in filelist:
@@ -226,14 +248,14 @@ def test_dbcan(version=LATEST_VERSION):
     return version_files[version]
 
 
-# @utils.log(logger, logging.DEBUG)
-def test_hmmer(version=LATEST_VERSION):
+def test_hmmer(version=Version.latest()):
 
     version_files = dict()
     filelist = [
-        (Version.v4, "v4-20180324-test_hmmer.txt"),
-        (Version.v5, "v5-20180324-test_hmmer.txt"),
-        (Version.v6, "v6-20180324-test_hmmer.txt"),
+        (Version.v4, "v4-20190311-test_hmmer.txt"),
+        (Version.v5, "v5-20190311-test_hmmer.txt"),
+        (Version.v6, "v6-20190311-test_hmmer.txt"),
+        (Version.v7, "v7-20190311-test_hmmer.txt"),
     ]
 
     for vname, vfile in filelist:
@@ -242,14 +264,14 @@ def test_hmmer(version=LATEST_VERSION):
     return version_files[version]
 
 
-# @utils.log(logger, logging.DEBUG)
-def test_domtblout(version=LATEST_VERSION):
+def test_domtblout(version=Version.latest()):
 
     version_files = dict()
     filelist = [
-        (Version.v4, "v4-20180324-test_hmmer.csv"),
-        (Version.v5, "v5-20180324-test_hmmer.csv"),
-        (Version.v6, "v6-20180324-test_hmmer.csv"),
+        (Version.v4, "v4-20190311-test_hmmer.csv"),
+        (Version.v5, "v5-20190311-test_hmmer.csv"),
+        (Version.v6, "v6-20190311-test_hmmer.csv"),
+        (Version.v7, "v7-20190311-test_hmmer.csv"),
     ]
 
     for vname, vfile in filelist:
@@ -258,24 +280,17 @@ def test_domtblout(version=LATEST_VERSION):
     return version_files[version]
 
 
-# @utils.log(logger, logging.DEBUG)
-def test_counts(version=LATEST_VERSION):
+def test_counts(version=Version.latest()):
 
     version_files = dict()
     filelist = [
-        (Version.v4, "v4-20180324-test_counts.csv"),
-        (Version.v5, "v5-20180324-test_counts.csv"),
-        (Version.v6, "v6-20180324-test_counts.csv"),
+        (Version.v4, "v4-20190311-test_counts.npz"),
+        (Version.v5, "v5-20190311-test_counts.npz"),
+        (Version.v6, "v6-20190311-test_counts.npz"),
+        (Version.v7, "v7-20190311-test_counts.npz"),
     ]
 
     for vname, vfile in filelist:
         version_files[vname] = resource_filename(__name__, vfile)
 
-    df = pd.read_csv(
-        version_files[version],
-        sep='\t',
-        header=None,
-        names=["hmm", "sample_counts"]
-        )
-    df.set_index("hmm", inplace=True, drop=True)
-    return df["sample_counts"]
+    return Matrix.read(version_files[version])

@@ -1,16 +1,27 @@
-import logging
-import re
 from io import StringIO
-from functools import partial
+from enum import Enum
+from typing import NamedTuple
 
-import pandas as pd
 from Bio import SearchIO
 
-# from catas import utils
-from catas.data import LATEST_VERSION # noqa
-from catas.data import hmm_lengths # noqa
+from catas.data import Version
+from catas.data import hmm_lengths
 
-logger = logging.getLogger(__name__)
+
+class FileType(Enum):
+    dbcan = 1
+    hmmer_text = 2
+    hmmer_domtab = 3
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def from_string(cls, s):
+        try:
+            return cls[s]
+        except KeyError:
+            raise ValueError
 
 
 class ParseError(Exception):
@@ -22,19 +33,30 @@ class ParseError(Exception):
         self.message = message
 
 
+class LineParseError(Exception):
+    def __init__(self, message):
+        self.message
+
+
 def parse(handle, format, version=None):
-    if format == "dbcan":
-        line_handler = parse_dbcan_output
-    elif format == "hmmscan3-domtab":
-        line_handler = partial(
-            parse_hmmer,
-            line_handler=parse_domtbl_line,
+    """ Wrapper that directs parsing bases on enum. """
+
+    if isinstance(format, str):
+        format = FileType[format]
+
+    if format == FileType.dbcan:
+        return DBCAN.from_file(handle)
+    elif format == FileType.hmmer_domtab:
+        parsed = HMMER.from_file(
+            handle,
+            format="hmmscan3-domtab",
             version=version,
         )
-    elif format == "hmmer3-text":
-        line_handler = partial(
-            parse_hmmer,
-            line_handler=partial(parse_hmmer_output, format="hmmer3-text"),
+        return parsed
+    elif format == FileType.hmmer_text:
+        return HMMER.from_file(
+            handle,
+            format="hmmer3-text",
             version=version,
         )
     else:
@@ -42,10 +64,8 @@ def parse(handle, format, version=None):
             "Parse is only defined for 'dbcan', 'hmmscan3-domtab', "
             "'hmmer3-text'"
         ))
-    return line_handler(handle)
 
 
-# @utils.log(logger, logging.DEBUG)
 def decode_object(handle, num_lines=None):
     """ Converts a binary file-like object into a String one.
 
@@ -71,311 +91,234 @@ def decode_object(handle, num_lines=None):
     return out
 
 
-# @utils.log(logger, logging.DEBUG)
 def split_hmm(string):
     return str(string).rstrip(".hmm")
 
 
-# @utils.log(logger, logging.DEBUG)
-def parse_dbcan_output(handle, sep="\t"):
-    """ Parse the tabular output from dbCAN. """
+class DBCAN(NamedTuple):
+    hmm: str
+    hmm_len: int
+    seqid: str
+    query_len: int
+    evalue: float
+    hmm_from: int
+    hmm_to: int
+    ali_from: int
+    ali_to: int
+    coverage: float
 
-    columns = [
-        ("hmm", split_hmm),
-        ("hmm_len", int),
-        ("seqid", str),
-        ("query_len", int),
-        ("evalue", float),
-        ("hmm_from", int),
-        ("hmm_to", int),
-        ("ali_from", int),
-        ("ali_to", int),
-        ("coverage", float)
-    ]
+    @classmethod
+    def from_string(cls, line):
+        """ Parse a single tabular output row from dbCAN. """
 
-    for line_number, line in enumerate(handle, 1):
-        line = line.strip()
-        # Skip comment lines
-        if line.startswith("#"):
-            continue
-        # Skip empty lines
-        elif line == "":
-            continue
+        columns = [split_hmm, int, str, int, float, int, int, int, int, float]
+        line = line.strip().split('\t')
 
-        line = line.split(sep)
+        if len(columns) != len(line):
+            msg = "Wrong number of columns. Found {}, expected {}."
+            raise LineParseError(msg.format(len(line), len(columns)))
 
-        if len(line) != len(columns):
-            raise ParseError(
-                handle.name,
-                line_number,
-                ("Couldn't parse file as dbcan format.\n"
-                 "Expected number of columns is {}, received {}."
-                 ).format(len(columns), len(line))
-            )
-
-        output = dict()
-        for i, (col, type_) in enumerate(columns):
+        output = []
+        for i, type_fn in enumerate(columns):
             try:
-                output[col] = type_(line[i])
+                output.append(type_fn(line[i]))
             except IndexError:
-                raise ParseError(
-                    handle.name,
-                    line_number,
-                    "Couldn't parse file as dbcan format, missing column."
-                )
+                # This shouldn't happen because of previous check
+                msg = "Couldn't parse file as dbcan format, missing column."
+                raise LineParseError(msg)
             except ValueError:
-                raise ParseError(
-                    handle.name,
-                    line_number,
-                    ("Couldn't parse file as dbcan format.\n"
-                     "Illegal value {} received in column {}.\n"
-                     "This value should be interpretable as type {}."
-                     ).format(line[i], i, type_.__name__)
-                )
+                msg = "Illegal value '{}' received in column {}."
+                raise LineParseError(msg.format(line[i], i + 1))
+        return cls(*output)
 
-        yield output
-    return
+    @classmethod
+    def from_file(cls, handle):
+        """ Parse a DBCAN file into generator of rows. """
 
+        for line_number, line in enumerate(handle, 1):
+            line = line.strip()
+            # Skip comment lines
+            if line.startswith("#"):
+                continue
+            # Skip empty lines
+            elif line == "":
+                continue
 
-# @utils.log(logger, logging.DEBUG)
-def parse_dbcan(handle):
-    """ Simple wrapper to read dbcan into dataframe. """
-    return pd.DataFrame(parse_dbcan_output(handle))
-
-
-# @utils.log(logger, logging.DEBUG)
-def parse_domtbl_line(handle, sep="\t"):
-    """ Parse the tabular output from HMMER domtblout.
-
-    ** Not properly implemented **
-    Eventually it might be nice to support this but not super necessary.
-    """
-
-    columns = [
-        ("hmm", split_hmm),  # target name
-        ("hmm_acc", str),
-        ("hmm_len", int),
-        ("seqid", str),
-        ("seqid_acc", str),
-        ("seqid_len", int),
-        ("fs_evalue", float),  # fs = full sequence
-        ("fs_score", float),
-        ("fs_bias", float),
-        ("domain_idx", int),
-        ("domain_num", int),
-        ("domain_c_evalue", float),
-        ("domain_i_evalue", float),
-        ("domain_score", float),
-        ("domain_bias", float),
-        ("hmm_from", int),
-        ("hmm_to", int),
-        ("ali_from", int),
-        ("ali_to", int),
-        ("env_from", int),
-        ("env_to", int),
-        ("acc", float),  # No idea what this is
-        ("description", str)
-    ]
-
-    sep = re.compile(r"\s+")
-
-    for line_number, line in enumerate(handle, 1):
-        line = line.strip()
-        # Skip comment lines
-        if line.startswith("#"):
-            continue
-        # Skip empty lines
-        elif line == "":
-            continue
-
-        line = sep.split(line)
-
-        if len(line) != len(columns):
-            raise ParseError(
-                handle.name,
-                line_number,
-                ("Couldn't parse file as hmmer domtab format.\n"
-                 "Expected number of columns is {}, received {}."
-                 ).format(len(columns), len(line))
-            )
-
-        output = dict()
-        for i, (col, type_) in enumerate(columns):
             try:
-                output[col] = type_(line[i])
-            except IndexError:
-                raise ParseError(
-                    handle.name,
-                    line_number,
-                    ("Couldn't parse file as hmmer domtab format, "
-                     "missing column.")
+                parsed = cls.from_string(line)
+            except LineParseError as e:
+                raise ParseError(handle.name, line_number, e.msg)
+
+            yield parsed
+        return
+
+
+class HMMER(NamedTuple):
+    hmm: str
+    hmm_len: int
+    seqid: str
+    evalue: float
+    hmm_from: int
+    hmm_to: int
+    ali_from: int
+    ali_to: int
+    coverage: float
+
+    @classmethod
+    def from_file(cls, handle, format="hmmer3-text", version=Version.latest()):
+        """ Processes HMMER output in a similar way to dbCAN hmmscan-parser.sh.
+
+        There are two main HMMER output types, the plaintext output and the
+        domain table type output (provided by `--domtblout`). The plaintext
+        format is not particularly friendly, so we're using the Biopython
+        parser.  This has the added benefit of handling both the domain table
+        and plaintext format with minimal alteration.
+
+        Keyword arguments:
+        handle -- A python file handle of the HMMER output.
+        format -- A string specifying an input format supported by the
+            Biopython SearchIO API. Should be either 'hmmer3-text' or
+            'hmmscan3-domtab'.
+
+        Returns:
+        generator -- A generator yielding named tuples corresponding to lines.
+        """
+
+        # This is the threshold used by dbcan to determine if to matches are
+        # the same.
+        overlap_thres = 0.5
+
+        # Needed to find the coverage of hmms, some formats are missing this.
+        hmm_lens = hmm_lengths(version)
+
+        # Parse the file using Biopython.
+        matches = SearchIO.parse(handle, format=format)
+
+        # Loop through matches
+        try:
+            for query in matches:
+                # For each HMM type that matches the sequence
+
+                query_matches = list()
+                for hit in query.hits:
+                    # For each partial alignment of the HMM to the sequence.
+                    # Multiple HSPs can occur if there are genuinely two
+                    # copies of the domain or if a large domain is split
+                    # into two alignments.
+                    for hsp in hit.hsps:
+                        # Drop rows with alignment lengths of zero
+                        if hsp.query_end - hsp.query_start <= 0:
+                            continue
+
+                        # Format and yield the line elements that we want.
+                        row = cls._get_hsp(query, hit, hsp, hmm_lens)
+                        query_matches.append(row)
+                # Get the best match for overlapping matches.
+                query_matches.sort(key=lambda x: (x.ali_from, x.ali_to))
+                query_winners = cls._distinct_matches(
+                    query_matches,
+                    overlap_thres
                 )
-            except ValueError:
-                raise ParseError(
-                    handle.name,
-                    line_number,
-                    ("Couldn't parse file as hmmer domtab format.\n"
-                     "Illegal value {} received in column {}.\n"
-                     "Should be interpretable as type {}."
-                     ).format(line[i], i, type_.__name__)
-                )
+                # Yield the rows.
+                for winner in query_winners:
+                    # If this winner passes the coverage and evalue thresholds
+                    # yield it.
+                    if cls._filter_significant(winner):
+                        yield winner
 
-        yield output
+        except AssertionError:
+            msg = ("Couldn't parse file as domtab format. "
+                   "Double check that the input file is in the right format. "
+                   "If you believe this is an error, please contact us.")
+            raise ParseError(handle.name, None, msg)
+        return
 
-    return
+    @classmethod
+    def _get_hsp(cls, query, hit, hsp, hmm_lens):
+        """ Construct a record from a biopython SearchIO tree. """
 
+        hmm = split_hmm(hit.id)
+        hmm_len = hmm_lens[hmm]
 
-# @utils.log(logger, logging.DEBUG)
-def parse_hmmer_output(handle, format="hmmer3-text"):
-    """ Parse the HMMER files into easy to use rows.
+        hmm_from = hsp.hit_start
+        hmm_to = hsp.hit_end
 
-    There are two main HMMER output types, the plaintext output and the domain
-    table type output (provided by `--domtblout`). The plaintext format is not
-    particularly friendly, so we're using the Biopython parser.
-    This has the added benefit of handling both the domain table and plaintext
-    format with minimal alteration.
-
-    Keyword arguments:
-    handle -- A python file handle of the HMMER output.
-    format -- A string specifying an input format supported by the Biopython
-        SearchIO API. Should be either 'hmmer3-text' or 'hmmscan3-domtab'.
-
-    Returns:
-    generator -- A generator yielding dictionaries corresponding to lines.
-    """
-
-    matches = SearchIO.parse(handle, format=format)
-
-    # Loop through matches
-    for query in matches:
-        # For each HMM type that matches the sequence
-        for hit in query.hits:
-            # For each partial alignment of the HMM to the sequence.
-            # Multiple HSPs can occur if there are genuinely two copies of
-            # the domain or if a large domain is split into two alignments.
-            for hsp in hit.hsps:
-                # Format and yield the line elements that we actually want.
-                d = {
-                    "seqid": query.id,
-                    "hmm": split_hmm(hit.id),
-                    "domain_i_evalue": hsp.evalue,
-                    "ali_from": hsp.query_start,
-                    "ali_to": hsp.query_end,
-                    "hmm_from": hsp.hit_start,
-                    "hmm_to": hsp.hit_end
-                }
-                yield d
-    return
-
-
-# @utils.log(logger, logging.DEBUG)
-def parse_hmmer(handle, line_handler, version=None):
-    """ Processes HMMER output in a similar way to the dbCAN hmmscan-parser.sh.
-
-    The dbCAN hmmscan-parser output changed without warning in 2016, and the
-    web application doesn't output the same format as the command line version.
-    We've implemented the same code in python so that we can use HMMER output
-    directly, which should be more stable (and version controlled) over time.
-
-    Keyword arguments:
-    handle -- A file-like object (required).
-    line_handler -- A callable function like `parse_hmmer_output` that yields
-        dictionaries containing required columns (required).
-    model_version -- The version of dbCAN that the model was trained with
-        (Default: Latest available in data).
-
-    Returns:
-    DataFrame -- A pandas dataframe object.
-    """
-
-    # Grab the hmm lengths from the datafiles.
-    if version is None:
-        version = LATEST_VERSION
-    hmm_lens = hmm_lengths(version)
-
-    # Get the data in as a dataframe
-    df = pd.DataFrame(line_handler(handle))
-
-    if len(df) == 0:
-        raise ParseError(
-            handle.name,
-            None,
-            ("Couldn't parse file as HMMER file.\n"
-             "Please check that your file is not empty, and that you "
-             "specified the correct input format.\nE.G. trying to parsing "
-             "a `domtab` file as a regular `hmmer` text file.")
+        coverage = (hmm_to - hmm_from) / hmm_len
+        return cls(
+            hmm=hmm,
+            hmm_len=hmm_len,
+            seqid=query.id,
+            evalue=hsp.evalue,
+            hmm_from=hmm_from,
+            hmm_to=hmm_to,
+            ali_from=hsp.query_start,
+            ali_to=hsp.query_end,
+            coverage=coverage,
         )
 
-    # Sort columns by seqid, then by alignment coordinates, all ascending
-    df.sort_values(["seqid", "ali_from", "ali_to"], axis=0, inplace=True)
+    @staticmethod
+    def _distinct_matches(matches, overlap_thres):
+        # Accumulate winners into a list.
+        winners = list()
 
-    # Get the alignment lengths
-    df["ali_length"] = df["ali_to"] - df["ali_from"]
-
-    # Drop rows with alignment lengths of zero
-    df = df.loc[df["ali_length"] > 0]
-
-    # Loop through seqids and get the best matches for each
-    winners = list()
-    for seqid, subdf in df.groupby("seqid"):
-        # Loop through each match for each seqid, replacing "winner" as we go.
+        # Keep track of the current best hits.
         winner = None
-        for i, row in subdf.iterrows():
-            # If this is the first match winner will be None, so we just set it
-            # to the first value and continue.
+        winner_ali_length = 0
+
+        # Loop through each match for each seqid, replacing "winner" as we go.
+        for match in matches:
+            # If this is the first match winner will be None, so we just set
+            # it to the first value and continue.
             if winner is None:
-                winner = row
+                winner = match
+                winner_ali_length = winner.ali_to - winner.ali_from
                 # Continue moves to the next match in the list.
                 continue
 
             # Get the distance between current match and winner
-            dist = winner["ali_to"] - row["ali_from"]
+            dist = winner.ali_to - match.ali_from
 
             # Decide whether or not the matches are the same
-            overlap_thres = 0.5
-            winner_nooverlap = (dist / winner["ali_length"]) > overlap_thres
-            row_nooverlap = (dist / row["ali_length"]) > overlap_thres
+            match_ali_length = match.ali_to - match.ali_from
+            winner_nooverlap = (dist / winner_ali_length) > overlap_thres
+            match_nooverlap = (dist / match_ali_length) > overlap_thres
 
             # If the distance is positive (meaning that row start is before
-            # current winner end) and the distance is a large proportion of the
-            # alignment length, consider them to be the same.
-            if dist > 0 and (winner_nooverlap or row_nooverlap):
+            # current winner end) and the distance is a large proportion of
+            # the alignment length, consider them to be the same.
+            if dist > 0 and (winner_nooverlap or match_nooverlap):
                 # If the new rows evalue is less than the current winners
                 # evalue the new row becomes the new winner!
-                if row["domain_i_evalue"] < winner["domain_i_evalue"]:
-                    winner = row
+                if match.evalue < winner.evalue:
+                    winner = match
+                    winner_ali_length = match_ali_length
             else:
                 # We're onto a new alignment and the previous winner gets
                 # to stay.
                 winners.append(winner)
-                winner = row
+                winner = match
+                winner_ali_length = match_ali_length
 
         # At the end we'll have a new winner to add.
-        winners.append(winner)
+        # But not if the list was empty.
+        if winner is not None:
+            winners.append(winner)
+        return winners
 
-    winners = pd.DataFrame(winners)
+    @staticmethod
+    def _filter_significant(match):
+        """ Select significant alignments based on evalues and coverage.
 
-    # Select significant alignments based on evalues. dbCAN uses a threshold
-    # of 1e-5 for alignments over 80 AA and 1e-3 for others.
-    sig_mask = (
-        ((winners["ali_length"] > 80) & (winners["domain_i_evalue"] < 1e-5)) |
-        ((winners["ali_length"] <= 80) & (winners["domain_i_evalue"] < 1e-3))
-    )
+        dbCAN uses a threshold of 1e-5 for alignments over 80 AA
+        and 1e-3 for others. A coverage threshold of 0.3 is used.
+        """
 
-    winners = winners.loc[sig_mask]
+        if match.coverage < 0.3:
+            return False
 
-    # Grab the HMM lengths and add to dataframe
-    winners["hmm_len"] = [hmm_lens[h] for h in winners["hmm"]]
+        is_long = (match.ali_to - match.ali_from) > 80
 
-    # Calculate coverage of HMM and filter out hits that don't cover the HMM
-    # at least 30%.
-    cov = (winners["hmm_to"] - winners["hmm_from"]) / winners["hmm_len"]
-    winners["coverage"] = cov
-    winners = winners.loc[winners["coverage"] > 0.3]
-
-    # If you need compatibility with dbCAN output change this.
-    # winners.rename({"domain_i_evalue": "evalue"})
-
-    # Convert the counts back to a list of dictionaries.
-    winners = [r.to_dict() for _, r in winners.iterrows()]
-    return winners
+        if is_long:
+            return match.evalue < 1e-5
+        else:
+            return match.evalue < 1e-3

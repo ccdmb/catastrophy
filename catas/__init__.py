@@ -1,23 +1,14 @@
 import sys
 import argparse
-import logging
 
-# This has to come before the modules are loaded, so that it will apply.
-logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
-
-# The # noqa is there to stop linters yelling at me about the `basicConfig`
-# coming before these imports.
-from catas import utils # noqa
-from catas.pipeline import predict # noqa
-from catas.counts import cazy_counts # noqa
-from catas import parsers # noqa
-from catas.parsers import ParseError # noqa
-
-from catas.data import Version # noqa
-from catas.data import LATEST_VERSION # noqa
-from catas.data import Nomenclature # noqa
-from catas.data import DEFAULT_NOMENCLATURE # noqa
+from catas.predict import predict
+from catas.count import cazy_counts_multi
+from catas import parsers
+from catas.parsers import FileType
+from catas.parsers import ParseError
+from catas.data import Version
+from catas.data import Nomenclature
+from catas.data import cazy_list
 
 __program = "catastrophy"
 __version = "0.1.0"
@@ -51,10 +42,7 @@ __license = (
 
 license = __license.format(**locals())
 
-logger = logging.getLogger(__name__)
 
-
-@utils.log(logger, logging.DEBUG)
 def cli(prog, args):
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -83,13 +71,14 @@ def cli(prog, args):
     parser.add_argument(
         "-f", "--format",
         dest="file_format",
-        default="hmmer",
-        choices=["hmmer", "domtab"],  # "dbcan" but i don't want to maintain
+        type=FileType.from_string,
+        default=FileType.hmmer_text,
+        choices=list(FileType),
         help=(
             "The format that the input is provided in. If multiple files are "
             "specified, all input must be in the same format. HMMER raw "
-            "(hmmer, default) and domain table (domtab) formatted files are "
-            "accepted."
+            "(hmmer_text, default) and domain table (hmmer_domtab) formatted "
+            "files are accepted."
         )
     )
 
@@ -119,7 +108,7 @@ def cli(prog, args):
     parser.add_argument(
         "-m", "--model",
         dest="model_version",
-        default=LATEST_VERSION,
+        default=Version.latest(),
         type=Version.from_string,
         choices=list(Version),
         help=(
@@ -134,7 +123,7 @@ def cli(prog, args):
     parser.add_argument(
         "-n", "--nomenclature",
         dest="nomenclature",
-        default=DEFAULT_NOMENCLATURE,
+        default=Nomenclature.default(),
         type=Nomenclature.from_string,
         choices=list(Nomenclature),
         help=(
@@ -148,14 +137,6 @@ def cli(prog, args):
     )
 
     parser.add_argument(
-        "-v", "--verbose",
-        help=("Print progress updates to stdout. Use twice (i.e. -vv or -v -v)"
-              "to show debug output."),
-        action="count",
-        default=0
-    )
-
-    parser.add_argument(
         '--version',
         action='version',
         version='%(prog)s {}'.format(__version),
@@ -165,41 +146,23 @@ def cli(prog, args):
     return parser.parse_args()
 
 
-def line_writer(series, label=None):
-    """ Utility to format output as tsv. """
-    if label is None:
-        label = str(series.name)
-
-    try:
-        values = "\t".join([str(v) for v in series])
-    except UnicodeEncodeError:
-        values = "\t".join(series)
-
-    return "{}\t{}\n".format(label, values)
-
-
 def runner(inhandles, outhandle, labels, file_format,
            model_version, nomenclature):
     """ Runs the pipeline. """
 
-    first = True
-    for label, handle in zip(labels, inhandles):
-        parsed = parsers.parse(handle, format=file_format)
-        counts = cazy_counts(parsed, label, version=model_version)
-
-        preds = predict(
-            counts,
-            version=model_version,
-            nomenclature=nomenclature
-        )
-
-        if first:
-            line = line_writer(preds.index, label="label")
-            outhandle.write(line)
-            first = False
-
-        line = line_writer(preds, label=label)
-        outhandle.write(line)
+    parsed = [
+        parsers.parse(h, format=file_format, version=model_version)
+        for h
+        in inhandles
+    ]
+    required_cols = cazy_list(model_version)
+    counts = cazy_counts_multi(parsed, labels, required_cols)
+    preds = predict(
+        counts,
+        version=model_version,
+        nomenclature=nomenclature
+    )
+    preds.write_tsv(outhandle)
     return
 
 
@@ -208,52 +171,26 @@ def main():
 
     args = cli(prog=sys.argv[0], args=sys.argv[1:])
 
-    if args.verbose > 1:
-        log_level = logging.DEBUG
-    elif args.verbose > 0:
-        log_level = logging.INFO
-    else:
-        log_level = logging.WARNING
-
-    logger.setLevel(log_level)
-
     infile_names = [f.name for f in args.inhandles]
 
     if args.labels is None:
         labels = infile_names
     elif len(args.labels) != len(args.inhandles):
-        logger.error((
+        msg = (
             "When specified, the number of labels must be the same as the "
             "number of input files. Exiting.\n"
-        ))
+        )
+        print(msg, file=sys.stderr)
         sys.exit(1)
     else:
         labels = args.labels
-
-    # Substitute the short format names for the ones that biopython will accept
-    format_map = {
-        "hmmer": "hmmer3-text",
-        "domtab": "hmmscan3-domtab",
-        "dbcan": "dbcan"
-    }
-
-    # This is safe because argparse enforces that it must be one of these.
-    file_format = format_map[args.file_format]
-
-    logger.info("Running %s v%s", __program, __version)
-    logger.info("Using parameters:")
-    logger.info("- infile = %s", ", ".join(infile_names))
-    logger.info("- format = %s", args.file_format)
-    logger.info("- label = %s", ", ".join(labels))
-    logger.info("- outfile = %s", args.outhandle.name)
-    logger.info("- model = %s", args.model_version)
 
     try:
         runner(
             args.inhandles,
             args.outhandle,
             labels,
-            file_format,
+            args.file_format,
             args.model_version,
             args.nomenclature
         )
@@ -265,37 +202,40 @@ def main():
         else:
             header = "Failed to parse file <{}>.\n".format(e.filename)
 
-        logger.error("{}\n{}".format(header, e.message))
+        print("{}\n{}".format(header, e.message), file=sys.stderr)
         sys.exit(1)
 
     except EnvironmentError as e:
-        logger.error((
+        msg = (
             "Encountered a system error.\n"
             "We can't control these, and they're usually related to your OS.\n"
             "Try running again."
-        ))
+        )
+        print(msg, file=sys.stderr)
         raise e
 
     except MemoryError:
-        logger.error("Ran out of memory!")
-        logger.error(("Catastrophy shouldn't use much RAM, so check other "
-                      "processes and try running again."))
+        msg = (
+            "Ran out of memory!\n"
+            "Catastrophy shouldn't use much RAM, so check other "
+            "processes and try running again."
+        )
+        print(msg, file=sys.stderr)
         sys.exit(1)
 
     except KeyboardInterrupt:
-        logger.info("Received keyboard interrupt. Exiting.")
+        print("Received keyboard interrupt. Exiting.", file=sys.stderr)
         sys.exit(1)
 
     except Exception as e:
-        logger.error((
+        msg = (
             "I'm so sorry, but we've encountered an unexpected error.\n"
             "This shouldn't happen, so please file a bug report with the "
             "authors.\nWe will be extremely grateful!\n\n"
             "You can email us at {}.\n"
             "Alternatively, you can file the issue directly on the repo "
             "<https://bitbucket.org/ccdm-curtin/catastrophy/issues>\n"
-        ).format(__email))
-
+        ).format(__email)
         raise e
 
     return

@@ -3,7 +3,7 @@ import pytest
 from catas.data import Version
 from catas.data import test_dbcan
 from catas.parsers import split_hmm
-from catas.parsers import parse_dbcan_output
+from catas.parsers import DBCAN
 
 
 @pytest.mark.parametrize("hmm,exp", [
@@ -39,9 +39,7 @@ def test_split_hmm(hmm, exp):
 def test_parse_dbcan_output(version, idx, col, exp_val):
 
     with open(test_dbcan(version=version), "r") as handle:
-        sample = handle.readlines()
+        sample = list(DBCAN.from_file(handle))
 
-    lines = [l for l in parse_dbcan_output(sample)]
-
-    assert lines[idx][col] == exp_val
+    assert getattr(sample[idx], col) == exp_val
     return
