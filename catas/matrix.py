@@ -30,10 +30,15 @@ class Matrix(object):
 
     @classmethod
     def from_row(cls, row, columns, arr):
+        """ Create a matrix from a single row """
+
         return cls([row], columns, arr.reshape(1, -1))
 
     @classmethod
     def concat(cls, dfs):
+        """ Concatenate multiple matrices together by rows (ie. columns are
+        matched) """
+
         if len(dfs) == 0:
             return cls([], [], np.zeros((0, 0)))
 
@@ -108,6 +113,10 @@ class Matrix(object):
         return
 
     def as_serializable(self):
+        """ Output the matrix as a dict, which can be easily serialised into
+        JSON etc.
+        """
+
         output = list()
         for rowname, row in zip(self.rows, self.arr):
             drow = {str(k): float(v) for k, v in zip(self.columns, row)}
@@ -117,6 +126,7 @@ class Matrix(object):
 
     @classmethod
     def from_serialized(cls, ser):
+        """ Parses a dictionary representation back into a matrix. """
 
         if len(ser) == 0:
             return cls([], [], np.zeros((0, 0)))

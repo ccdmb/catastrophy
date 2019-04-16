@@ -12,25 +12,23 @@ from catas.data import centroids
 from catas.data import Version
 from catas.data import Nomenclature
 
-LATEST_VERSION = Version.latest()
-DEFAULT_NOMENCLATURE = Nomenclature.default()
-
-LATEST_MODEL = models()
-LATEST_CENTROIDS = centroids()
-
 
 def predict(
     counts,
-    version=LATEST_VERSION,
-    nomenclature=DEFAULT_NOMENCLATURE
+    version=Version.latest(),
+    nomenclature=Nomenclature.default()
 ):
     """ Wrapper function that takes file handle and returns RCD predictions.
 
     Keyword arguments:
-    counts -- A pandas dataframe containing the cazyme counts (required).
+    counts -- A `Matrix` containing the cazyme counts (required).
     version -- The model to run the predictions against (Default is latest
         available in data).
-    nomenclature -- The nomenclature to use.
+    nomenclature -- The nomenclature to predict labels for.
+
+    Returns:
+    Matrix -- A matrix of RCDs, with samples in rows and nomenclature labels
+        as columns.
     """
 
     version = Version.from_other(version)
@@ -54,15 +52,16 @@ def predict(
     return rcds
 
 
-def transform(counts, model=LATEST_MODEL):
+def transform(counts, model=models()):
     """ Takes a series of CAZyme counts and gets PCA transformed values.
 
     Keyword arguments:
     counts -- A Matrix containing CAZyme counts.
-    model -- A scikit learn object to transform the series.
+    model -- A dictionary containing numpy arrays used to transform the counts.
+        E.g. from `catas.data.models()`.
 
     Returns:
-    Series -- A pandas Series object with the transformed values.
+    Matrix -- A matrix object with the PCA transformed values.
     """
 
     values = counts.arr.astype(np.float)
@@ -73,18 +72,18 @@ def transform(counts, model=LATEST_MODEL):
     return Matrix(rows=counts.rows, columns=columns, arr=X_transformed)
 
 
-def distances(points, centroids=LATEST_CENTROIDS):
+def distances(points, centroids=centroids()):
     """ Given a point in PCA space, find the distance to each centroid.
 
     Keyword arguments:
-    points -- A pandas series or numpy array representing the location of
-        sample(s) in PC space (Required).
-    centroids -- A pandas DataFrame with rows representing classes and columns
+    points -- A Matrix representing the location of sample(s) in PC space.
+    centroids -- A matrix with rows representing classes and columns
         representing class centroids in principle component space (Default is
         latest centroids available in data).
+        E.g. from `catas.data.centroids()`.
 
     Returns:
-    Series -- A pandas Series object giving the euclidean distance to each
+    Matrix -- A Matrix object giving the euclidean distance to each
         class centroid indexed by the class names.
     """
 
@@ -107,11 +106,11 @@ def rcd(dists):
     returns the RCD for each distance in the array.
 
     Keyword arguments:
-    dists -- A pandas Series object representing distances between points and
-        centroids (required).
+    dists -- A Matrix object representing distances between points and
+        centroids.
 
     Returns:
-    Series -- A pandas Series object with the RCD values for each class.
+    Matrix -- A Matrix object with the RCD values for each class.
     """
 
     min_ = dists.arr.min(axis=1).reshape(-1, 1)

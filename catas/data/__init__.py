@@ -19,6 +19,7 @@ from catas.matrix import Matrix
 
 
 class MyEnum(Enum):
+    """ Base class for enums. """
 
     def __str__(self):
         return self.name
@@ -43,6 +44,8 @@ class MyEnum(Enum):
 
 
 class Version(MyEnum):
+    """ Supported DBCAN database versions. """
+
     v4 = 1
     v5 = 2
     v6 = 3
@@ -54,6 +57,8 @@ class Version(MyEnum):
 
 
 class Nomenclature(MyEnum):
+    """ All CATAStrophy nomenclatures. """
+
     nomenclature1 = 1
     nomenclature2 = 2
     nomenclature3 = 3
@@ -64,7 +69,10 @@ class Nomenclature(MyEnum):
 
 
 def models(version=Version.latest()):
-    """ Loads pickled sklearn pipeline. """
+    """ Loads PCA parameters. """
+
+    # Handle strings as input instead of just enums.
+    version = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -82,6 +90,9 @@ def models(version=Version.latest()):
 
 def principle_components(version=Version.latest()):
     """ Loads files containing PCs for training data. """
+
+    # Handle strings as input instead of just enums.
+    version = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -106,6 +117,9 @@ def principle_components(version=Version.latest()):
 def cazy_list(version=Version.latest()):
     """ Loads CAZY list of class names the in order that model was trained. """
 
+    # Handle strings as input instead of just enums.
+    version = Version.from_other(version)
+
     version_files = dict()
     filelist = [
         (Version.v4, "v4-20190311-cazy_list.json"),
@@ -125,6 +139,10 @@ def cazy_list(version=Version.latest()):
 
 def centroids(version=Version.latest(), nomenclature=Nomenclature.default()):
     """ Loads pandas dataframe containing centroids. """
+
+    # Handle strings as input instead of just enums.
+    version = Version.from_other(version)
+    nomenclature = Nomenclature.from_other(nomenclature)
 
     files = defaultdict(dict)
     filelist = [
@@ -203,6 +221,9 @@ def hmm_lengths(version=Version.latest()):
     need to compute coverage.
     """
 
+    # Handle strings as input instead of just enums.
+    version = Version.from_other(version)
+
     version_files = dict()
     filelist = [
         (Version.v4, "v4-20190311-hmm_lengths.json"),
@@ -222,6 +243,8 @@ def hmm_lengths(version=Version.latest()):
 
 def trophic_classes(nomenclature=Nomenclature.default()):
     """ Loads list containing names and correct order to display classes. """
+
+    nomenclature = Nomenclature.from_other(nomenclature)
 
     files = dict()
     filelist = [
@@ -244,6 +267,8 @@ def sample_fasta():
 
 
 def test_dbcan(version=Version.latest()):
+    # Handle strings as input instead of just enums.
+    version = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -260,6 +285,8 @@ def test_dbcan(version=Version.latest()):
 
 
 def test_hmmer(version=Version.latest()):
+    # Handle strings as input instead of just enums.
+    version = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -276,6 +303,8 @@ def test_hmmer(version=Version.latest()):
 
 
 def test_domtblout(version=Version.latest()):
+    # Handle strings as input instead of just enums.
+    version = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -292,6 +321,8 @@ def test_domtblout(version=Version.latest()):
 
 
 def test_counts(version=Version.latest()):
+    # Handle strings as input instead of just enums.
+    version = Version.from_other(version)
 
     version_files = dict()
     filelist = [

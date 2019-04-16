@@ -10,20 +10,20 @@ from catas.data import Version
 from catas.data import Nomenclature
 from catas.data import cazy_list
 
-__program = "catastrophy"
-__version = "0.1.0"
-__authors = ", ".join(["Darcy Jones", "James Hane"])
-__date = "30 March 2017"
-__email = "darcy.a.jones@postgrad.curtin.edu.au"
-__short_blurb = (
+__program__ = "catastrophy"
+__version__ = "0.1.0"
+__authors__ = ", ".join(["Darcy Jones", "James Hane"])
+__date__ = "30 March 2017"
+__email__ = "darcy.a.jones@postgrad.curtin.edu.au"
+__short_blurb__ = (
     "Script to predict lifestyle of filamentous plant pathogens using "
     "carbohydrate-active enzymes (CAZymes)."
 )
 
-__license = (
-    '{__program}-{__version}\n'
-    '{__short_blurb}\n\n'
-    'Copyright (C) {__date},  {__authors}'
+__license__ = (
+    '{__program__}-{__version__}\n'
+    '{__short_blurb__}\n\n'
+    'Copyright (C) {__date__},  {__authors__}'
     '\n\n'
     'This program is free software: you can redistribute it and/or modify '
     'it under the terms of the GNU General Public License as published by '
@@ -37,21 +37,31 @@ __license = (
     '\n\n'
     'You should have received a copy of the GNU General Public License '
     'along with this program. If not, see <http://www.gnu.org/licenses/>.'
-)
-
-
-license = __license.format(**locals())
+).format(**locals())
 
 
 def cli(prog, args):
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=license,
+        description=(
+            "Examples:\n\n"
+            "```bash\n"
+            "$ %(prog)s -i dbcan_results.csv -o prediction.csv\n"
+            "$ %(prog)s -i dbcan_results_1.csv dbcan_results_2.csv "
+            "-l result1 result2 -o prediction.csv\n"
+            "```\n"
+        ),
         epilog=(
-            'Example usage:\n'
-            '$ %(prog)s -i dbcan_results.csv -o prediction.csv\n'
-            '$ %(prog)s -i dbcan_results_1.csv dbcan_results_2.csv '
-            '-l result1 result2 -o prediction.csv\n'
+            "Exit codes:\n\n"
+            "0 - Everything's fine\n"
+            "64 - Invalid command line usage\n"
+            "65 - Input format error\n"
+            "66 - Cannot open the input\n"
+            "71 - System error\n"
+            "73 - Can't create output file\n"
+            "74 - IO error\n"
+            "\n"
+            "Codes loosely based on <https://stackoverflow.com/questions/1101957/are-there-any-standard-exit-status-codes-in-linux>"
         )
     )
 
@@ -62,9 +72,9 @@ def cli(prog, args):
         nargs="+",
         type=argparse.FileType('r'),
         help=(
-            "Path to the input file formatted by dbCAN `hmmscan-parser.sh`. "
-            "You can specify more than one file by separating them with a "
-            "space. Default is STDIN."
+            "Path to the input file output by HMMER or formatted by dbCAN "
+            "`hmmscan-parser.sh`. You can specify more than one file by "
+            "separating them with a space. Default is STDIN."
         )
     )
 
@@ -78,7 +88,8 @@ def cli(prog, args):
             "The format that the input is provided in. If multiple files are "
             "specified, all input must be in the same format. HMMER raw "
             "(hmmer_text, default) and domain table (hmmer_domtab) formatted "
-            "files are accepted."
+            "files are accepted. Files processed by the dbCAN formatter "
+            "`hmmscan-parser.sh` are also accepted using the `dbcan` option."
         )
     )
 
@@ -114,9 +125,9 @@ def cli(prog, args):
         help=(
             "The version of the model to use. If you're using old dbCAN "
             "predictions you may have to specify this. The version numbers "
-            "are just the dates that the models were trained, so use the "
-            "closest version after the date of the dbCAN version that you "
-            "used. The latest version is used by default."
+            "are just the versions of dbCAN used to train the models so just "
+            "select the dbCAN version that you used. The latest version is "
+            "used by default."
         )
     )
 
@@ -139,7 +150,7 @@ def cli(prog, args):
     parser.add_argument(
         '--version',
         action='version',
-        version='%(prog)s {}'.format(__version),
+        version='%(prog)s {}'.format(__version__),
         help="Print the version of %(prog)s and exit"
     )
 
@@ -235,7 +246,7 @@ def main():
             "You can email us at {}.\n"
             "Alternatively, you can file the issue directly on the repo "
             "<https://bitbucket.org/ccdm-curtin/catastrophy/issues>\n"
-        ).format(__email)
+        ).format(__email__)
         raise e
 
     return

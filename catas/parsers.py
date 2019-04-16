@@ -9,6 +9,8 @@ from catas.data import hmm_lengths
 
 
 class FileType(Enum):
+    """ All possible input filetypes that we support. """
+
     dbcan = 1
     hmmer_text = 2
     hmmer_domtab = 3
@@ -98,6 +100,8 @@ def split_hmm(string):
 
 
 class DBCAN(NamedTuple):
+    """ Stores a single row of the DBCAN tab-delimited file. """
+
     hmm: str
     hmm_len: int
     seqid: str
@@ -156,6 +160,8 @@ class DBCAN(NamedTuple):
 
 
 class HMMER(NamedTuple):
+    """ Stores a single HMMER match. """
+
     hmm: str
     hmm_len: int
     seqid: str
