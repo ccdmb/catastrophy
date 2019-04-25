@@ -13,10 +13,10 @@ as input and returns pseudo-probabilities (See details) of trophic class members
 
 CATAStrophy is a python program which can be used as a python module or via a command-line interface.
 
-CATAStrophy is tested to work with python 3.6+, and it depends on [numpy](http://www.numpy.org/) and [BioPython](https://biopython.org/).
+It is tested to work with python 3.6+, and it depends on [numpy](http://www.numpy.org/) and [BioPython](https://biopython.org/).
 The install procedures below will install these for you automatically.
 
-Both can be installed from Pypi <https://pypi.org/project/catastrophy/> using [pip](https://pip.pypa.io/en/stable/).
+CATAStrophy can be installed from Pypi <https://pypi.org/project/catastrophy/> using [pip](https://pip.pypa.io/en/stable/).
 
 Installing with pip:
 
@@ -27,11 +27,11 @@ python3 -m pip install --user catastrophy
 The `--user` flag tells pip to install to a user directory rather than a system directory (e.g. somewhere under `/usr/` or `Program Files`).
 To install as root or in Windows you can omit the `--user` flag, but you may need root/administrator permission.
 
-Note that the `--user` subdirectory containing scripts (`<userdir>/bin` on linux/mac or `<userdir>\\Scripts` on Windows), may not automatically be on your path.
+Note that the `--user` subdirectory containing scripts (`<userdir>/bin` on linux/mac or `<userdir>\Scripts` on Windows), may not automatically be on your path.
 The user directory installed to is given by the python command `import site; print(site.USER_BASE)`.
 Generally on linux this is `~/.local`.
 You can change this directory by setting the `$PYTHONUSERBASE` environment variable.
-You can then add the `Script`/`bin` subdirectory to your `$PATH` environment variable 
+You can then add the `Script` or `bin` subdirectory to your `$PATH` environment variable 
 (e.g. [Linux and MacOS](https://stackoverflow.com/questions/14637979/how-to-permanently-set-path-on-linux-unix), or [Windows](https://stackoverflow.com/questions/9546324/adding-directory-to-path-environment-variable-in-windows), or just google it ;) ).
 
 Power users may also be interested in the `pip install --prefix` flag, but this will also require you to update your `$PYTHONPATH` environment variable.
@@ -51,9 +51,7 @@ python3 -m pip install --user .
 # Or use pip install -e . if you want to edit the modules.
 ```
 
- but if you
-use any of these packages yourself it's a good idea to install CATAStrophy in
-a python [virtual environment](https://virtualenv.pypa.io/en/stable/)
+If you use numpy or biopython yourself it's a good idea to install CATAStrophy in a python [virtual environment](https://virtualenv.pypa.io/en/stable/)
 (You should probably use these when installing most python packages).
 
 Using `virtualenv` is pretty easy, here's a basic rundown of the workflow.
