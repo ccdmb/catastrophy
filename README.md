@@ -11,35 +11,47 @@ as input and returns pseudo-probabilities (See details) of trophic class members
 
 ## Installing
 
-CATAStrophy is a python program which can be used as a module or via a
-command-line interface.
+CATAStrophy is a python program which can be used as a python module or via a command-line interface.
 
+CATAStrophy is tested to work with python 3.6+, and it depends on [numpy](http://www.numpy.org/) and [BioPython](https://biopython.org/).
+The install procedures below will install these for you automatically.
 
-NOTE: Because the repository currently private the following `pip` command won't work.
-Use the methods to install from git instead for now.
+Both can be installed from Pypi <https://pypi.org/project/catastrophy/> using [pip](https://pip.pypa.io/en/stable/).
 
-You can install from Pypi using pip:
+Installing with pip:
 
 ```bash
-pip3 install --user catastrophy
+python3 -m pip install --user catastrophy
 ```
 
-You can also install directly from the git repository.
+The `--user` flag tells pip to install to a user directory rather than a system directory (e.g. somewhere under `/usr/` or `Program Files`).
+To install as root or in Windows you can omit the `--user` flag, but you may need root/administrator permission.
+
+Note that the `--user` subdirectory containing scripts (`<userdir>/bin` on linux/mac or `<userdir>\\Scripts` on Windows), may not automatically be on your path.
+The user directory installed to is given by the python command `import site; print(site.USER_BASE)`.
+Generally on linux this is `~/.local`.
+You can change this directory by setting the `$PYTHONUSERBASE` environment variable.
+You can then add the `Script`/`bin` subdirectory to your `$PATH` environment variable 
+(e.g. [Linux and MacOS](https://stackoverflow.com/questions/14637979/how-to-permanently-set-path-on-linux-unix), or [Windows](https://stackoverflow.com/questions/9546324/adding-directory-to-path-environment-variable-in-windows), or just google it ;) ).
+
+Power users may also be interested in the `pip install --prefix` flag, but this will also require you to update your `$PYTHONPATH` environment variable.
+Nonetheless, it's useful for [module](http://modules.sourceforge.net/) software management.
+
+You can also install directly from the git repository to get the latest and greatest.
+We use [git-lfs](https://git-lfs.github.com/) to handle some filetypes, so you'll need to install that first.
 
 ```bash
-pip3 install --user git+git@bitbucket.org:ccdm-curtin/catastrophy.git
+python3 -m pip install --user git+git@bitbucket.org:ccdm-curtin/catastrophy.git
 ```
 
 ```bash
 git clone https://<your_username>@bitbucket.org/ccdm-curtin/catastrophy.git ./catastrophy
 cd catastrophy
-pip install --user .
+python3 -m pip install --user .
 # Or use pip install -e . if you want to edit the modules.
 ```
 
-CATAStrophy is tested to work with python 3.5+, and it depends on
-[numpy](http://www.numpy.org/).
-The pip commands above should install these for you automatically but if you
+ but if you
 use any of these packages yourself it's a good idea to install CATAStrophy in
 a python [virtual environment](https://virtualenv.pypa.io/en/stable/)
 (You should probably use these when installing most python packages).
@@ -49,7 +61,7 @@ Using `virtualenv` is pretty easy, here's a basic rundown of the workflow.
 ```bash
 # If it isn't installed already run one of these
 # Try to use the system package managers if possible to avoid mixing up system dependencies.
-sudo pip3 install virtualenv
+sudo python3 -m pip install virtualenv
 sudo apt install python3-virtualenv # Ubuntu and probably Debian
 sudo dnf install python3-virtualenv # Fedora 24+
 
@@ -57,23 +69,16 @@ sudo dnf install python3-virtualenv # Fedora 24+
 cd my_project
 
 # Create a virtualenv in a folder ./env
-# python3.7 can be substituted with you version of python.
-python3.7 -m venv env
-```
+# python3 can be substituted with your version of python.
+python3 -m venv env
 
-So now the virtualenv is set up, now you can load it and install CATAStrophy
-
-```bash
 # Loads the virtualenv (essentially changes PYTHONPATH and some other env variables).
 source env/bin/activate
-
-pip3 install catastrophy
-# or
-pip3 install git+https://<your_username>@bitbucket.org/ccdm-curtin/catastrophy.git
-# or
-git clone https://<your_username>@bitbucket.org/ccdm-curtin/catastrophy.git ./
-pip install .
 ```
+
+So now the virtualenv is set up, now you can install CATAStrophy as before using pip.
+Note however that you'll need to repeat the `source` command if you start a new terminal.
+
 
 ## Using CATAStrophy
 
@@ -85,7 +90,7 @@ Parsing the domain table output is about twice as fast as the regular text
 output, so if you have lots of files to run it might be worth saving those files.
 
 The easiest way to get a file like this is to annotate your proteome using
-the dbCAN online tool at <http://csbl.bmb.uga.edu/dbCAN/annotate.php>, and
+the dbCAN online tool at <http://csbl.bmb.uga.edu/dbCAN/annotate.php> or <http://cys.bios.niu.edu/dbCAN2/>, and
 save the HMMER3 raw text results locally.
 Assuming that you have this file locally you can run CATAStrophy like so:
 
