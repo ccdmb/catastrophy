@@ -1,5 +1,6 @@
 import sys
 import argparse
+import traceback
 
 from catas.predict import predict
 from catas.count import cazy_counts_multi
@@ -39,9 +40,43 @@ __license__ = (
     'along with this program. If not, see <http://www.gnu.org/licenses/>.'
 ).format(**locals())
 
+EXIT_VALID = 0
+EXIT_KEYBOARD = 1
+EXIT_UNKNOWN = 2
+EXIT_CLI = 64
+EXIT_INPUT_FORMAT = 65
+EXIT_INPUT_NOT_FOUND = 66
+EXIT_SYSERR = 71
+EXIT_CANT_OUTPUT = 73
+
+# EXIT_IOERR = 74
+
+
+class MyArgumentParser(argparse.ArgumentParser):
+
+    def error(self, message):
+        """ Override default to have more informative exit codes. """
+        self.print_usage(sys.stderr)
+        raise MyArgumentError("{}: error: {}".format(self.prog, message))
+
+
+class MyArgumentError(Exception):
+
+    def __init__(self, message):
+        self.message = message
+        self.errno = EXIT_CLI
+
+        # This is a bit hacky, but I can't figure out another way to do it.
+        if "No such file or directory" in message:
+            if "infile" in message:
+                self.errno = EXIT_INPUT_NOT_FOUND
+            elif "outfile" in message:
+                self.errno = EXIT_CANT_OUTPUT
+        return
+
 
 def cli(prog, args):
-    parser = argparse.ArgumentParser(
+    parser = MyArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=(
             "Examples:\n\n"
@@ -53,13 +88,14 @@ def cli(prog, args):
         ),
         epilog=(
             "Exit codes:\n\n"
-            "0 - Everything's fine\n"
-            "64 - Invalid command line usage\n"
-            "65 - Input format error\n"
-            "66 - Cannot open the input\n"
-            "71 - System error\n"
-            "73 - Can't create output file\n"
-            "74 - IO error\n"
+            f"{EXIT_VALID} - Everything's fine\n"
+            f"{EXIT_KEYBOARD} - Keyboard interrupt\n"
+            f"{EXIT_CLI} - Invalid command line usage\n"
+            f"{EXIT_INPUT_FORMAT} - Input format error\n"
+            f"{EXIT_INPUT_NOT_FOUND} - Cannot open the input\n"
+            f"{EXIT_SYSERR} - System error\n"
+            f"{EXIT_CANT_OUTPUT} - Can't create output file\n"
+            f"{EXIT_UNKNOWN} - Unhandled exception, please file a bug!\n"
             "\n"
             "Codes loosely based on <https://stackoverflow.com/questions/1101957/are-there-any-standard-exit-status-codes-in-linux>"
         )
@@ -180,7 +216,11 @@ def runner(inhandles, outhandle, labels, file_format,
 def main():
     """ The cli interface to CATAStrophy. """
 
-    args = cli(prog=sys.argv[0], args=sys.argv[1:])
+    try:
+        args = cli(prog=sys.argv[0], args=sys.argv[1:])
+    except MyArgumentError as e:
+        print(e.message, file=sys.stderr)
+        sys.exit(e.errno)
 
     infile_names = [f.name for f in args.inhandles]
 
@@ -188,11 +228,13 @@ def main():
         labels = infile_names
     elif len(args.labels) != len(args.inhandles):
         msg = (
+            "argument labels and inhandles: \n"
             "When specified, the number of labels must be the same as the "
             "number of input files. Exiting.\n"
         )
+
         print(msg, file=sys.stderr)
-        sys.exit(1)
+        sys.exit(EXIT_CLI)
     else:
         labels = args.labels
 
@@ -214,16 +256,17 @@ def main():
             header = "Failed to parse file <{}>.\n".format(e.filename)
 
         print("{}\n{}".format(header, e.message), file=sys.stderr)
-        sys.exit(1)
+        sys.exit(EXIT_INPUT_FORMAT)
 
-    except EnvironmentError as e:
+    except OSError as e:
         msg = (
             "Encountered a system error.\n"
             "We can't control these, and they're usually related to your OS.\n"
-            "Try running again."
+            "Try running again.\n"
         )
         print(msg, file=sys.stderr)
-        raise e
+        print(e.strerror, file=sys.stderr)
+        sys.exit(EXIT_SYSERR)
 
     except MemoryError:
         msg = (
@@ -232,11 +275,11 @@ def main():
             "processes and try running again."
         )
         print(msg, file=sys.stderr)
-        sys.exit(1)
+        sys.exit(EXIT_SYSERR)
 
     except KeyboardInterrupt:
         print("Received keyboard interrupt. Exiting.", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(EXIT_KEYBOARD)
 
     except Exception as e:
         msg = (
@@ -245,9 +288,11 @@ def main():
             "authors.\nWe will be extremely grateful!\n\n"
             "You can email us at {}.\n"
             "Alternatively, you can file the issue directly on the repo "
-            "<https://bitbucket.org/ccdm-curtin/catastrophy/issues>\n"
+            "<https://bitbucket.org/ccdm-curtin/catastrophy/issues>\n\n"
+            "Please attach a copy of the following message:"
         ).format(__email__)
-        raise e
+        print(e, file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
 
     return
 
