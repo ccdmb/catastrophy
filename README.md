@@ -5,8 +5,17 @@ of filamentous plant pathogens using carbohydrate-active enzymes (CAZymes).
 The name CATAStrophy is a backronym portmanteau hybrid where "CATAS" means
 CAZyme Assisted Training And Sorting.
 
-CATAStrophy takes HMMER3 files from searches against [dbCAN](http://csbl.bmb.uga.edu/dbCAN/)
-as input and returns pseudo-probabilities (See details) of trophic class memberships for each file.
+CATAStrophy takes HMMER3 files from searches against the [dbCAN](http://bcb.unl.edu/dbCAN2/) CAZyme database
+as input and returns a pseudo-probabilities called the relative centroid distance (RCD) of trophic class memberships for each file.
+
+To "train" this models, we performed principal component analysis (PCA) on the frequencies of CAZymes for a set of curated proteomes with literature support for their trophic lifestyles.
+For each class in our classification system, we find the center/geometric mean of the class in the first 16 principal components.
+
+New proteomes are classified by transforming the CAZyme frequencies using the same PCA loadings as in the training set.
+We then find the closest class center in PCA space, and set that RCD score to 1.
+Then for each of the other classes we find the distance between the new proteome and the class center divided (i.e. relative to) by the distance to the closest class center.
+If a new proteome is equidistant between two class centroids, both RCD scores will be one, so the RCD method is a _kind_ of multi-label classifier.
+This is useful when evaluating your organism, because it might have characteristics of multiple classes (or be so dissimilar to any class that the distance is meaningless).
 
 
 ## Installing
@@ -80,16 +89,17 @@ Note however that you'll need to repeat the `source` command if you start a new 
 
 ## Using CATAStrophy
 
-The command line interface is pretty simple, you just need to supply the input
-files and where to put the output. The input files should be the output
-from [HMMER3](http://hmmer.org/) `hmmscan` as either the raw HMMER3 text
+The to run CATAStrophy you need to supply the input
+files and where to put the output.
+The input files should be the output from [HMMER3](http://hmmer.org/) `hmmscan` as either the raw HMMER3 text
 output or the "domain table" output provided by the `--domtblout` flag.
 Parsing the domain table output is about twice as fast as the regular text
 output, so if you have lots of files to run it might be worth saving those files.
 
 The easiest way to get a file like this is to annotate your proteome using
-the dbCAN online tool at <http://csbl.bmb.uga.edu/dbCAN/annotate.php> or <http://cys.bios.niu.edu/dbCAN2/>, and
+the dbCAN online tool at <http://cys.bios.niu.edu/dbCAN2/>, and
 save the HMMER3 raw text results locally.
+
 Assuming that you have this file locally you can run CATAStrophy like so:
 
 ```bash
@@ -159,17 +169,6 @@ cat my_dbcan_results.txt | catastrophy -i - -l prettier_label -o - > my_catastro
 If you don't spefify a label for stdin input the label will be "<stdin>".
 
 
-If you _really_ want to you could also mix and match stdin and filepaths using "-" to specify stdin.
-
-```bash
-cat dbcan_2.txt | catastrophy -i dbcan_1.txt - -o my_catastrophy_results.csv
-```
-
-So the second result row in the output would come from stdin.
-Of course, if you cat multiple files into catastrophy they will all be treated
-as a single file so it doesn't usually make sense to use stdin with multiple inputs.
-
-
 Finally because dbCAN is updated as new CAZyme classes are created, merged,
 or split, catastrophy has a final parameter that allows you to select the
 model trained on a specific dbCAN version (starting from version 5).
@@ -191,7 +190,7 @@ then you probably don't want to use the web interface.
 In that case you can run the dbCAN pipeline locally using [HMMER](http://hmmer.org/).
 
 The instructions for running the HMMER and the dbCAN parser can be found here
-<http://csbl.bmb.uga.edu/dbCAN/download.php> in the readme.txt file.
+<http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-old@UGA/> in the `readme.txt` file.
 It isn't the most friendly documentation though so i'll repeat it here
 (assuming that you've installed [HMMER](http://hmmer.org/) and are using a unix-like OS).
 
@@ -201,45 +200,44 @@ First download the HMMs and the parser script.
 cd <a directory that you can work in>
 
 mkdir -p ./data
-wget -qc -P ./data http://csbl.bmb.uga.edu/dbCAN/download/dbCAN-fam-HMMs.txt.v5
-
-# Optional, useful for summarising your dbCAN 
-# results but not necessary for CATAStrophy.
-wget -qc -P ./data http://csbl.bmb.uga.edu/dbCAN/download/hmmscan-parser.sh
+wget -qc -P ./data http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V7.txt
 ```
 
 Note that I'm downloading a specific version of the database rather that just the latest one.
 Now we can convert the file containing HMM definitions into a HMMER database.
 
 ```bash
-hmmpress ./data/dbCAN-fam-HMMs.txt.v5
+hmmpress ./data/dbCAN-HMMdb-V7.txt
 ```
 
 Now we can run HMMER to find matches to the dbCAN HMMs.
-For demonstration, we'll save both outputs.
+For demonstration, we'll save both the domain table and plain text outputs.
 
 ```bash
-hmmscan --domtblout my_fasta_hmmer.csv ./data/dbCAN-fam-HMMs.txt.v5 my_fasta.fasta > my_fasta_hmmer.txt
+hmmscan --domtblout my_fasta_hmmer.csv ./data/dbCAN-HMMdb-V7.txt my_fasta.fasta > my_fasta_hmmer.txt
 ```
 
 The domain table is now in the file `my_fasta_hmmer.csv` and the plain hmmer
 text output is in `my_fasta_hmmer.txt`.
 Either one of these files is appropriate for use with CATAStrophy, (just
 remember to specify the `--format` flag.
-In practise, you'll probably only need the domain table output in which case you
-could just redirect the standard output to `/dev/null` to delete it.
-
-If you want to look at the dbCAN matches, you can use the summary script from
-dbCAN.
-This script takes the domain table output from hmmscan as input and returns a new tabular file.
 
 ```bash
-bash ./data/hmmscan-parser.sh my_fasta_hmmer.csv > my_fasta_dbcan.csv
+catastrophy -m v7 -i my_fasta_hmmer.csv --format domtab -o my_catastrophy_results.csv
+
+# or
+catastrophy -m v7 -i my_fasta_hmmer.txt --format hmmer -o my_catastrophy_results.csv
 ```
 
 And that's it!
 
 
-# Details
+# What does CATAStrophy do?
+
+CATAStrophy performs principle components analysis (PCA) on the frequencies of carbohydrate active enzymes (CAZymes) in your sample.
+It then compares the position of 
+
+The predictions from CATAStrophy are based on the "relative centroid distance".
+
 
 Some extra details about the CATAStrophy method, including the classes used and the calculation of the RCD.
