@@ -22,10 +22,11 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.0',
+    version='0.0.1',
 
     description='A fungal trophy classifier based on CAZymes',
     long_description=long_description,
+    long_description_content_type="text/markdown",
 
     # The project's main homepage.
     url='https://bitbucket.org/ccdm-curtin/catastrophy',

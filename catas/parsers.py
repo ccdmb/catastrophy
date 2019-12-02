@@ -243,7 +243,28 @@ class HMMER(NamedTuple):
                 "(i.e. hmmer_text vs hmmer_domtab).\n"
                 "If you believe this is an error, please contact us."
             ).format(format)
-            raise ParseError(handle.name, None, msg)
+
+            if hasattr(handle, "name"):
+                name = handle.name
+            else:
+                name = None
+
+            raise ParseError(name, None, msg)
+        except KeyError as e:
+            msg = (
+                "The file appears to be a searched against a different "
+                "version of DBCAN than specified.\n"
+                "The CAZyme group {} doesn't exist in this version.\n"
+                "Please check the database version and contact us if you "
+                "think this was a mistake."
+            ).format(e.args)
+
+            if hasattr(handle, "name"):
+                name = handle.name
+            else:
+                name = None
+
+            raise ParseError(name, None, msg)
         return
 
     @classmethod
