@@ -45,9 +45,9 @@ def cli(prog: str, args: List[str]) -> argparse.Namespace:
         description=(
             "Examples:\n\n"
             "```bash\n"
-            "$ %(prog)s -i dbcan_results.csv -o prediction.csv\n"
-            "$ %(prog)s -i dbcan_results_1.csv dbcan_results_2.csv "
-            "-l result1 result2 -o prediction.csv\n"
+            "$ %(prog)s -o prediction.csv dbcan_results.csv\n"
+            "$ %(prog)s -l result1 result2 -o prediction.csv "
+            "dbcan_results_2.csv dbcan_results_1.csv\n"
             "```\n"
         ),
         epilog=(
@@ -64,15 +64,14 @@ def cli(prog: str, args: List[str]) -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "-i", "--infile",
+        "infile",
         dest="inhandles",
-        default=[sys.stdin],
         nargs="+",
         type=argparse.FileType('r'),
         help=(
             "Path to the input file output by HMMER or formatted by dbCAN "
             "`hmmscan-parser.sh`. You can specify more than one file by "
-            "separating them with a space. Default is STDIN."
+            "separating them with a space."
         )
     )
 
