@@ -1,0 +1,31 @@
+dist: bionic
+language: python
+python:
+- '3.5'
+- '3.6'
+- '3.7'
+- '3.8'
+install:
+- pip install biopython${BIOPYTHON_VERSION} numpy${NUMPY_VERSION}
+- pip install ".[test,dev]"
+script:
+- pytest
+- mypy --ignore-missing-imports catas
+env:
+- BIOPYTHON_VERSION=">=1.75"
+- BIOPYTHON_VERSION=">=1.74,<1.75"
+- BIOPYTHON_VERSION=">=1.73,<1.74"
+- BIOPYTHON_VERSION=">=1.72,<1.73"
+- BIOPYTHON_VERSION=">=1.71,<1.72"
+- BIOPYTHON_VERSION=">=1.70,<1.71"
+- NUMPY_VERSION=">=1.18.0rc1"
+- NUMPY_VERSION=">=1.17.0,<1.18.0rc1"
+- NUMPY_VERSION=">=1.16.0,<1.17.0"
+deploy:
+  provider: pypi
+  user: darcyabjones
+  password:
+    secure: Dl/WisvM567eQVHTXH8i/uxkrS3iO8tuooOck+h8tgOqrvc1caPJ55m84u2FnXHisLc1Ds60zzke7SnWBCsfNYEStWy0RLQarpkEsrh8NTtYzksltREordPix5OCRdd+QeOQ6gX0dQPi688H/Bff5abEatSaSxvDA+1wfxhw0SE7fjyvSs+fgixs+zxLOwbiVv61QPcd3x+B2oEH++mzpBUfOePjQlPG8YvCJ6KAWgMkBE1KhIJEE+UEWXsQLsAgknB/kiucHGL6wxL7NwUv+LYXfuhSUfYhtF709bsbiTR2FFhUzygZR9z7VFBd5VfWU0CqreqZmK+4R3XlffnlcUfyM2uDjh7vLo7LjJN1tuEIxOToW255QxjuyeFAHeO/VHm7HiuShEdmTEq5t1zk/k6WfynLMYJ6SVElUBnUdYCOtRlSUruj1hFJ/akUHU9krZrI8kjGX3DVxS1GoOMuZhP1h809EEIQStZQ7eRlm+lCHkejxJ3SbUooM6fRRwis8bQxzMzRWFANuGBk5W2YhZLD5eQD2I1LjEjhZRqI7MmahYbYcgzGExQOzoCJxaA7fHuJ5maohLUEP8iUYTdl5VyN84tAms+XYGm/1/UXjLln0tuNj4aN7VV2VACHNVvLHlKM6luzj/ME0uxZmY4h9Mrb6XZKPSm+f+efeGtDjMs=
+  on:
+    tags: true
+  skip_existing: true
