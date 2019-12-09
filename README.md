@@ -209,6 +209,6 @@ catastrophy infile1.txt infile2.txt
 ```
 
 | label | saprotroph | biotroph 1 | biotroph 2 | biotroph 3 | mesotroph - internal | mesotroph - external | necrotroph - narrow | necrotroph - broad | wilt |
+| :---  | ---:       | ---:       | ---:       | ---:       | ---:                 | ---:                 | ---:                | ---:               | ---: |
 | infile1.txt | 0.1 | 0.1 | 0.9 | 1 | 0.3 | 0.3 | 0.1 | 0.1 | 0.1 |
 | infile2.txt | 0.1 | 0.1 | 0.2 | 0.2 | 0.8 | 0.4 | 0.1 | 0.6 | 0.1 |
-```
