@@ -5,9 +5,13 @@ python:
 - '3.6'
 - '3.7'
 - '3.8'
+before_install:
+- git lfs pull
 install:
 - pip install biopython${BIOPYTHON_VERSION} numpy${NUMPY_VERSION}
 - pip install ".[test,dev]"
+git:
+  lfs_skip_smudge: true
 script:
 - pytest
 - mypy --ignore-missing-imports catas
