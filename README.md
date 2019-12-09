@@ -3,6 +3,8 @@
 [![PyPI version](https://badge.fury.io/py/catastrophy.svg)](https://badge.fury.io/py/catastrophy)
 [![Build Status](https://travis-ci.org/ccdmb/catastrophy.svg?branch=master)](https://travis-ci.org/ccdmb/catastrophy)
 
+<img src="catastrophy_hero.png" width=200 />
+
 CATAStrophy is a classification method for describing lifestyles/trophic characteristics
 of filamentous plant pathogens using carbohydrate-active enzymes (CAZymes).
 The name CATAStrophy is a backronym portmanteau hybrid where "CATAS" means
