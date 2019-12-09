@@ -3,6 +3,12 @@ A simpler alternative to a pandas dataframe for non-interactive work.
 """
 
 import csv
+import pathlib  # noqa
+from typing import List, Sequence
+from typing import Dict, Mapping
+from typing import Union
+from typing import BinaryIO, TextIO
+
 import numpy as np
 
 
@@ -13,29 +19,39 @@ class Matrix(object):
     Using this as an alternative to pandas to get rid of dependency.
     """
 
-    def __init__(self, rows, columns, arr):
+    def __init__(
+        self,
+        rows: Sequence[str],
+        columns: Sequence[str],
+        arr: np.array,
+    ):
         assert len(rows) == arr.shape[0]
         assert len(columns) == arr.shape[1]
 
-        self.rows = rows
-        self.columns = columns
+        self.rows = list(rows)
+        self.columns = list(columns)
         self.arr = arr
         return
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Union[str, int]) -> np.array:
         if isinstance(key, str):
             key = self.columns.index(key)
 
         return self.arr[:, key]
 
     @classmethod
-    def from_row(cls, row, columns, arr):
+    def from_row(
+        cls,
+        row: str,
+        columns: Sequence[str],
+        arr: np.array
+    ) -> "Matrix":
         """ Create a matrix from a single row """
 
-        return cls([row], columns, arr.reshape(1, -1))
+        return cls([row], list(columns), arr.reshape(1, -1))
 
     @classmethod
-    def concat(cls, dfs):
+    def concat(cls, dfs: Sequence["Matrix"]) -> "Matrix":
         """ Concatenate multiple matrices together by rows (ie. columns are
         matched) """
 
@@ -56,6 +72,7 @@ class Matrix(object):
         return cls(rows, columns, arr)
 
     def as_df(self):
+        # This isn't typed so that I don't need pandas as dependency
         import pandas as pd
         return pd.DataFrame(
             data=self.arr,
@@ -70,7 +87,7 @@ class Matrix(object):
         columns = df.columns.tolist()
         return cls(rows, columns, df.values)
 
-    def write(self, handle):
+    def write(self, handle: Union[str, BinaryIO, "pathlib.Path"]):
         """ Writes matrix out as a numpy file. """
         np.savez(
             handle,
@@ -81,12 +98,16 @@ class Matrix(object):
         return
 
     @classmethod
-    def read(cls, handle):
+    def read(cls, handle: Union[str, BinaryIO, "pathlib.Path"]):
         """ Reads matrix from an numpy file. """
         f = np.load(handle, allow_pickle=False)
         return cls(f["rows"].tolist(), f["columns"].tolist(), f["arr"])
 
-    def write_tsv(self, filename, rows_colname="label"):
+    def write_tsv(
+        self,
+        filename: Union[str, TextIO],
+        rows_colname: str = "label"
+    ):
         """ Write a tsv formatted table from the matrix.
 
         Note that if you provide a file-object handle to filename, it must
@@ -112,31 +133,43 @@ class Matrix(object):
                 handle.close()
         return
 
-    def as_serializable(self):
+    def as_serializable(self) -> List[Dict[str, Union[str, float]]]:
         """ Output the matrix as a dict, which can be easily serialised into
         JSON etc.
         """
 
         output = list()
         for rowname, row in zip(self.rows, self.arr):
-            drow = {str(k): float(v) for k, v in zip(self.columns, row)}
+            drow: Dict[str, Union[str, float]] = {
+                str(k): float(v)
+                for k, v
+                in zip(self.columns, row)
+            }
             drow["label"] = rowname
             output.append(drow)
         return output
 
     @classmethod
-    def from_serialized(cls, ser):
+    def from_serialized(
+        cls,
+        ser: Sequence[Mapping[str, Union[str, float]]]
+    ) -> "Matrix":
         """ Parses a dictionary representation back into a matrix. """
 
         if len(ser) == 0:
             return cls([], [], np.zeros((0, 0)))
 
-        rows = list()
+        rows: List[str] = list()
         arr = list()
-        columns = [k for k, v in ser if k != "label"]
+        columns: List[str] = [k for k, v in ser if k != "label"]
         for row in ser:
             arr_row = list()
+
+            # This helps the type checker.
+            # It shouldn't occur at runtime if the spec is observed.
+            assert isinstance(row["label"], str)
             rows.append(row["label"])
+
             for column in columns:
                 arr_row.append(row[column])
             arr.append(arr_row)

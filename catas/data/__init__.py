@@ -5,34 +5,40 @@ Because dbCAN is an evolving database, we'll have to maintain several models
 for each database release. The latest version will always we the default one.
 """
 
-from __future__ import unicode_literals
-
 from pkg_resources import resource_filename
 
-from collections import defaultdict
 import json
 from enum import Enum
+from collections import defaultdict
+
+from typing import Dict
+from typing import List
+from typing import Union
+from typing import TypeVar, Type
 
 import numpy as np
 
 from catas.matrix import Matrix
 
 
+T = TypeVar('T', bound="MyEnum")
+
+
 class MyEnum(Enum):
     """ Base class for enums. """
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     @classmethod
-    def from_string(cls, s):
+    def from_string(cls: Type[T], s: str) -> T:
         try:
             return cls[s]
         except KeyError:
             raise ValueError
 
     @classmethod
-    def from_other(cls, f):
+    def from_other(cls: Type[T], f: Union[str, int, "MyEnum"]) -> T:
         if isinstance(f, cls):
             return f
         elif isinstance(f, str):
@@ -52,7 +58,7 @@ class Version(MyEnum):
     v7 = 4
 
     @classmethod
-    def latest(cls):
+    def latest(cls) -> "Version":
         return cls.v6
 
 
@@ -64,15 +70,17 @@ class Nomenclature(MyEnum):
     nomenclature3 = 3
 
     @classmethod
-    def default(cls):
+    def default(cls) -> "Nomenclature":
         return cls.nomenclature3
 
 
-def models(version=Version.latest()):
+def models(
+    version: Union[str, int, Version] = Version.latest()
+) -> Dict[str, np.array]:
     """ Loads PCA parameters. """
 
     # Handle strings as input instead of just enums.
-    version = Version.from_other(version)
+    versionp = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -85,14 +93,16 @@ def models(version=Version.latest()):
     for vname, vfile in filelist:
         version_files[vname] = resource_filename(__name__, vfile)
 
-    return np.load(version_files[version])
+    return np.load(version_files[versionp])
 
 
-def principle_components(version=Version.latest()):
+def principle_components(
+    version: Union[str, int, Version] = Version.latest()
+) -> Matrix:
     """ Loads files containing PCs for training data. """
 
     # Handle strings as input instead of just enums.
-    version = Version.from_other(version)
+    versionp = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -105,8 +115,8 @@ def principle_components(version=Version.latest()):
     for vname, vfile in filelist:
         version_files[vname] = resource_filename(__name__, vfile)
 
-    mat_raw = np.load(version_files[version])
-    mat = Matrix.read(version_files[version])
+    mat_raw = np.load(version_files[versionp])
+    mat = Matrix.read(version_files[versionp])
 
     mat.nomenclature1 = mat_raw["nomenclature1"]
     mat.nomenclature2 = mat_raw["nomenclature2"]
@@ -114,11 +124,13 @@ def principle_components(version=Version.latest()):
     return mat
 
 
-def cazy_list(version=Version.latest()):
+def cazy_list(
+    version: Union[str, int, Version] = Version.latest()
+) -> List[str]:
     """ Loads CAZY list of class names the in order that model was trained. """
 
     # Handle strings as input instead of just enums.
-    version = Version.from_other(version)
+    versionp = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -131,20 +143,26 @@ def cazy_list(version=Version.latest()):
     for vname, vfile in filelist:
         version_files[vname] = resource_filename(__name__, vfile)
 
-    with open(version_files[version], "r") as handle:
+    with open(version_files[versionp], "r") as handle:
         d = json.load(handle)
+
+    assert isinstance(d, list)
+    assert all(isinstance(di, str) for di in d)
 
     return d
 
 
-def centroids(version=Version.latest(), nomenclature=Nomenclature.default()):
+def centroids(
+    version: Union[str, int, Version] = Version.latest(),
+    nomenclature: Union[str, int, Nomenclature] = Nomenclature.default()
+) -> Matrix:
     """ Loads pandas dataframe containing centroids. """
 
     # Handle strings as input instead of just enums.
-    version = Version.from_other(version)
-    nomenclature = Nomenclature.from_other(nomenclature)
+    versionp = Version.from_other(version)
+    nomenclaturep = Nomenclature.from_other(nomenclature)
 
-    files = defaultdict(dict)
+    files: Dict[Version, Dict[Nomenclature, str]] = defaultdict(dict)
     filelist = [
         (
             Version.v4,
@@ -211,10 +229,12 @@ def centroids(version=Version.latest(), nomenclature=Nomenclature.default()):
     for vname, nname, vfile in filelist:
         files[vname][nname] = resource_filename(__name__, vfile)
 
-    return Matrix.read(files[version][nomenclature])
+    return Matrix.read(files[versionp][nomenclaturep])
 
 
-def hmm_lengths(version=Version.latest()):
+def hmm_lengths(
+    version: Union[str, int, Version] = Version.latest()
+) -> Dict[str, int]:
     """ Loads dict object containing lengths of HMMs.
 
     The raw HMMER output doesn't contain the length of the HMM, which we
@@ -222,7 +242,7 @@ def hmm_lengths(version=Version.latest()):
     """
 
     # Handle strings as input instead of just enums.
-    version = Version.from_other(version)
+    versionp = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -235,16 +255,21 @@ def hmm_lengths(version=Version.latest()):
     for vname, vfile in filelist:
         version_files[vname] = resource_filename(__name__, vfile)
 
-    with open(version_files[version], "r") as handle:
+    with open(version_files[versionp], "r") as handle:
         d = json.load(handle)
 
+    assert isinstance(d, dict)
+    assert all(isinstance(dk, str) for dk in d.keys())
+    assert all(isinstance(dv, int) for dv in d.values())
     return d
 
 
-def trophic_classes(nomenclature=Nomenclature.default()):
+def trophic_classes(
+    nomenclature: Union[str, int, Nomenclature] = Nomenclature.default()
+) -> List[str]:
     """ Loads list containing names and correct order to display classes. """
 
-    nomenclature = Nomenclature.from_other(nomenclature)
+    nomenclaturep = Nomenclature.from_other(nomenclature)
 
     files = dict()
     filelist = [
@@ -256,19 +281,22 @@ def trophic_classes(nomenclature=Nomenclature.default()):
     for nname, nfile in filelist:
         files[nname] = resource_filename(__name__, nfile)
 
-    with open(files[nomenclature], "r") as handle:
+    with open(files[nomenclaturep], "r") as handle:
         d = json.load(handle)
+
+    assert isinstance(d, list)
+    assert all(isinstance(di, str) for di in d)
     return d
 
 
-def sample_fasta():
+def sample_fasta() -> str:
     # There's no actual version for this.
     return resource_filename(__name__, "test_data.fasta")
 
 
-def test_dbcan(version=Version.latest()):
+def test_dbcan(version: Union[str, int, Version] = Version.latest()) -> str:
     # Handle strings as input instead of just enums.
-    version = Version.from_other(version)
+    versionp = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -281,12 +309,12 @@ def test_dbcan(version=Version.latest()):
     for vname, vfile in filelist:
         version_files[vname] = resource_filename(__name__, vfile)
 
-    return version_files[version]
+    return version_files[versionp]
 
 
-def test_hmmer(version=Version.latest()):
+def test_hmmer(version: Union[str, int, Version] = Version.latest()) -> str:
     # Handle strings as input instead of just enums.
-    version = Version.from_other(version)
+    versionp = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -299,12 +327,14 @@ def test_hmmer(version=Version.latest()):
     for vname, vfile in filelist:
         version_files[vname] = resource_filename(__name__, vfile)
 
-    return version_files[version]
+    return version_files[versionp]
 
 
-def test_domtblout(version=Version.latest()):
+def test_domtblout(
+    version: Union[str, int, Version] = Version.latest()
+) -> str:
     # Handle strings as input instead of just enums.
-    version = Version.from_other(version)
+    versionp = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -317,12 +347,14 @@ def test_domtblout(version=Version.latest()):
     for vname, vfile in filelist:
         version_files[vname] = resource_filename(__name__, vfile)
 
-    return version_files[version]
+    return version_files[versionp]
 
 
-def test_counts(version=Version.latest()):
+def test_counts(
+    version: Union[str, int, Version] = Version.latest()
+) -> Matrix:
     # Handle strings as input instead of just enums.
-    version = Version.from_other(version)
+    versionp = Version.from_other(version)
 
     version_files = dict()
     filelist = [
@@ -335,4 +367,4 @@ def test_counts(version=Version.latest()):
     for vname, vfile in filelist:
         version_files[vname] = resource_filename(__name__, vfile)
 
-    return Matrix.read(version_files[version])
+    return Matrix.read(version_files[versionp])

@@ -6,6 +6,8 @@ Functions to find distances to centroids in PCA space.
 import numpy as np
 from numpy.linalg import norm
 
+from typing import Dict
+
 from catas.matrix import Matrix
 from catas.data import models
 from catas.data import centroids
@@ -14,10 +16,10 @@ from catas.data import Nomenclature
 
 
 def predict(
-    counts,
-    version=Version.latest(),
-    nomenclature=Nomenclature.default()
-):
+    counts: Matrix,
+    version: Version = Version.latest(),
+    nomenclature: Nomenclature = Nomenclature.default()
+) -> Matrix:
     """ Wrapper function that takes file handle and returns RCD predictions.
 
     Keyword arguments:
@@ -52,7 +54,10 @@ def predict(
     return rcds
 
 
-def transform(counts, model=models()):
+def transform(
+    counts: Matrix,
+    model: Dict[str, np.array] = models()
+) -> Matrix:
     """ Takes a series of CAZyme counts and gets PCA transformed values.
 
     Keyword arguments:
@@ -72,7 +77,7 @@ def transform(counts, model=models()):
     return Matrix(rows=counts.rows, columns=columns, arr=X_transformed)
 
 
-def distances(points, centroids=centroids()):
+def distances(points: Matrix, centroids: Matrix = centroids()) -> Matrix:
     """ Given a point in PCA space, find the distance to each centroid.
 
     Keyword arguments:
@@ -99,7 +104,7 @@ def distances(points, centroids=centroids()):
     return Matrix(rows=points.rows, columns=new_columns, arr=normed)
 
 
-def rcd(dists):
+def rcd(dists: Matrix) -> Matrix:
     """ Finds the relative centroid distance.
 
     Given an array of distances between two points,

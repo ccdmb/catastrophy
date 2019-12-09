@@ -1,8 +1,19 @@
 from io import StringIO
 from enum import Enum
+
 from typing import NamedTuple
+from typing import TextIO, BinaryIO
+from typing import Union, Optional
+from typing import Sequence, List
+from typing import Dict
+from typing import Iterator
 
 from Bio import SearchIO
+
+# These are only used for type checking
+from Bio.SearchIO._model.query import QueryResult
+from Bio.SearchIO._model.hit import Hit
+from Bio.SearchIO._model.hsp import HSP
 
 from catas.data import Version
 from catas.data import hmm_lengths
@@ -15,11 +26,11 @@ class FileType(Enum):
     hmmer_text = 2
     hmmer_domtab = 3
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     @classmethod
-    def from_string(cls, s):
+    def from_string(cls, s: str) -> "FileType":
         try:
             return cls[s]
         except KeyError:
@@ -29,18 +40,30 @@ class FileType(Enum):
 class ParseError(Exception):
     """ Some aspect of parsing failed. """
 
-    def __init__(self, filename, line, message):
+    def __init__(
+        self,
+        filename: Optional[str],
+        line: Optional[int],
+        message: str
+    ):
         self.filename = filename
         self.line = line
         self.message = message
+        return
 
 
 class LineParseError(Exception):
-    def __init__(self, message):
-        self.message
+
+    def __init__(self, message: str):
+        self.message = message
+        return
 
 
-def parse(handle, format, version=None):
+def parse(
+    handle: TextIO,
+    format: Union[str, FileType],
+    version: Union[str, int, Version] = Version.latest(),
+) -> Union[Iterator["HMMER"], Iterator["DBCAN"]]:
     """ Wrapper that directs parsing bases on enum. """
 
     version = Version.from_other(version)
@@ -70,7 +93,10 @@ def parse(handle, format, version=None):
         ))
 
 
-def decode_object(handle, num_lines=None):
+def decode_object(
+    handle: BinaryIO,
+    num_lines: Optional[float] = None,
+) -> StringIO:
     """ Converts a binary file-like object into a String one.
 
     Files transferred over http arrive as binary objects.
@@ -95,8 +121,24 @@ def decode_object(handle, num_lines=None):
     return out
 
 
-def split_hmm(string):
+def split_hmm(string: str) -> str:
     return str(string).rstrip(".hmm")
+
+
+def parse_str_as_int(val: str, column: str) -> int:
+    try:
+        return int(val)
+    except ValueError:
+        msg = "Illegal value '{}' received in column {}. Expected an integer."
+        raise LineParseError(msg.format(val, column))
+
+
+def parse_str_as_float(val: str, column: str) -> float:
+    try:
+        return float(val)
+    except ValueError:
+        msg = "Illegal value '{}' received in column {}. Expected a float."
+        raise LineParseError(msg.format(val, column))
 
 
 class DBCAN(NamedTuple):
@@ -114,31 +156,35 @@ class DBCAN(NamedTuple):
     coverage: float
 
     @classmethod
-    def from_string(cls, line):
+    def from_string(cls, line: str) -> "DBCAN":
         """ Parse a single tabular output row from dbCAN. """
 
-        columns = [split_hmm, int, str, int, float, int, int, int, int, float]
-        line = line.strip().split('\t')
+        columns = ["hmm", "hmm_len", "seqid", "query_len", "evalue",
+                   "hmm_from", "hmm_to", "ali_from", "ali_to", "coverage"]
 
-        if len(columns) != len(line):
+        sline = line.strip().split('\t')
+
+        if len(columns) != len(sline):
             msg = "Wrong number of columns. Found {}, expected {}."
-            raise LineParseError(msg.format(len(line), len(columns)))
+            raise LineParseError(msg.format(len(sline), len(columns)))
 
-        output = []
-        for i, type_fn in enumerate(columns):
-            try:
-                output.append(type_fn(line[i]))
-            except IndexError:
-                # This shouldn't happen because of previous check
-                msg = "Couldn't parse file as dbcan format, missing column."
-                raise LineParseError(msg)
-            except ValueError:
-                msg = "Illegal value '{}' received in column {}."
-                raise LineParseError(msg.format(line[i], i + 1))
-        return cls(*output)
+        output = dict(zip(columns, sline))
+        hmm = split_hmm(output["hmm"])
+        hmm_len = parse_str_as_int(output["hmm_len"], "hmm_len")
+        seqid = output["seqid"]
+        query_len = parse_str_as_int(output["query_len"], "query_len")
+        evalue = parse_str_as_float(output["evalue"], "evalue")
+        hmm_from = parse_str_as_int(output["hmm_from"], "hmm_from")
+        hmm_to = parse_str_as_int(output["hmm_to"], "hmm_to")
+        ali_from = parse_str_as_int(output["ali_from"], "ali_from")
+        ali_to = parse_str_as_int(output["ali_to"], "ali_to")
+        coverage = parse_str_as_float(output["coverage"], "coverage")
+
+        return cls(hmm, hmm_len, seqid, query_len, evalue, hmm_from, hmm_to,
+                   ali_from, ali_to, coverage)
 
     @classmethod
-    def from_file(cls, handle):
+    def from_file(cls, handle: TextIO) -> Iterator["DBCAN"]:
         """ Parse a DBCAN file into generator of rows. """
 
         for line_number, line in enumerate(handle, 1):
@@ -153,7 +199,7 @@ class DBCAN(NamedTuple):
             try:
                 parsed = cls.from_string(line)
             except LineParseError as e:
-                raise ParseError(handle.name, line_number, e.msg)
+                raise ParseError(handle.name, line_number, e.message)
 
             yield parsed
         return
@@ -173,7 +219,12 @@ class HMMER(NamedTuple):
     coverage: float
 
     @classmethod
-    def from_file(cls, handle, format="hmmer3-text", version=Version.latest()):
+    def from_file(
+        cls,
+        handle: TextIO,
+        format: str = "hmmer3-text",
+        version: Union[str, int, Version] = Version.latest()
+    ) -> Iterator["HMMER"]:
         """ Processes HMMER output in a similar way to dbCAN hmmscan-parser.sh.
 
         There are two main HMMER output types, the plaintext output and the
@@ -192,6 +243,9 @@ class HMMER(NamedTuple):
         generator -- A generator yielding named tuples corresponding to lines.
         """
 
+        # This should never be raised at runtime, but avoids foot shooting
+        # while writing code.
+        assert format in ("hmmer3-text", "hmmer3-domtab")
         version = Version.from_other(version)
 
         # This is the threshold used by dbcan to determine if to matches are
@@ -245,11 +299,12 @@ class HMMER(NamedTuple):
             ).format(format)
 
             if hasattr(handle, "name"):
-                name = handle.name
+                name: Optional[str] = handle.name
             else:
                 name = None
 
             raise ParseError(name, None, msg)
+
         except KeyError as e:
             msg = (
                 "The file appears to be a searched against a different "
@@ -268,7 +323,13 @@ class HMMER(NamedTuple):
         return
 
     @classmethod
-    def _get_hsp(cls, query, hit, hsp, hmm_lens):
+    def _get_hsp(
+        cls,
+        query: QueryResult,
+        hit: Hit,
+        hsp: HSP,
+        hmm_lens: Dict[str, int]
+    ) -> "HMMER":
         """ Construct a record from a biopython SearchIO tree. """
 
         hmm = split_hmm(hit.id)
@@ -291,7 +352,10 @@ class HMMER(NamedTuple):
         )
 
     @staticmethod
-    def _distinct_matches(matches, overlap_thres):
+    def _distinct_matches(
+        matches: Sequence["HMMER"],
+        overlap_thres: float
+    ) -> List["HMMER"]:
         # Accumulate winners into a list.
         winners = list()
 
@@ -340,7 +404,7 @@ class HMMER(NamedTuple):
         return winners
 
     @staticmethod
-    def _filter_significant(match):
+    def _filter_significant(match: "HMMER") -> bool:
         """ Select significant alignments based on evalues and coverage.
 
         dbCAN uses a threshold of 1e-5 for alignments over 80 AA

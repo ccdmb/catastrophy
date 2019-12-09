@@ -19,6 +19,7 @@ __pycache__/
 .eggs/**
 
 **/.ipynb_checkpoints
+.mypy_cache
 
 # due to using tox and pytest
 .tox

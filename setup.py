@@ -83,7 +83,7 @@ setup(
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
-        'dev': ['check-manifest', 'scipy', 'scikit-learn',
+        'dev': ['check-manifest', 'mypy', 'scipy', 'scikit-learn',
                 'jupyter', 'matplotlib', 'seaborn'],
         'test': ['coverage', "pytest"],
     },
@@ -101,7 +101,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'catastrophy=catas:main',
+            'catastrophy=catas.main:main',
         ],
     },
 )
