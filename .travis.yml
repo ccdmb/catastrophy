@@ -6,11 +6,13 @@ python:
 - '3.7'
 - '3.8'
 before_install:
+- echo -e "machine github.com\n  login $GITHUB_TOKEN" > ~/.netrc
 - git lfs pull
 install:
 - pip install biopython${BIOPYTHON_VERSION} numpy${NUMPY_VERSION}
 - pip install ".[test,dev]"
 git:
+  depth: false
   lfs_skip_smudge: true
 script:
 - pytest
