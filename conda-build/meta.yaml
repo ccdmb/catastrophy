@@ -1,0 +1,53 @@
+{% set name = "catastrophy" %}
+{% set url = "https://github.com/ccdmb/catastrophy" %}
+{% set description = "A fungal trophy classifier based on CAZymes" %}
+
+{% set data = load_setup_py_data() %}
+
+package:
+  name: "{{ name | lower }}"
+  version: "{{ data['version'] }}"
+
+source:
+  path: "../"
+
+build:
+  entry_points:
+    - catastrophy=catas.main:main
+  script: "{{ PYTHON }} setup.py install --single-version-externally-managed --record=record.txt"
+
+requirements:
+  host:
+    - python {{ python }}
+    - biopython >=1.70
+    - numpy
+    - pip
+  run:
+    - python
+    - biopython >=1.70
+    - numpy
+
+test:
+  imports:
+    - catas
+    - catas.data
+    - test
+  commands:
+    - catastrophy --help
+  requires:
+    - pytest
+
+about:
+  home: "{{ url }}"
+  license: BSD
+  license_family: BSD
+  license_file: "LICENSE"
+  summary: "{{ description }}"
+  doc_url: "{{ url }}"
+  dev_url: "{{ url }}"
+
+extra:
+  maintainers:
+    - Darcy Jones <darcy.a.jones@postgrad.curtin.edu.au>
+  recipe-maintainers:
+    - darcyabjones

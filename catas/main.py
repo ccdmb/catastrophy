@@ -55,11 +55,11 @@ def main():
         print(e.message, file=sys.stderr)
         sys.exit(e.errno)
 
-    infile_names = [f.name for f in args.inhandles]
+    infile_names = [f.name for f in args.infile]
 
     if args.labels is None:
         labels = infile_names
-    elif len(args.labels) != len(args.inhandles):
+    elif len(args.labels) != len(args.infile):
         msg = (
             "argument labels and inhandles: \n"
             "When specified, the number of labels must be the same as the "

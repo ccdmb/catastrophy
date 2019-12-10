@@ -65,7 +65,6 @@ def cli(prog: str, args: List[str]) -> argparse.Namespace:
 
     parser.add_argument(
         "infile",
-        dest="inhandles",
         nargs="+",
         type=argparse.FileType('r'),
         help=(

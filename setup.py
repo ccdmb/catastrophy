@@ -29,7 +29,7 @@ setup(
     long_description_content_type="text/markdown",
 
     # The project's main homepage.
-    url='https://bitbucket.org/ccdm-curtin/catastrophy',
+    url='https://github.com/ccdmb/catastrophy',
 
     # Author details
     author='Darcy Jones',
@@ -62,9 +62,6 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(),
 
-    setup_requires=['pytest-runner'],
-    tests_require=['pytest'],
-
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
@@ -74,7 +71,7 @@ setup(
     # The way that the PCA model is stored is not necessarily stable across
     # versions of scikit-learn, so I have to keep it fixed.
     install_requires=[
-        'numpy>=1.15.0',
+        'numpy>=1.11.0',
         'biopython>=1.70',
         ],
 

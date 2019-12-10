@@ -17,6 +17,7 @@ __pycache__/
 *.so
 *~
 .eggs/**
+conda-build/build
 
 **/.ipynb_checkpoints
 .mypy_cache
