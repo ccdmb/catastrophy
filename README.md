@@ -1,10 +1,8 @@
 # CATAStrophy
 
 [![PyPI version](https://badge.fury.io/py/catastrophy.svg)](https://badge.fury.io/py/catastrophy)
-[![Anaconda-Server Badge](https://anaconda.org/darcyabjones/catastrophy/badges/installer/conda.svg)](https://conda.anaconda.org/darcyabjones)
+[![Anaconda-Server Badge](https://anaconda.org/darcyabjones/catastrophy/badges/version.svg)](https://anaconda.org/darcyabjones/catastrophy)
 [![Build Status](https://travis-ci.org/ccdmb/catastrophy.svg?branch=master)](https://travis-ci.org/ccdmb/catastrophy)
-[![Anaconda-Server Badge](https://anaconda.org/darcyabjones/catastrophy/badges/license.svg)](https://anaconda.org/darcyabjones/catastrophy)
-
 
 <img src="https://raw.githubusercontent.com/ccdmb/catastrophy/master/catastrophy_hero.png" width=200 />
 
