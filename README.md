@@ -1,9 +1,12 @@
 # CATAStrophy
 
 [![PyPI version](https://badge.fury.io/py/catastrophy.svg)](https://badge.fury.io/py/catastrophy)
+[![Anaconda-Server Badge](https://anaconda.org/darcyabjones/catastrophy/badges/installer/conda.svg)](https://conda.anaconda.org/darcyabjones)
 [![Build Status](https://travis-ci.org/ccdmb/catastrophy.svg?branch=master)](https://travis-ci.org/ccdmb/catastrophy)
+[![Anaconda-Server Badge](https://anaconda.org/darcyabjones/catastrophy/badges/license.svg)](https://anaconda.org/darcyabjones/catastrophy)
 
-<img src="catastrophy_hero.png" width=200 />
+
+<img src="https://raw.githubusercontent.com/ccdmb/catastrophy/master/catastrophy_hero.png" width=200 />
 
 CATAStrophy is a classification method for describing lifestyles/trophic characteristics
 of filamentous plant pathogens using carbohydrate-active enzymes (CAZymes).
@@ -26,18 +29,25 @@ This is useful when evaluating your organism, because it might have characterist
 ## Installing
 
 CATAStrophy is a python program which can be used as a python module or via a command-line interface.
-It can be installed from PyPI <https://pypi.org/project/catastrophy/> using [pip](https://pip.pypa.io/en/stable/).
+It can be installed from PyPI <https://pypi.org/project/catastrophy/> using [pip](https://pip.pypa.io/en/stable/), or from anaconda <https://anaconda.org/darcyabjones/catastrophy> using [conda](https://docs.conda.io/en/latest/).
 
-It is tested to work with python 3.6+, and it depends on [numpy](http://www.numpy.org/) and [BioPython](https://biopython.org/).
+Users that are less familiar with python and pip might like to read our [INSTALL.md](INSTALL.md) document, which explains things in more detail, including where this will be installed and using virtual environments.
+For details on installing and using conda see their [getting-started guide](https://docs.conda.io/projects/conda/en/latest/user-guide/overview.html).
+
+CATAStrophy is tested to work with python 3.6+, and it depends on [numpy](http://www.numpy.org/) and [BioPython](https://biopython.org/).
 
 To install CATAStrophy and dependencies with pip:
 
 ```bash
+# Windows users may need to subtitute "Python" instead of "python3"
 python3 -m pip install --user catastrophy
 ```
 
-Users that are less familiar with python might like to read our [INSTALL.md](INSTALL.md) document, which explains things in more detail, including where this will be installed and using virtual environments.
+To install CATAStrophy and dependencies using conda:
 
+```bash
+conda install -c darcyabjones catastrophy
+```
 
 ## Using CATAStrophy
 
