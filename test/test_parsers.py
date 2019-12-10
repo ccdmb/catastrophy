@@ -8,7 +8,9 @@ from catas.parsers import DBCAN
 
 @pytest.mark.parametrize("hmm,exp", [
     ("GH80.hmm", "GH80"),
-    ("AC1.hmm", "AC1")
+    ("AC1.hmm", "AC1"),
+    ("AC1.phmm", "AC1"),
+    ("AC1h.hmm", "AC1h")
 ])
 def test_split_hmm(hmm, exp):
     result = split_hmm(hmm)

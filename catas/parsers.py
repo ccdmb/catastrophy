@@ -1,5 +1,6 @@
 from io import StringIO
 from enum import Enum
+import re
 
 from typing import NamedTuple
 from typing import TextIO, BinaryIO
@@ -17,6 +18,9 @@ from Bio.SearchIO._model.hsp import HSP
 
 from catas.data import Version
 from catas.data import hmm_lengths
+
+
+REGEX = re.compile(r"\.p?hmm")
 
 
 class FileType(Enum):
@@ -122,7 +126,7 @@ def decode_object(
 
 
 def split_hmm(string: str) -> str:
-    return str(string).rstrip(".hmm")
+    return REGEX.sub("", str(string))
 
 
 def parse_str_as_int(val: str, column: str) -> int:
@@ -245,7 +249,7 @@ class HMMER(NamedTuple):
 
         # This should never be raised at runtime, but avoids foot shooting
         # while writing code.
-        assert format in ("hmmer3-text", "hmmer3-domtab")
+        assert format in ("hmmer3-text", "hmmscan3-domtab")
         version = Version.from_other(version)
 
         # This is the threshold used by dbcan to determine if to matches are

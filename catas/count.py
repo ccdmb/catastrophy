@@ -16,7 +16,7 @@ from catas.matrix import Matrix
 from catas.parsers import HMMER, DBCAN
 
 
-class HMMException(Exception):
+class HMMError(Exception):
 
     """ Requested an HMM that doesn't exist in this version of dbCAN. """
 
@@ -68,7 +68,7 @@ def cazy_counts(
 
     invalid_hmms = [k for k in these_hmms.keys() if k not in required_cols]
     if len(invalid_hmms) > 0:
-        raise HMMException(invalid_hmms)
+        raise HMMError(invalid_hmms)
 
     row = np.zeros(len(required_cols), dtype=np.int)
 

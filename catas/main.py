@@ -6,6 +6,7 @@ from typing import TextIO
 
 from catas.predict import predict
 from catas.count import cazy_counts_multi
+from catas.count import HMMError
 from catas import parsers
 from catas.parsers import FileType
 from catas.parsers import ParseError
@@ -73,7 +74,7 @@ def main():
 
     try:
         runner(
-            args.inhandles,
+            args.infile,
             args.outhandle,
             labels,
             args.file_format,
@@ -90,6 +91,15 @@ def main():
 
         print("{}\n{}".format(header, e.message), file=sys.stderr)
         sys.exit(EXIT_INPUT_FORMAT)
+
+    except HMMError as e:
+        msg = (
+            "Encountered an hmm that wasn't present in the training data.\n"
+            f"Offending HMMs were: {', '.join(e.hmms)}"
+        )
+        print(msg, file=sys.stderr)
+        sys.exit(EXIT_INPUT_FORMAT)
+        pass
 
     except OSError as e:
         msg = (
