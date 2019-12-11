@@ -1,10 +1,11 @@
+<img src="https://raw.githubusercontent.com/ccdmb/catastrophy/master/catastrophy_hero.png" width=200 />
+
 # CATAStrophy
 
 [![PyPI version](https://badge.fury.io/py/catastrophy.svg)](https://badge.fury.io/py/catastrophy)
 [![Anaconda-Server Badge](https://anaconda.org/darcyabjones/catastrophy/badges/version.svg)](https://anaconda.org/darcyabjones/catastrophy)
 [![Build Status](https://travis-ci.org/ccdmb/catastrophy.svg?branch=master)](https://travis-ci.org/ccdmb/catastrophy)
 
-<img src="https://raw.githubusercontent.com/ccdmb/catastrophy/master/catastrophy_hero.png" width=200 />
 
 CATAStrophy is a classification method for describing lifestyles/trophic characteristics
 of filamentous plant pathogens using carbohydrate-active enzymes (CAZymes).
@@ -14,7 +15,7 @@ CAZyme Assisted Training And Sorting.
 CATAStrophy takes HMMER3 files from searches against the [dbCAN](http://bcb.unl.edu/dbCAN2/) CAZyme database
 as input and returns a pseudo-probabilities called the relative centroid distance (RCD) of trophic class memberships for each file.
 
-To "train" this models, we performed principal component analysis (PCA) on the frequencies of CAZymes for a set of curated proteomes with literature support for their trophic lifestyles.
+To train these models, we performed principal component analysis (PCA) on the frequencies of CAZymes for a set of curated proteomes with literature support for their trophic lifestyles.
 For each class in our classification system, we find the center/geometric mean of the class in the first 16 principal components.
 
 New proteomes are classified by transforming the CAZyme frequencies using the same PCA loadings as in the training set.
@@ -49,16 +50,15 @@ conda install -c darcyabjones catastrophy
 
 ## Using CATAStrophy
 
-The to run CATAStrophy you need to supply the input files and where to put the output.
+To run CATAStrophy you need to supply the input files and where to put the output.
 Catastrophy uses [HMMER3](http://hmmer.org/) `hmmscan` searches against dbCAN as input.
-
 Either the plain text (stdout) and "domain table" (`--domtblout`) can be used.
 
-The easiest way to get a file like this is to annotate your proteome using
+The easiest way to get a HMMER3 plain text file is to annotate your proteome using
 the dbCAN online tool at <http://bcb.unl.edu/dbCAN2/blast.php> (make sure the HMMER tool is selected to run), and
 save the HMMER3 raw text (Select the HMMER tab, then "Download Raw HMMER output") results locally.
 
-> **WARNING**: Before you run any dbCAN searches, please read the section below on database versions.
+> **WARNING**: Before you run any dbCAN searches, please [read the section below on database versions](#database-versions).
 
 
 Assuming that you have this file locally you can run CATAStrophy like so:
@@ -93,7 +93,8 @@ CATAStrophy will attempt to check for mismatched model versions and alert you, b
 **It is very important that you match the database version with the CATAStrophy model.**
 
 To specify the version of the model to use, include the `-m/--model`
-flag with one of the valid options (see `catastrophy -h` for the available model versions).
+flag with one of the valid options (`v5`, `v6`, or `v7`;see `catastrophy -h` for the available model versions in your installation).
+
 
 ```bash
 catastrophy --model v7 -o my_catastrophy_results.csv my_dbcan_results.txt
@@ -105,7 +106,7 @@ The model versions just reflect the version of dbCAN that the model was trained 
 >> The dbCAN2 web-server will always search against the latest version of dbCAN.
 >> To find the latest version number, go to <http://bcb.unl.edu/dbCAN2/download/Databases/> and find the file with the highest number with the pattern `dbCAN-HMMdb-V8.txt`.
 >> If we haven't yet trained a model for the latest version of dbCAN please contact us.
->> Otherwise you may need to run HMMER yourself.
+>> Otherwise you may need to [run HMMER yourself](#running-dbcan-locally).
 
 
 ### Output
