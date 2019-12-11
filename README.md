@@ -55,13 +55,16 @@ Catastrophy uses [HMMER3](http://hmmer.org/) `hmmscan` searches against dbCAN as
 Either the plain text (stdout) and "domain table" (`--domtblout`) can be used.
 
 The easiest way to get a file like this is to annotate your proteome using
-the dbCAN online tool at <http://cys.bios.niu.edu/dbCAN2/>, and
-save the HMMER3 raw text results locally.
+the dbCAN online tool at <http://bcb.unl.edu/dbCAN2/blast.php> (make sure the HMMER tool is selected to run), and
+save the HMMER3 raw text (Select the HMMER tab, then "Download Raw HMMER output") results locally.
+
+> **WARNING**: Before you run any dbCAN searches, please read the section below on database versions.
+
 
 Assuming that you have this file locally you can run CATAStrophy like so:
 
 ```bash
-catastrophy -i my_dbcan_results.txt -f hmmer -o my_catastrophy_results.csv
+catastrophy -f hmmer -o my_catastrophy_results.csv my_dbcan_results.txt
 ```
 
 The output will be a tab-delimited file (which you can open in excel) with
@@ -69,12 +72,62 @@ the first row containing column headers and subsequent rows containing a
 label and the pseudo-probabilities of membership to each trophic class.
 The `-f/--format` flag specified the format of the input file and defaults to `hmmer`.
 
-NOTE: In this document I use the `.csv` extension to mean any plain text tabular
-format because excel doesn't recognise alternate extensions like `.tsv`.
-The domain table output is actually space delimited and the catastrophy
-output is a tab delimited file.
 
-By default the filenames are used as the label but you can explicitly specify
+Multiple input files can be provided using spaces to separate them:
+
+```bash
+catastrophy -i dbcan_1.txt dbcan_2.txt -o my_catastrophy_results.csv
+```
+
+Note that standard bash "globbing" patterns expand into a space delimited array,
+so you can easily use `*` or subshells if you like (eg. `$(find . -type f -name *.txt)` etc).
+
+
+### Database versions
+
+CATAStrophy models are specific to the different versions of [dbCAN](http://bcb.unl.edu/dbCAN2/).
+CAZyme family frequencies are at the core of the CATAStrophy method, so adding, removing, or changing the database HMMs will necessarily affect the results.
+
+CATAStrophy will attempt to check for mismatched model versions and alert you, but could potentially give inaccurate results if a mismatch isn't detected.
+
+**It is very important that you match the database version with the CATAStrophy model.**
+
+To specify the version of the model to use, include the `-m/--model`
+flag with one of the valid options (see `catastrophy -h` for the available model versions).
+
+```bash
+catastrophy --model v7 -o my_catastrophy_results.csv my_dbcan_results.txt
+```
+
+The model versions just reflect the version of dbCAN that the model was trained against (i.e. dbCAN 7 would use CATAStrophy model v7).
+
+>> NOTE:
+>> The dbCAN2 web-server will always search against the latest version of dbCAN.
+>> To find the latest version number, go to <http://bcb.unl.edu/dbCAN2/download/Databases/> and find the file with the highest number with the pattern `dbCAN-HMMdb-V8.txt`.
+>> If we haven't yet trained a model for the latest version of dbCAN please contact us.
+>> Otherwise you may need to run HMMER yourself.
+
+
+### Output
+
+Output will be as a tab-separated values file, with each input file as a row
+and each trophic class as a column.
+
+For example, for nomenclature1 the table might look like.
+
+```bash
+catastrophy infile1.txt infile2.txt
+```
+
+| label | saprotroph | monomertroph1 | monomertroph2 | monomertroph3 | mesotroph_intracellular | mesotroph_extracellular | polymertroph_narrow | polymertroph_broad | vasculartroph |
+| :---  | ---:       | ---:          | ---:          | ---:          | ---:                    | ---:                    | ---:                | ---:               | ---:          |
+| infile1.txt | 0.1 | 0.1 | 0.9 | 1 | 0.3 | 0.3 | 0.1 | 0.1 | 0.1 |
+| infile2.txt | 0.1 | 0.1 | 0.2 | 0.2 | 0.8 | 0.4 | 0.1 | 0.6 | 0.1 |
+
+
+### Labels
+
+By default the filenames are used as the label in the output, but you can explicitly specify
 a label using the `-l/--label` flag. The output from the command above will
 have two lines, one containing the column headers and the other containing
 results for the file `my_dbcan_results.txt` which will have the label
@@ -90,68 +143,72 @@ catastrophy -i my_dbcan_results.txt -l prettier_label -o my_catastrophy_results.
 Which would give the output line for `my_dbcan_results.txt` the label "prettier_label".
 Labels cannot contain spaces unless you explicitly escape them (quotes will not work).
 
-Multiple input files can be provided using spaces to separate them:
+To label multiple input files you can again supply the label flag with the space separated labels.
 
 ```bash
-catastrophy -i dbcan_1.txt dbcan_2.txt -o my_catastrophy_results.csv
-```
-
-The output from this will contain three rows, one containing the headers and
-the other two containing the results for the files `dbcan_1.txt` and `dbcan_2.txt`
-which will be labelled by the filenames.
-Note that standard bash "globbing" patterns expand into a space delimited array,
-so you can easily use `*` or subshells if you like (eg. `$(find . -type f -name *.txt)` etc).
-To explicitly label these files you can again supply the label flag with the space separated labels.
-
-```bash
-catastrophy -i dbcan_1.txt dbcan_2.txt -l label1 label2 -o my_catastrophy_results.csv
+catastrophy -l label1 label2 -o my_catastrophy_results.csv dbcan_1.txt dbcan_2.txt
 ```
 
 Note that if you do use the label flag, the number of labels **must** be the same as the number of input files.
 
 
-Finally because dbCAN is updated as new CAZyme classes are created, merged,
-or split, catastrophy has a final parameter that allows you to select the
-model trained on a specific dbCAN version (starting from version 5).
-
-To specify the version of the model to use, include the `-m/--model`
-flag with one of the valid options (see `catastrophy -h` for the options).
+If you provide the `--label` as the last argument before the input positional arguments (`infiles`) you may need to use `--`
+to tell when you're done and that infiles should start.
+This is because both `--label` and infiles can take multiple arguments.
 
 ```bash
-catastrophy -m v5 -i my_dbcan_results.txt -o my_catastrophy_results.csv
-```
+catastrophy -l mylabel1 mylabel2 -o results.csv infile1.txt infile2.txt  # Fine
+catastrophy -o results.csv -l mylabel1 mylabel2 infile1.txt infile2.txt  # Dangerous
 
-The model versions just reflect the version of dbCAN that the model was trained against.
+# Do this instead to tell where labels stops and infiles starts.
+catastrophy -o results.csv -l mylabel1 mylabel2 -- infile1.txt infile2.txt
+```
 
 
 ## Running dbCAN locally
 
-If you have lots of proteomes to run (or you're a command-line snob like me)
-then you probably don't want to use the web interface.
+If you have lots of proteomes to run or CATAStrophy hasn't been trained on the latest version of dbCAN yet, then you probably don't want to use the web interface.
 In that case you can run the dbCAN pipeline locally using [HMMER](http://hmmer.org/).
 
-The instructions for running the HMMER and the dbCAN parser can be found here
-<http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-old@UGA/> in the `readme.txt` file.
-It isn't the most friendly documentation though so i'll repeat it here
-(assuming that you've installed [HMMER](http://hmmer.org/) and are using a unix-like OS).
+The following steps assume that you've installed [HMMER](http://hmmer.org/) and are using a unix-like OS.
 
-First download the HMMs and the parser script.
+#### Step 1. Download dbCAN.
+
+We first need to download the dbCAN database (HMMs) to search against.
+You will need to make sure that you download a version of dbCAN that it compatible with CATAStrophy.
+To get a list of databases versions that is supported, you can use the `--help` flag and look for the `--nomenclature` help section.
 
 ```bash
-cd <a directory that you can work in>
-
-mkdir -p ./data
-wget -qc -P ./data http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V7.txt
+catastrophy --help
 ```
 
-Note that I'm downloading a specific version of the database rather that just the latest one.
+Once you've identified the version you want to use, download the database from <http://bcb.unl.edu/dbCAN2/download/Databases/>.
+Alternatively you can use the bash commands below to download it, setting the value of `DBCAN_VERSION` to the desired version (NB. the full url **must** match one of the file names in <http://bcb.unl.edu/dbCAN2/download/Databases/>).
+
+
+```bash
+DBCAN_VERSION="V7"
+
+mkdir -p ./data
+wget -qc -P ./data "http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-${DBCAN_VERSION}.txt"
+```
+
+
+#### Step 2. Prepare the dbCAN HMM database
+
 Now we can convert the file containing HMM definitions into a HMMER database.
 
 ```bash
 hmmpress ./data/dbCAN-HMMdb-V7.txt
 ```
 
-Now we can run HMMER to find matches to the dbCAN HMMs.
+This will create several files at the same location as the `.txt` file, so it's good to do this
+inside a separate folder (as we've done here).
+
+
+#### Step 3. Search your proteomes against the dbCAN HMMs.
+
+Now we can run HMMER `hmmscan` to find matches to the dbCAN HMMs.
 For demonstration, we'll save both the domain table and plain text outputs.
 
 ```bash
@@ -163,11 +220,19 @@ text output is in `my_fasta_hmmer.txt`.
 Either one of these files is appropriate for use with CATAStrophy, (just
 remember to specify the `--format` flag).
 
+
+#### Step 4. Classify your proteomes using CATAStrophy.
+
+Now we can finally find out what CATAStrophy thinks our organism is!
+
+To use the files created in step 3, you can run either of the following commands.
+Remember to match the version of dbCAN with the model version in catastrophy.
+
 ```bash
-catastrophy -m v7 -i my_fasta_hmmer.csv --format domtab -o my_catastrophy_results.csv
+catastrophy --model v7 --format domtab -o my_catastrophy_results.csv my_fasta_hmmer.csv
 
 # or
-catastrophy -m v7 -i my_fasta_hmmer.txt --format hmmer -o my_catastrophy_results.csv
+catastrophy --model v7 --format hmmer -o my_catastrophy_results.csv my_fasta_hmmer.txt
 ```
 
 
@@ -198,30 +263,4 @@ catastrophy -o results.csv infile1.txt infile2.txt
 
 # To take input from stdin use a "-"
 cat infile1.txt | catastrophy - > results.csv
-
-# If you provide labels you may need to use "--"
-# to tell when you're done and that infiles should start.
-# This is because both "--label" and infiles can take multiple arguments.
-
-catastrophy -l mylabel1 mylabel2 -o results.csv infile1.txt infile2.txt  # Fine
-catastrophy -o results.csv -l mylabel1 mylabel2 infile1.txt infile2.txt  # Dangerous
-# Do this instead to tell where labels stops and infiles starts.
-catastrophy -o results.csv -l mylabel1 mylabel2 -- infile1.txt infile2.txt
 ```
-
-
-## Output
-
-Output will be as a tab-separated values file, with each input file as a row
-and each trophic class as a column.
-
-For example, for nomenclature1 the table might look like.
-
-```bash
-catastrophy infile1.txt infile2.txt
-```
-
-| label | saprotroph | biotroph 1 | biotroph 2 | biotroph 3 | mesotroph - internal | mesotroph - external | necrotroph - narrow | necrotroph - broad | wilt |
-| :---  | ---:       | ---:       | ---:       | ---:       | ---:                 | ---:                 | ---:                | ---:               | ---: |
-| infile1.txt | 0.1 | 0.1 | 0.9 | 1 | 0.3 | 0.3 | 0.1 | 0.1 | 0.1 |
-| infile2.txt | 0.1 | 0.1 | 0.2 | 0.2 | 0.8 | 0.4 | 0.1 | 0.6 | 0.1 |
