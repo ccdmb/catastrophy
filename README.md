@@ -87,14 +87,12 @@ so you can easily use `*` or subshells if you like (eg. `$(find . -type f -name 
 
 CATAStrophy models are specific to the different versions of [dbCAN](http://bcb.unl.edu/dbCAN2/).
 CAZyme family frequencies are at the core of the CATAStrophy method, so adding, removing, or changing the database HMMs will necessarily affect the results.
-
 CATAStrophy will attempt to check for mismatched model versions and alert you, but could potentially give inaccurate results if a mismatch isn't detected.
 
 **It is very important that you match the database version with the CATAStrophy model.**
 
 To specify the version of the model to use, include the `-m/--model`
-flag with one of the valid options (`v5`, `v6`, or `v7`;see `catastrophy -h` for the available model versions in your installation).
-
+flag with one of the valid options (`v4`, `v5`, `v6`, `v7`, or `v8`;see `catastrophy -h` for the available model versions in your installation).
 
 ```bash
 catastrophy --model v7 -o my_catastrophy_results.csv my_dbcan_results.txt
@@ -108,27 +106,29 @@ The model versions just reflect the version of dbCAN that the model was trained 
 >> If we haven't yet trained a model for the latest version of dbCAN please contact us.
 >> Otherwise you may need to [run HMMER yourself](#running-dbcan-locally).
 
+The CATAStrophy paper used version 6 of dbCAN, you may get slightly different results with different database versions.
+
 
 ### Output
 
-Output will be as a tab-separated values file, with each input file as a row
-and each trophic class as a column.
+Output will be as a tab-separated values file, with the columns for the filename, nomenclature, nomenclature class, and the RCD value.
+Each possible combination of label, nomenclature and class is listed in a [long format](https://en.wikipedia.org/wiki/Wide_and_narrow_data).
 
-For example, for nomenclature1 the table might look like.
+For example, part of the table might look like this:
 
 ```bash
 catastrophy infile1.txt infile2.txt
 ```
 
-| label | saprotroph | monomertroph1 | monomertroph2 | monomertroph3 | mesotroph_intracellular | mesotroph_extracellular | polymertroph_narrow | polymertroph_broad | vasculartroph |
-| :---  | ---:       | ---:          | ---:          | ---:          | ---:                    | ---:                    | ---:                | ---:               | ---:          |
-| infile1.txt | 0.1 | 0.1 | 0.9 | 1 | 0.3 | 0.3 | 0.1 | 0.1 | 0.1 |
-| infile2.txt | 0.1 | 0.1 | 0.2 | 0.2 | 0.8 | 0.4 | 0.1 | 0.6 | 0.1 |
+| label       | nomenclature | class | value |
+| :---        | ---:         | ---:  | ---:  |
+| infile1.txt | nomenclature1 | saprotroph | 0.9 |
+| infile2.txt | nomenclature1 | monomertroph1 | 0.2 |
 
 
 ### Labels
 
-By default the filenames are used as the label in the output, but you can explicitly specify
+By default the filenames (including directories and extensions) are used as the label in the output, but you can explicitly specify
 a label using the `-l/--label` flag. The output from the command above will
 have two lines, one containing the column headers and the other containing
 results for the file `my_dbcan_results.txt` which will have the label
@@ -170,6 +170,8 @@ catastrophy -o results.csv -l mylabel1 mylabel2 -- infile1.txt infile2.txt
 
 If you have lots of proteomes to run or CATAStrophy hasn't been trained on the latest version of dbCAN yet, then you probably don't want to use the web interface.
 In that case you can run the dbCAN pipeline locally using [HMMER](http://hmmer.org/).
+
+There is a pipeline available at [https://github.com/ccdmb/catastrophy-pipeline](https://github.com/ccdmb/catastrophy-pipeline) that can automate much of the following steps for you.
 
 The following steps assume that you've installed [HMMER](http://hmmer.org/) and are using a unix-like OS.
 
@@ -249,8 +251,9 @@ Other optional parameters are below:
 | `-f`/`--format` | "hmmer_text" | The format that the input is provided in. All input files must be in the same format. HMMER raw (hmmer_text, default) and domain table (hmmer_domtab) formatted files are accepted. Files processed by the dbCAN formatter `hmmscan-parser.sh` are also accepted using the `dbcan` option. |
 | `-l`/`--label` | filenames | Label to give the prediction for the input file(s). Specify more than one label by separating them with a space. The number of labels should be the same as the number of input files.  By default, the filenames are used as labels. |
 | `-o`/`--outfile` | stdout | File path to write tab delimited output to. |
+| `-c`/`--counts` | Not written | Write the CAZyme counts to this tab delimited file. |
+| `-p`/`--pca` | Not written | Write the PCA results and best scoring RCD classes to this tab separated file. This will include the training data results in the table for comparison. Useful for plotting your data.
 | `-m`/`--model` | latest | The version of the model (matching the dbCAN database version) to use. The latest version is used by default. See `catastrophy -h` for list of valid options. |
-| `-m`/`--nomenclature` | nomenclature3 | The nomenclature type to use. Nomenclature1 is the classical symbiont, saprotroph, (hemi)biotroph, necrotroph system. Nomenclature2 separates wilts from necrotrophs, and considers symbionts as a class of biotroph. Nomenclature3 is the system proposed in the paper. See `catastrophy -h` for list of options.|
 
 
 Basic usage:
