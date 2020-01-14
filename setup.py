@@ -99,6 +99,7 @@ setup(
     entry_points={
         'console_scripts': [
             'catastrophy=catas.main:main',
+            'catastrophy-train=catas.train.main:main',
         ],
     },
 )

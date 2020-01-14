@@ -5,7 +5,6 @@ from typing import List
 
 from catas.parsers import FileType
 from catas.data import Version
-from catas.data import Nomenclature
 
 from catas import __version__
 
@@ -113,6 +112,26 @@ def cli(prog: str, args: List[str]) -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-c", "--counts",
+        dest="counts_filepath",
+        default=None,
+        type=str,
+        help="Write the counts table to a file.",
+    )
+
+    parser.add_argument(
+        "-p", "--pca",
+        dest="pca_handle",
+        default=None,
+        type=argparse.FileType('w'),
+        help=(
+            "Write the PCA output to a tsv file in addition to the RCDs. "
+            "This is useful for plotting the PCAs. "
+            "This output includes the training data."
+        )
+    )
+
+    parser.add_argument(
         "-m", "--model",
         dest="model_version",
         default=Version.latest(),
@@ -128,18 +147,13 @@ def cli(prog: str, args: List[str]) -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "-n", "--nomenclature",
-        dest="nomenclature",
-        default=Nomenclature.default(),
-        type=Nomenclature.from_string,
-        choices=list(Nomenclature),
+        "--model-file",
+        dest="model_file",
+        default=None,
+        type=argparse.FileType("rb"),
         help=(
-            "The nomenclature type to use. "
-            "Nomenclature1 is the classical symbiont, saprotroph, "
-            "(hemi)biotroph, necrotroph system. Nomenclature2 separates "
-            "wilts from necrotrophs, and considers symbionts as a class "
-            "of biotroph. Nomenclature3 is the system proposed in the "
-            "paper (default)."
+            "INTENDED FOR DEVELOPERS. "
+            "Instead of the packaged model versions, use this file instead."
         )
     )
 

@@ -53,7 +53,8 @@ class Matrix(object):
     @classmethod
     def concat(cls, dfs: Sequence["Matrix"]) -> "Matrix":
         """ Concatenate multiple matrices together by rows (ie. columns are
-        matched) """
+        matched)
+        """
 
         if len(dfs) == 0:
             return cls([], [], np.zeros((0, 0)))
@@ -87,26 +88,54 @@ class Matrix(object):
         columns = df.columns.tolist()
         return cls(rows, columns, df.values)
 
-    def write(self, handle: Union[str, BinaryIO, "pathlib.Path"]):
+    def as_dict_of_arrays(
+        self,
+        prefix: str = ""
+    ) -> Dict[str, np.array]:
+        return {
+            f"{prefix}arr": self.arr,
+            f"{prefix}rows": np.array(self.rows, dtype='U60'),
+            f"{prefix}columns": np.array(self.columns, dtype='U60'),
+        }
+
+    @classmethod
+    def from_dict_of_arrays(
+        cls,
+        doa: Mapping[str, np.array],
+        prefix: str = ""
+    ) -> "Matrix":
+        return cls(
+            doa[f"{prefix}rows"].tolist(),
+            doa[f"{prefix}columns"].tolist(),
+            doa[f"{prefix}arr"],
+        )
+
+    def write(
+        self,
+        handle: Union[str, BinaryIO, "pathlib.Path"],
+        prefix: str = ""
+    ):
         """ Writes matrix out as a numpy file. """
         np.savez(
             handle,
-            arr=self.arr,
-            rows=self.rows,
-            columns=self.columns
+            self.as_dict_of_arrays(prefix=prefix)
         )
         return
 
     @classmethod
-    def read(cls, handle: Union[str, BinaryIO, "pathlib.Path"]):
+    def read(
+        cls,
+        handle: Union[str, BinaryIO, "pathlib.Path"],
+        prefix: str = "",
+    ) -> "Matrix":
         """ Reads matrix from an numpy file. """
         f = np.load(handle, allow_pickle=False)
-        return cls(f["rows"].tolist(), f["columns"].tolist(), f["arr"])
+        return cls.from_dict_of_arrays(f)
 
     def write_tsv(
         self,
         filename: Union[str, TextIO],
-        rows_colname: str = "label"
+        rows_colname: str = "# label"
     ):
         """ Write a tsv formatted table from the matrix.
 

@@ -16,11 +16,8 @@ from Bio.SearchIO._model.query import QueryResult
 from Bio.SearchIO._model.hit import Hit
 from Bio.SearchIO._model.hsp import HSP
 
-from catas.data import Version
-from catas.data import hmm_lengths
 
-
-REGEX = re.compile(r"\.p?hmm")
+REGEX = re.compile(r"\.p?hmm$")
 
 
 class FileType(Enum):
@@ -66,29 +63,43 @@ class LineParseError(Exception):
 def parse(
     handle: TextIO,
     format: Union[str, FileType],
-    version: Union[str, int, Version] = Version.latest(),
+    hmm_lens: Optional[Dict[str, int]],
 ) -> Union[Iterator["HMMER"], Iterator["DBCAN"]]:
-    """ Wrapper that directs parsing bases on enum. """
+    """ Wrapper that directs parsing bases on enum.
 
-    version = Version.from_other(version)
+    Keyword arguments:
+    handle -- A file-like object to parse.
+    format -- The file-format that the handle is in, should be a FileType
+        object.
+    hmm_lens -- Required only for the HMMer formats. A dictionary mapping the
+        hmm names to the length of the HMM model.
+
+    Returns:
+    A generator over the parsed records.
+    Records will be either HMMER or DBCAN objects.
+    """
 
     if isinstance(format, str):
         format = FileType[format]
 
     if format == FileType.dbcan:
         return DBCAN.from_file(handle)
+
     elif format == FileType.hmmer_domtab:
+        assert hmm_lens is not None
         parsed = HMMER.from_file(
             handle,
             format="hmmscan3-domtab",
-            version=version,
+            hmm_lens=hmm_lens,
         )
         return parsed
+
     elif format == FileType.hmmer_text:
+        assert hmm_lens is not None
         return HMMER.from_file(
             handle,
             format="hmmer3-text",
-            version=version,
+            hmm_lens=hmm_lens,
         )
     else:
         raise ValueError((
@@ -226,8 +237,8 @@ class HMMER(NamedTuple):
     def from_file(
         cls,
         handle: TextIO,
+        hmm_lens: Dict[str, int],
         format: str = "hmmer3-text",
-        version: Union[str, int, Version] = Version.latest()
     ) -> Iterator["HMMER"]:
         """ Processes HMMER output in a similar way to dbCAN hmmscan-parser.sh.
 
@@ -250,14 +261,10 @@ class HMMER(NamedTuple):
         # This should never be raised at runtime, but avoids foot shooting
         # while writing code.
         assert format in ("hmmer3-text", "hmmscan3-domtab")
-        version = Version.from_other(version)
 
         # This is the threshold used by dbcan to determine if to matches are
         # the same.
         overlap_thres = 0.5
-
-        # Needed to find the coverage of hmms, some formats are missing this.
-        hmm_lens = hmm_lengths(version)
 
         # Parse the file using Biopython.
         matches = SearchIO.parse(handle, format=format)

@@ -8,18 +8,13 @@ for each database release. The latest version will always we the default one.
 from pkg_resources import resource_filename
 
 import json
+from os.path import join as pjoin
 from enum import Enum
-from collections import defaultdict
 
 from typing import Dict
 from typing import List
 from typing import Union
 from typing import TypeVar, Type
-
-import numpy as np
-
-from catas.matrix import Matrix
-
 
 T = TypeVar('T', bound="MyEnum")
 
@@ -52,240 +47,56 @@ class MyEnum(Enum):
 class Version(MyEnum):
     """ Supported DBCAN database versions. """
 
-    v4 = 1
-    v5 = 2
-    v6 = 3
-    v7 = 4
+    v4 = 4
+    v5 = 5
+    v6 = 6
+    v7 = 7
+    v8 = 8
 
     @classmethod
     def latest(cls) -> "Version":
-        return cls.v6
+        return cls.v8
 
 
-class Nomenclature(MyEnum):
-    """ All CATAStrophy nomenclatures. """
-
-    nomenclature1 = 1
-    nomenclature2 = 2
-    nomenclature3 = 3
-
-    @classmethod
-    def default(cls) -> "Nomenclature":
-        return cls.nomenclature3
-
-
-def models(
+def model_filepath(
     version: Union[str, int, Version] = Version.latest()
-) -> Dict[str, np.array]:
+) -> str:
     """ Loads PCA parameters. """
 
     # Handle strings as input instead of just enums.
     versionp = Version.from_other(version)
 
-    version_files = dict()
-    filelist = [
-        (Version.v4, "v4-20190311-model.npz"),
-        (Version.v5, "v5-20190311-model.npz"),
-        (Version.v6, "v6-20190311-model.npz"),
-        (Version.v7, "v7-20190311-model.npz"),
-    ]
+    version_files = {
+        Version.v4: resource_filename(__name__, "model_v4_20200114.npz"),
+        Version.v5: resource_filename(__name__, "model_v5_20200114.npz"),
+        Version.v6: resource_filename(__name__, "model_v6_20200114.npz"),
+        Version.v7: resource_filename(__name__, "model_v7_20200114.npz"),
+        Version.v8: resource_filename(__name__, "model_v8_20200114.npz"),
+    }
 
-    for vname, vfile in filelist:
-        version_files[vname] = resource_filename(__name__, vfile)
-
-    return np.load(version_files[versionp])
+    return version_files[versionp]
 
 
-def principle_components(
-    version: Union[str, int, Version] = Version.latest()
-) -> Matrix:
-    """ Loads files containing PCs for training data. """
+def nomenclatures_filepath() -> str:
+    """ Loads list containing names and correct order to display classes. """
 
-    # Handle strings as input instead of just enums.
-    versionp = Version.from_other(version)
-
-    version_files = dict()
-    filelist = [
-        (Version.v4, "v4-20190311-principle_components.npz"),
-        (Version.v5, "v5-20190311-principle_components.npz"),
-        (Version.v6, "v6-20190311-principle_components.npz"),
-        (Version.v7, "v7-20190311-principle_components.npz"),
-    ]
-
-    for vname, vfile in filelist:
-        version_files[vname] = resource_filename(__name__, vfile)
-
-    mat_raw = np.load(version_files[versionp])
-    mat = Matrix.read(version_files[versionp])
-
-    mat.nomenclature1 = mat_raw["nomenclature1"]
-    mat.nomenclature2 = mat_raw["nomenclature2"]
-    mat.nomenclature3 = mat_raw["nomenclature3"]
-    return mat
+    return resource_filename(__name__, "nomenclatures.json")
 
 
-def cazy_list(
-    version: Union[str, int, Version] = Version.latest()
-) -> List[str]:
-    """ Loads CAZY list of class names the in order that model was trained. """
+def nomenclatures() -> Dict[str, List[str]]:
+    """ Loads list containing names and correct order to display classes. """
 
-    # Handle strings as input instead of just enums.
-    versionp = Version.from_other(version)
+    filename = nomenclatures_filepath()
 
-    version_files = dict()
-    filelist = [
-        (Version.v4, "v4-20190311-cazy_list.json"),
-        (Version.v5, "v5-20190311-cazy_list.json"),
-        (Version.v6, "v6-20190311-cazy_list.json"),
-        (Version.v7, "v7-20190311-cazy_list.json"),
-    ]
-
-    for vname, vfile in filelist:
-        version_files[vname] = resource_filename(__name__, vfile)
-
-    with open(version_files[versionp], "r") as handle:
-        d = json.load(handle)
-
-    assert isinstance(d, list)
-    assert all(isinstance(di, str) for di in d)
-
-    return d
-
-
-def centroids(
-    version: Union[str, int, Version] = Version.latest(),
-    nomenclature: Union[str, int, Nomenclature] = Nomenclature.default()
-) -> Matrix:
-    """ Loads pandas dataframe containing centroids. """
-
-    # Handle strings as input instead of just enums.
-    versionp = Version.from_other(version)
-    nomenclaturep = Nomenclature.from_other(nomenclature)
-
-    files: Dict[Version, Dict[Nomenclature, str]] = defaultdict(dict)
-    filelist = [
-        (
-            Version.v4,
-            Nomenclature.nomenclature1,
-            "v4-20190311-nomenclature1-centroids.npz"
-        ),
-        (
-            Version.v4,
-            Nomenclature.nomenclature2,
-            "v4-20190311-nomenclature2-centroids.npz"
-        ),
-        (
-            Version.v4,
-            Nomenclature.nomenclature3,
-            "v4-20190311-nomenclature3-centroids.npz"
-        ),
-        (
-            Version.v5,
-            Nomenclature.nomenclature1,
-            "v5-20190311-nomenclature1-centroids.npz"
-        ),
-        (
-            Version.v5,
-            Nomenclature.nomenclature2,
-            "v5-20190311-nomenclature2-centroids.npz"
-        ),
-        (
-            Version.v5,
-            Nomenclature.nomenclature3,
-            "v5-20190311-nomenclature3-centroids.npz"
-        ),
-        (
-            Version.v6,
-            Nomenclature.nomenclature1,
-            "v6-20190311-nomenclature1-centroids.npz"
-        ),
-        (
-            Version.v6,
-            Nomenclature.nomenclature2,
-            "v6-20190311-nomenclature2-centroids.npz"
-        ),
-        (
-            Version.v6,
-            Nomenclature.nomenclature3,
-            "v6-20190311-nomenclature3-centroids.npz"
-        ),
-        (
-            Version.v7,
-            Nomenclature.nomenclature1,
-            "v7-20190311-nomenclature1-centroids.npz"
-        ),
-        (
-            Version.v7,
-            Nomenclature.nomenclature2,
-            "v7-20190311-nomenclature2-centroids.npz"
-        ),
-        (
-            Version.v7,
-            Nomenclature.nomenclature3,
-            "v7-20190311-nomenclature3-centroids.npz"
-        ),
-    ]
-
-    for vname, nname, vfile in filelist:
-        files[vname][nname] = resource_filename(__name__, vfile)
-
-    return Matrix.read(files[versionp][nomenclaturep])
-
-
-def hmm_lengths(
-    version: Union[str, int, Version] = Version.latest()
-) -> Dict[str, int]:
-    """ Loads dict object containing lengths of HMMs.
-
-    The raw HMMER output doesn't contain the length of the HMM, which we
-    need to compute coverage.
-    """
-
-    # Handle strings as input instead of just enums.
-    versionp = Version.from_other(version)
-
-    version_files = dict()
-    filelist = [
-        (Version.v4, "v4-20190311-hmm_lengths.json"),
-        (Version.v5, "v5-20190311-hmm_lengths.json"),
-        (Version.v6, "v6-20190311-hmm_lengths.json"),
-        (Version.v7, "v7-20190311-hmm_lengths.json"),
-    ]
-
-    for vname, vfile in filelist:
-        version_files[vname] = resource_filename(__name__, vfile)
-
-    with open(version_files[versionp], "r") as handle:
+    with open(filename, "r") as handle:
         d = json.load(handle)
 
     assert isinstance(d, dict)
-    assert all(isinstance(dk, str) for dk in d.keys())
-    assert all(isinstance(dv, int) for dv in d.values())
-    return d
 
+    for k, v in d.items():
+        assert isinstance(v, list)
+        assert all(isinstance(vi, str) for vi in v)
 
-def trophic_classes(
-    nomenclature: Union[str, int, Nomenclature] = Nomenclature.default()
-) -> List[str]:
-    """ Loads list containing names and correct order to display classes. """
-
-    nomenclaturep = Nomenclature.from_other(nomenclature)
-
-    files = dict()
-    filelist = [
-        (Nomenclature.nomenclature1, "nomenclature1-trophic_classes.json"),
-        (Nomenclature.nomenclature2, "nomenclature2-trophic_classes.json"),
-        (Nomenclature.nomenclature3, "nomenclature3-trophic_classes.json"),
-    ]
-
-    for nname, nfile in filelist:
-        files[nname] = resource_filename(__name__, nfile)
-
-    with open(files[nomenclaturep], "r") as handle:
-        d = json.load(handle)
-
-    assert isinstance(d, list)
-    assert all(isinstance(di, str) for di in d)
     return d
 
 
@@ -294,77 +105,31 @@ def sample_fasta() -> str:
     return resource_filename(__name__, "test_data.fasta")
 
 
-def test_dbcan(version: Union[str, int, Version] = Version.latest()) -> str:
-    # Handle strings as input instead of just enums.
-    versionp = Version.from_other(version)
-
-    version_files = dict()
-    filelist = [
-        (Version.v4, "v4-20190311-test_dbcan.csv"),
-        (Version.v5, "v5-20190311-test_dbcan.csv"),
-        (Version.v6, "v6-20190311-test_dbcan.csv"),
-        (Version.v7, "v7-20190311-test_dbcan.csv"),
-    ]
-
-    for vname, vfile in filelist:
-        version_files[vname] = resource_filename(__name__, vfile)
-
-    return version_files[versionp]
-
-
-def test_hmmer(version: Union[str, int, Version] = Version.latest()) -> str:
-    # Handle strings as input instead of just enums.
-    versionp = Version.from_other(version)
-
-    version_files = dict()
-    filelist = [
-        (Version.v4, "v4-20190311-test_hmmer.txt"),
-        (Version.v5, "v5-20190311-test_hmmer.txt"),
-        (Version.v6, "v6-20190311-test_hmmer.txt"),
-        (Version.v7, "v7-20190311-test_hmmer.txt"),
-    ]
-
-    for vname, vfile in filelist:
-        version_files[vname] = resource_filename(__name__, vfile)
-
-    return version_files[versionp]
-
-
-def test_domtblout(
+def test_files(
     version: Union[str, int, Version] = Version.latest()
-) -> str:
+) -> Dict[str, str]:
     # Handle strings as input instead of just enums.
     versionp = Version.from_other(version)
 
-    version_files = dict()
-    filelist = [
-        (Version.v4, "v4-20190311-test_hmmer.csv"),
-        (Version.v5, "v5-20190311-test_hmmer.csv"),
-        (Version.v6, "v6-20190311-test_hmmer.csv"),
-        (Version.v7, "v7-20190311-test_hmmer.csv"),
-    ]
+    dirs = {
+        Version.v4: "test_v4",
+        Version.v5: "test_v5",
+        Version.v6: "test_v6",
+        Version.v7: "test_v7",
+        Version.v8: "test_v8",
+    }
 
-    for vname, vfile in filelist:
-        version_files[vname] = resource_filename(__name__, vfile)
+    want_files = {
+        "hmmer_text": "hmmer_text.txt",
+        "hmmer_domtab": "hmmer_domtab.csv",
+        "pca": "pca.csv",
+        "rcd": "rcd.csv",
+        "counts": "counts.csv",
+    }
 
-    return version_files[versionp]
+    files = dict()
 
+    for key, val in want_files.items():
+        files[key] = resource_filename(__name__, pjoin(dirs[versionp], val))
 
-def test_counts(
-    version: Union[str, int, Version] = Version.latest()
-) -> Matrix:
-    # Handle strings as input instead of just enums.
-    versionp = Version.from_other(version)
-
-    version_files = dict()
-    filelist = [
-        (Version.v4, "v4-20190311-test_counts.npz"),
-        (Version.v5, "v5-20190311-test_counts.npz"),
-        (Version.v6, "v6-20190311-test_counts.npz"),
-        (Version.v7, "v7-20190311-test_counts.npz"),
-    ]
-
-    for vname, vfile in filelist:
-        version_files[vname] = resource_filename(__name__, vfile)
-
-    return Matrix.read(version_files[versionp])
+    return files

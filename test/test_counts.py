@@ -3,11 +3,12 @@
 
 import pytest
 
-from catas.parsers import DBCAN
+from catas.parsers import HMMER
 from catas.count import cazy_counts
+from catas.model import Model
 from catas.data import Version
-from catas.data import test_dbcan
-from catas.data import cazy_list
+from catas.data import model_filepath
+from catas.data import test_files
 
 
 @pytest.mark.parametrize("version,hmm,exp_val", [
@@ -22,9 +23,18 @@ from catas.data import cazy_list
     (Version.v6, "GH31", 0),
 ])
 def test_cazy_counts(version, hmm, exp_val):
-    required_cols = cazy_list(version)
-    with open(test_dbcan(version=version), "r") as handle:
-        parsed = DBCAN.from_file(handle)
+    with open(model_filepath(version), "rb") as handle:
+        model = Model.read(handle)
+
+    required_cols = list(model.hmm_lengths.keys())
+
+    files = test_files(version)
+    with open(files["hmmer_text"], "r") as handle:
+        parsed = HMMER.from_file(
+            handle,
+            model.hmm_lengths,
+            "hmmer3-text",
+        )
         counts = cazy_counts(parsed, required_cols)
 
     column_index = required_cols.index(hmm)
