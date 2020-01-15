@@ -16,7 +16,7 @@ CATAStrophy takes HMMER3 files from searches against the [dbCAN](http://bcb.unl.
 as input and returns a pseudo-probabilities called the relative centroid distance (RCD) of trophic class memberships for each file.
 
 To train these models, we performed principal component analysis (PCA) on the frequencies of CAZymes for a set of curated proteomes with literature support for their trophic lifestyles.
-For each class in our classification system, we find the center/geometric mean of the class in the first 16 principal components.
+For each class in our classification system, we find the centre/geometric mean of the class in the first 16 principal components.
 
 New proteomes are classified by transforming the CAZyme frequencies using the same PCA loadings as in the training set.
 We then find the closest class center in PCA space, and set that RCD score to 1.
@@ -30,15 +30,15 @@ This is useful when evaluating your organism, because it might have characterist
 CATAStrophy is a python program which can be used as a python module or via a command-line interface.
 It can be installed from PyPI <https://pypi.org/project/catastrophy/> using [pip](https://pip.pypa.io/en/stable/), or from anaconda <https://anaconda.org/darcyabjones/catastrophy> using [conda](https://docs.conda.io/en/latest/).
 
-Users that are less familiar with python and pip might like to read our [INSTALL.md](INSTALL.md) document, which explains things in more detail, including where this will be installed and using virtual environments.
-For details on installing and using conda see their [getting-started guide](https://docs.conda.io/projects/conda/en/latest/user-guide/overview.html).
+Users that are less familiar with python and pip might like to read our [INSTALL.md](https://github.com/ccdmb/catastrophy/blob/master/INSTALL.md) document which explains things in more detail, including where things will be installed and how to use virtual environments.
+For details on installing and using conda see their [getting-started guide](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html).
 
 CATAStrophy is tested to work with python 3.6+, and it depends on [numpy](http://www.numpy.org/) and [BioPython](https://biopython.org/).
 
 To install CATAStrophy and dependencies with pip:
 
 ```bash
-# Windows users may need to subtitute "Python" instead of "python3"
+# Windows users may need to use "Python" instead of "python3"
 python3 -m pip install --user catastrophy
 ```
 
@@ -52,14 +52,13 @@ conda install -c darcyabjones catastrophy
 
 To run CATAStrophy you need to supply the input files and where to put the output.
 Catastrophy uses [HMMER3](http://hmmer.org/) `hmmscan` searches against dbCAN as input.
-Either the plain text (stdout) and "domain table" (`--domtblout`) can be used.
+Either the plain text (stdout) or "domain table" (`--domtblout`) outputs can be used.
 
 The easiest way to get a HMMER3 plain text file is to annotate your proteome using
 the dbCAN online tool at <http://bcb.unl.edu/dbCAN2/blast.php> (make sure the HMMER tool is selected to run), and
 save the HMMER3 raw text (Select the HMMER tab, then "Download Raw HMMER output") results locally.
 
-> **WARNING**: Before you run any dbCAN searches, please [read the section below on database versions](#database-versions).
-
+> **WARNING**: Before you run any dbCAN searches, please [read the section below on database versions](https://github.com/ccdmb/catastrophy#database-versions).
 
 Assuming that you have this file locally you can run CATAStrophy like so:
 
@@ -67,16 +66,15 @@ Assuming that you have this file locally you can run CATAStrophy like so:
 catastrophy -f hmmer -o my_catastrophy_results.csv my_dbcan_results.txt
 ```
 
-The output will be a tab-delimited file (which you can open in excel) with
-the first row containing column headers and subsequent rows containing a
-label and the pseudo-probabilities of membership to each trophic class.
+The input files are provided as positional arguments after all of the optional parameters.
+The output will be a tab-delimited file (which you can open in excel) containing RCD results for each nomenclature and trophic class for each of the input files.
 The `-f/--format` flag specified the format of the input file and defaults to `hmmer`.
 
 
 Multiple input files can be provided using spaces to separate them:
 
 ```bash
-catastrophy -i dbcan_1.txt dbcan_2.txt -o my_catastrophy_results.csv
+catastrophy -o my_catastrophy_results.csv dbcan_1.txt dbcan_2.txt
 ```
 
 Note that standard bash "globbing" patterns expand into a space delimited array,
@@ -100,11 +98,11 @@ catastrophy --model v7 -o my_catastrophy_results.csv my_dbcan_results.txt
 
 The model versions just reflect the version of dbCAN that the model was trained against (i.e. dbCAN 7 would use CATAStrophy model v7).
 
->> NOTE:
->> The dbCAN2 web-server will always search against the latest version of dbCAN.
->> To find the latest version number, go to <http://bcb.unl.edu/dbCAN2/download/Databases/> and find the file with the highest number with the pattern `dbCAN-HMMdb-V8.txt`.
->> If we haven't yet trained a model for the latest version of dbCAN please contact us.
->> Otherwise you may need to [run HMMER yourself](#running-dbcan-locally).
+> **NOTE:**
+> The dbCAN2 web-server will always search against the latest version of dbCAN.
+> To find the latest version number, go to <http://bcb.unl.edu/dbCAN2/download/Databases/> and find the file with the highest number with the pattern `dbCAN-HMMdb-V8.txt`.
+> If we haven't yet trained a model for the latest version of dbCAN please contact us.
+> Otherwise you may need to [run HMMER yourself](#running-dbcan-locally).
 
 The CATAStrophy paper used version 6 of dbCAN, you may get slightly different results with different database versions.
 
@@ -138,7 +136,7 @@ If you don't specify a label for stdin input the label will be "<stdin>".
 To give it a nicer label you can run this.
 
 ```bash
-catastrophy -i my_dbcan_results.txt -l prettier_label -o my_catastrophy_results.csv
+catastrophy -l prettier_label -o my_catastrophy_results.csv my_dbcan_results.txt
 ```
 
 Which would give the output line for `my_dbcan_results.txt` the label "prettier_label".
@@ -220,7 +218,7 @@ hmmscan --domtblout my_fasta_hmmer.csv ./data/dbCAN-HMMdb-V7.txt my_fasta.fasta 
 
 The domain table is now in the file `my_fasta_hmmer.csv` and the plain hmmer
 text output is in `my_fasta_hmmer.txt`.
-Either one of these files is appropriate for use with CATAStrophy, (just
+Either one of these files is appropriate for use with CATAStrophy (just
 remember to specify the `--format` flag).
 
 
