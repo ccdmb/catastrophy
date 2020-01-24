@@ -25,6 +25,13 @@ If a new proteome is equidistant between two class centroids and they are closer
 This is useful when evaluating your organism, because it might have characteristics of multiple classes (or be so dissimilar to any class that the distance is meaningless).
 
 
+## Citation and further information
+
+The CATAStrophy method and trophic classification systems is described [here](https://doi.org/10.3389/fmicb.2019.03088):
+
+James K. Hane, Jonathan Paxman, Darcy A. B. Jones, Richard P. Oliver and Pierre de Wit (2020). "CATAStrophy", a Genome-Informed Trophic Classification of Filamentous Plant Pathogens – How Many Different Types of Filamentous Plant Pathogens Are There? _Frontiers in Microbiology_. doi: [10.3389/fmicb.2019.03088](https://doi.org/10.3389/fmicb.2019.03088)
+
+
 ## Installing
 
 CATAStrophy is a python program which can be used as a python module or via a command-line interface.
@@ -131,7 +138,7 @@ a label using the `-l/--label` flag. The output from the command above will
 have two lines, one containing the column headers and the other containing
 results for the file `my_dbcan_results.txt` which will have the label
 "my_dbcan_results.txt".
-If you don't specify a label for stdin input the label will be "<stdin>".
+If you don't specify a label for stdin input the label will be "\<stdin\>".
 
 To give it a nicer label you can run this.
 
