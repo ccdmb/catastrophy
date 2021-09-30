@@ -16,7 +16,7 @@ from catas.matrix import Matrix
 from catas import parsers
 
 
-def groupby_numpy(noms: np.array, m: Matrix, order: Sequence[str]) -> Matrix:
+def groupby_numpy(noms: np.ndarray, m: Matrix, order: Sequence[str]) -> Matrix:
     """ This is a helper funtion to do groupby like things without pandas.
 
     Keyword arguments:
@@ -70,7 +70,7 @@ class CentroidsModel(Matrix):
         Each element in `order` must be unique.
         """
 
-        noms = np.array([classes[l] for l in m.rows])
+        noms = np.array([classes[r] for r in m.rows])
 
         centroids = groupby_numpy(noms, m, order)
         return cls(
@@ -182,7 +182,7 @@ class NomenclatureClass(NamedTuple):
     def as_numpy_array(
         cls,
         results: Sequence["NomenclatureClass"]
-    ) -> np.array:
+    ) -> np.ndarray:
         """ Convert list of RCD results to a structured array. """
 
         return np.array(results, dtype=[
@@ -194,7 +194,7 @@ class NomenclatureClass(NamedTuple):
         ])
 
     @classmethod
-    def from_numpy_array(cls, a: np.array) -> List["NomenclatureClass"]:
+    def from_numpy_array(cls, a: np.ndarray) -> List["NomenclatureClass"]:
         return [
             NomenclatureClass(
                 str(r["label"]),
@@ -243,7 +243,7 @@ class RCDResult(NamedTuple):
         return mapped
 
     @classmethod
-    def as_numpy_array(cls, results: Sequence["RCDResult"]) -> np.array:
+    def as_numpy_array(cls, results: Sequence["RCDResult"]) -> np.ndarray:
         """ Convert list of RCD results to a structured array. """
 
         return np.array(results, dtype=[
@@ -254,7 +254,7 @@ class RCDResult(NamedTuple):
         ])
 
     @classmethod
-    def from_numpy_array(cls, a: np.array) -> List["RCDResult"]:
+    def from_numpy_array(cls, a: np.ndarray) -> List["RCDResult"]:
         return [
             RCDResult(
                 str(r["label"]),
@@ -293,7 +293,7 @@ class RCDResult(NamedTuple):
 
 class PCAModel(object):
 
-    def __init__(self, means: np.array, components: np.array):
+    def __init__(self, means: np.ndarray, components: np.ndarray):
         """ Stores the necessary data and methods to do PCA transformations.
         """
         self.means = means
@@ -330,7 +330,7 @@ class PCAModel(object):
         Matrix -- A matrix object with the PCA transformed values.
         """
 
-        values = counts.arr.astype(np.float)
+        values = counts.arr.astype(float)
         X = values - self.means
         X_transformed = np.dot(X, self.components.T)
 
@@ -342,7 +342,7 @@ class PCAModel(object):
 
         return Matrix(rows=counts.rows, columns=columns, arr=X_transformed)
 
-    def as_dict_of_arrays(self, prefix: str = "") -> Dict[str, np.array]:
+    def as_dict_of_arrays(self, prefix: str = "") -> Dict[str, np.ndarray]:
         return {
             f"{prefix}means": self.means,
             f"{prefix}components": self.components,
@@ -351,7 +351,7 @@ class PCAModel(object):
     @classmethod
     def from_dict_of_arrays(
         cls,
-        doa: Mapping[str, np.array],
+        doa: Mapping[str, np.ndarray],
         prefix: str = ""
     ) -> "PCAModel":
         return cls(doa[f"{prefix}means"], doa[f"{prefix}components"])
@@ -390,7 +390,7 @@ class HMMLengths(OrderedDict):
         output.sort(key=lambda t: t[0])
         return cls(output)
 
-    def to_array(self) -> np.array:
+    def to_array(self) -> np.ndarray:
         """ Convert to a numpy structured array. """
         return np.array(
             list(self.items()),
@@ -398,7 +398,7 @@ class HMMLengths(OrderedDict):
          )
 
     @classmethod
-    def from_array(cls, arr: np.array) -> "HMMLengths":
+    def from_array(cls, arr: np.ndarray) -> "HMMLengths":
         """ Create from a numpy structured array. """
         return cls(arr)
 
@@ -421,7 +421,7 @@ class PCAWithLabels(object):
         self.classes = classes
         return
 
-    def as_dict_of_arrays(self, prefix: str = "") -> Dict[str, np.array]:
+    def as_dict_of_arrays(self, prefix: str = "") -> Dict[str, np.ndarray]:
         out = {
             f"{prefix}rcd": RCDResult.as_numpy_array(self.rcd),
         }
@@ -437,7 +437,7 @@ class PCAWithLabels(object):
     @classmethod
     def from_dict_of_arrays(
         cls,
-        doa: Mapping[str, np.array],
+        doa: Mapping[str, np.ndarray],
         prefix: str = ""
     ) -> "PCAWithLabels":
         rcd = RCDResult.from_numpy_array(doa[f"{prefix}rcd"])
@@ -680,7 +680,7 @@ class Model(object):
 
         return PCAWithLabels(pca_transformed, rcd)
 
-    def as_dict_of_arrays(self, prefix="") -> Dict[str, np.array]:
+    def as_dict_of_arrays(self, prefix="") -> Dict[str, np.ndarray]:
         """ Convert the object to something that we can save easily. """
 
         output = {f"{prefix}hmm_lengths": self.hmm_lengths.to_array()}
@@ -716,7 +716,7 @@ class Model(object):
     @classmethod
     def from_dict_of_arrays(
         cls,
-        doa: Mapping[str, np.array],
+        doa: Mapping[str, np.ndarray],
         prefix: str = ""
     ) -> "Model":
         """ Create new model from saved version.

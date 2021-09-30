@@ -33,7 +33,7 @@ setup(
 
     # Author details
     author='Darcy Jones',
-    author_email='darcy.a.jones@postgrad.curtin.edu.au',
+    author_email='darcy.a.jones@curtin.edu.au',
 
     # Choose your license
     license='BSD',
@@ -53,6 +53,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
 
     # What does your project relate to?
@@ -90,7 +91,7 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-        'catas': ['**.json', '**.csv', '**.npz'],
+        'catas': ['**.json', '**.csv', '**.npz', '**.txt', '**.fasta'],
     },
     include_package_data=True,
 

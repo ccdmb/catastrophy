@@ -5,8 +5,6 @@ Because dbCAN is an evolving database, we'll have to maintain several models
 for each database release. The latest version will always we the default one.
 """
 
-from pkg_resources import resource_filename
-
 import json
 from os.path import join as pjoin
 from enum import Enum
@@ -17,6 +15,22 @@ from typing import Union
 from typing import TypeVar, Type
 
 T = TypeVar('T', bound="MyEnum")
+
+
+def resource_filename(module, resource):
+    """ Emulates the behaviour of the old setuptools resource_filename command.
+
+    Basically it just gets rid of the context manager thing, because it's not needed.
+    None of the files are zip files or create any temporary files that need to be
+    cleaned up.
+    This function would be unsafe to use with anything that will be extracted.
+    """
+
+    from importlib.resources import path
+    with path(module, resource) as handler:
+        filename = str(handler)
+
+    return filename
 
 
 class MyEnum(Enum):
@@ -130,6 +144,6 @@ def test_files(
     files = dict()
 
     for key, val in want_files.items():
-        files[key] = resource_filename(__name__, pjoin(dirs[versionp], val))
+        files[key] = resource_filename(__name__ + "." + dirs[versionp], val)
 
     return files

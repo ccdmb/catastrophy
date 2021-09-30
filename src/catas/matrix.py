@@ -23,7 +23,7 @@ class Matrix(object):
         self,
         rows: Sequence[str],
         columns: Sequence[str],
-        arr: np.array,
+        arr: np.ndarray,
     ):
         assert len(rows) == arr.shape[0]
         assert len(columns) == arr.shape[1]
@@ -33,7 +33,7 @@ class Matrix(object):
         self.arr = arr
         return
 
-    def __getitem__(self, key: Union[str, int]) -> np.array:
+    def __getitem__(self, key: Union[str, int]) -> np.ndarray:
         if isinstance(key, str):
             key = self.columns.index(key)
 
@@ -44,7 +44,7 @@ class Matrix(object):
         cls,
         row: str,
         columns: Sequence[str],
-        arr: np.array
+        arr: np.ndarray
     ) -> "Matrix":
         """ Create a matrix from a single row """
 
@@ -91,7 +91,7 @@ class Matrix(object):
     def as_dict_of_arrays(
         self,
         prefix: str = ""
-    ) -> Dict[str, np.array]:
+    ) -> Dict[str, np.ndarray]:
         return {
             f"{prefix}arr": self.arr,
             f"{prefix}rows": np.array(self.rows, dtype='U60'),
@@ -101,7 +101,7 @@ class Matrix(object):
     @classmethod
     def from_dict_of_arrays(
         cls,
-        doa: Mapping[str, np.array],
+        doa: Mapping[str, np.ndarray],
         prefix: str = ""
     ) -> "Matrix":
         return cls(

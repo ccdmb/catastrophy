@@ -50,7 +50,7 @@ def cazy_counts_multi(
 def cazy_counts(
     matches: Union[Iterable[HMMER], Iterable[DBCAN]],
     required_cols: Sequence[str]
-) -> np.array:
+) -> np.ndarray:
     """ Takes a file handle and counts unique occurrences of HMMs.
 
     Keyword arguments:
@@ -58,7 +58,8 @@ def cazy_counts(
     required_cols -- A list of HMMs that must have counts in the output.
 
     Output:
-    np.array -- An array of the counts in the same order as the required_cols.
+    np.ndarray -- An array of the counts in the same order as the
+      required_cols.
     """
 
     # Loop through all lines and add seqids a set for each HMM that they match.
@@ -70,7 +71,7 @@ def cazy_counts(
     if len(invalid_hmms) > 0:
         raise HMMError(invalid_hmms)
 
-    row = np.zeros(len(required_cols), dtype=np.int)
+    row = np.zeros(len(required_cols), dtype=int)
 
     # Loop through columns and add the required hmm counts to output row.
     for i, col in enumerate(required_cols):
