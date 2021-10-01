@@ -22,7 +22,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.0.3',
+    version='0.1.0',
 
     description='A fungal trophy classifier based on CAZymes',
     long_description=long_description,
@@ -51,9 +51,9 @@ setup(
 
         # Specify the Python versions you support here.
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
 
     # What does your project relate to?
@@ -75,6 +75,8 @@ setup(
     install_requires=[
         'numpy>=1.11.0',
         'biopython>=1.70',
+        'joblib',
+        'requests'
         ],
 
     # List additional groups of dependencies here (e.g. development

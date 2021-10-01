@@ -172,7 +172,7 @@ def main():  # noqa
             "authors.\nWe will be extremely grateful!\n\n"
             "You can email us at {}.\n"
             "Alternatively, you can file the issue directly on the repo "
-            "<https://bitbucket.org/ccdm-curtin/catastrophy/issues>\n\n"
+            "<https://github.com/ccdmb/catastrophy/issues>\n\n"
             "Please attach a copy of the following message:"
         ).format(__email__)
         print(e, file=sys.stderr)

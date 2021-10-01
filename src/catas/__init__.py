@@ -1,8 +1,8 @@
 __program__ = "catastrophy"
 __version__ = "0.1.0"
 __authors__ = ", ".join(["Darcy Jones", "James Hane"])
-__date__ = "30 March 2017"
-__email__ = "darcy.a.jones@postgrad.curtin.edu.au"
+__date__ = "31 September 2021"
+__email__ = "darcy.a.jones@curtin.edu.au"
 __short_blurb__ = (
     "Script to predict lifestyle of filamentous plant pathogens using "
     "carbohydrate-active enzymes (CAZymes)."
