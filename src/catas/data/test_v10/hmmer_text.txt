@@ -4,8 +4,8 @@
 # Freely distributed under the BSD open source license.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # query sequence file:             /home/ubuntu/catastrophy/src/catas/data/test_data.fasta
-# target HMM database:             data/dbCAN-fam-HMMs.txt.v5
-# per-dom hits tabular output:     test_v5/hmmer_domtab.tsv
+# target HMM database:             data/dbCAN-HMMdb-V10.txt
+# per-dom hits tabular output:     test_v10/hmmer_domtab.tsv
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Query:       tr|Q0U6B6|Q0U6B6_PHANO  [L=637]
@@ -14,14 +14,14 @@ Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
     E-value  score  bias    E-value  score  bias    exp  N  Model    Description
     ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-   2.9e-154  508.8   0.0   3.4e-154  508.5   0.0    1.0  1  GH47.hmm  
+   5.6e-154  508.8   0.0   6.6e-154  508.5   0.0    1.0  1  GH47.hmm  
 
 
 Domain annotation for each model (and alignments):
 >> GH47.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  508.5   0.0  9.6e-157  3.4e-154       2     446 .]     127     632 ..     126     632 .. 0.91
+   1 !  508.5   0.0  9.6e-157  6.6e-154       2     446 .]     127     632 ..     126     632 .. 0.91
 
   Alignments for each domain:
   == domain 1  score: 508.5 bits;  conditional E-value: 9.6e-157
@@ -60,15 +60,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (637 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                         9  (0.025); expected 7.2 (0.02)
-Passed bias filter:                        9  (0.025); expected 7.2 (0.02)
-Passed Vit filter:                         3  (0.00833333); expected 0.4 (0.001)
-Passed Fwd filter:                         1  (0.00277778); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        23  (0.033237); expected 13.8 (0.02)
+Passed bias filter:                       22  (0.0317919); expected 13.8 (0.02)
+Passed Vit filter:                         4  (0.00578035); expected 0.7 (0.001)
+Passed Fwd filter:                         1  (0.00144509); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.00u 0.01s 00:00:00.01 Elapsed: 00:00:00.02
-# Mc/sec: 2934.41
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
+# Mc/sec: 4634.64
 //
 Query:       tr|Q0UA13|Q0UA13_PHANO  [L=452]
 Description: Beta-xylanase OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=SNOG_11401 PE=3 SV=1
@@ -76,15 +76,15 @@ Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
     E-value  score  bias    E-value  score  bias    exp  N  Model    Description
     ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-    6.8e-97  318.8   0.4    8.2e-97  318.5   0.4    1.1  1  GH10.hmm  
-    4.5e-14   46.7   8.5    1.2e-13   45.3   8.5    1.8  1  CBM1.hmm  
+    1.3e-96  318.8   0.4    1.6e-96  318.5   0.4    1.1  1  GH10.hmm  
+    8.7e-14   46.7   8.5    2.4e-13   45.3   8.5    1.8  1  CBM1.hmm  
 
 
 Domain annotation for each model (and alignments):
 >> GH10.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  318.5   0.4   4.5e-99   8.2e-97       1     301 [.     155     448 ..     155     450 .. 0.96
+   1 !  318.5   0.4   4.5e-99   1.6e-96       1     301 [.     155     448 ..     155     450 .. 0.96
 
   Alignments for each domain:
   == domain 1  score: 318.5 bits;  conditional E-value: 4.5e-99
@@ -111,7 +111,7 @@ Domain annotation for each model (and alignments):
 >> CBM1.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !   45.3   8.5   6.9e-16   1.2e-13       1      29 []      27      55 ..      27      55 .. 0.98
+   1 !   45.3   8.5   6.9e-16   2.4e-13       1      29 []      27      55 ..      27      55 .. 0.98
 
   Alignments for each domain:
   == domain 1  score: 45.3 bits;  conditional E-value: 6.9e-16
@@ -125,15 +125,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (452 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                        16  (0.0444444); expected 7.2 (0.02)
-Passed bias filter:                        6  (0.0166667); expected 7.2 (0.02)
-Passed Vit filter:                         2  (0.00555556); expected 0.4 (0.001)
-Passed Fwd filter:                         2  (0.00555556); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        24  (0.0346821); expected 13.8 (0.02)
+Passed bias filter:                       11  (0.015896); expected 13.8 (0.02)
+Passed Vit filter:                         2  (0.00289017); expected 0.7 (0.001)
+Passed Fwd filter:                         2  (0.00289017); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               2  [number of targets reported over threshold]
-# CPU time: 0.00u 0.01s 00:00:00.01 Elapsed: 00:00:00.01
-# Mc/sec: 4143.92
+# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.02
+# Mc/sec: 3772.49
 //
 Query:       tr|B6DQK6|B6DQK6_PHAND  [L=452]
 Description: Beta-xylanase OS=Phaeosphaeria nodorum PE=3 SV=1
@@ -141,15 +141,15 @@ Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
     E-value  score  bias    E-value  score  bias    exp  N  Model    Description
     ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-    1.2e-95  314.7   0.3    1.4e-95  314.5   0.3    1.1  1  GH10.hmm  
-    4.5e-14   46.7   8.5    1.2e-13   45.3   8.5    1.8  1  CBM1.hmm  
+    2.2e-95  314.7   0.3    2.7e-95  314.5   0.3    1.1  1  GH10.hmm  
+    8.6e-14   46.7   8.5    2.4e-13   45.3   8.5    1.8  1  CBM1.hmm  
 
 
 Domain annotation for each model (and alignments):
 >> GH10.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  314.5   0.3   7.8e-98   1.4e-95       1     301 [.     155     448 ..     155     450 .. 0.96
+   1 !  314.5   0.3   7.8e-98   2.7e-95       1     301 [.     155     448 ..     155     450 .. 0.96
 
   Alignments for each domain:
   == domain 1  score: 314.5 bits;  conditional E-value: 7.8e-98
@@ -176,7 +176,7 @@ Domain annotation for each model (and alignments):
 >> CBM1.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !   45.3   8.5   6.9e-16   1.2e-13       1      29 []      27      55 ..      27      55 .. 0.98
+   1 !   45.3   8.5   6.9e-16   2.4e-13       1      29 []      27      55 ..      27      55 .. 0.98
 
   Alignments for each domain:
   == domain 1  score: 45.3 bits;  conditional E-value: 6.9e-16
@@ -190,15 +190,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (452 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                        16  (0.0444444); expected 7.2 (0.02)
-Passed bias filter:                        6  (0.0166667); expected 7.2 (0.02)
-Passed Vit filter:                         2  (0.00555556); expected 0.4 (0.001)
-Passed Fwd filter:                         2  (0.00555556); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        22  (0.0317919); expected 13.8 (0.02)
+Passed bias filter:                       10  (0.0144509); expected 13.8 (0.02)
+Passed Vit filter:                         2  (0.00289017); expected 0.7 (0.001)
+Passed Fwd filter:                         2  (0.00289017); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               2  [number of targets reported over threshold]
-# CPU time: 0.01u 0.00s 00:00:00.01 Elapsed: 00:00:00.01
-# Mc/sec: 4063.97
+# CPU time: 0.01u 0.02s 00:00:00.03 Elapsed: 00:00:00.02
+# Mc/sec: 3779.19
 //
 Query:       tr|Q9UVY9|Q9UVY9_PHAND  [L=123]
 Description: Endo-1,4-beta-xylanase (Fragment) OS=Phaeosphaeria nodorum GN=snodxyl PE=3 SV=1
@@ -206,15 +206,15 @@ Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
     E-value  score  bias    E-value  score  bias    exp  N  Model     Description
     ------- ------ -----    ------- ------ -----   ---- --  --------  -----------
-    1.5e-53  175.5   4.9    1.7e-53  175.3   4.9    1.0  1  GH11.hmm   
-     0.0018   13.2   0.4     0.0018   13.2   0.4    1.9  2  CBM60.hmm  
+    2.9e-53  175.5   4.9    3.2e-53  175.3   4.9    1.0  1  GH11.hmm   
+     0.0035   13.2   0.4     0.0035   13.2   0.4    1.9  2  CBM60.hmm  
 
 
 Domain annotation for each model (and alignments):
 >> GH11.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  175.3   4.9   9.3e-56   1.7e-53      44     157 ..      10     123 .]       2     123 .] 0.96
+   1 !  175.3   4.9   9.3e-56   3.2e-53      44     157 ..      10     123 .]       2     123 .] 0.96
 
   Alignments for each domain:
   == domain 1  score: 175.3 bits;  conditional E-value: 9.3e-56
@@ -231,8 +231,8 @@ Domain annotation for each model (and alignments):
 >> CBM60.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !   13.2   0.4     1e-05    0.0018      43      92 ..      10      57 ..       3      69 .. 0.79
-   2 ?   -0.1   0.3      0.14        25      35      60 ..      74      99 ..      54     114 .. 0.51
+   1 !   13.2   0.4     1e-05    0.0035      43      92 ..      10      57 ..       3      69 .. 0.79
+   2 ?   -0.1   0.3      0.14        48      35      60 ..      74      99 ..      54     114 .. 0.51
 
   Alignments for each domain:
   == domain 1  score: 13.2 bits;  conditional E-value: 1e-05
@@ -252,15 +252,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (123 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                        30  (0.0833333); expected 7.2 (0.02)
-Passed bias filter:                        8  (0.0222222); expected 7.2 (0.02)
-Passed Vit filter:                         3  (0.00833333); expected 0.4 (0.001)
-Passed Fwd filter:                         2  (0.00555556); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        48  (0.0693642); expected 13.8 (0.02)
+Passed bias filter:                       14  (0.0202312); expected 13.8 (0.02)
+Passed Vit filter:                         3  (0.00433526); expected 0.7 (0.001)
+Passed Fwd filter:                         2  (0.00289017); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               2  [number of targets reported over threshold]
-# CPU time: 0.02u 0.00s 00:00:00.02 Elapsed: 00:00:00.01
-# Mc/sec: 1120.18
+# CPU time: 0.00u 0.02s 00:00:00.02 Elapsed: 00:00:00.02
+# Mc/sec: 1057.85
 //
 Query:       tr|Q0UXC1|Q0UXC1_PHANO  [L=356]
 Description: Beta-xylanase OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=SNOG_03593 PE=3 SV=1
@@ -268,14 +268,14 @@ Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
     E-value  score  bias    E-value  score  bias    exp  N  Model    Description
     ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-   1.3e-101  334.3   0.8   1.5e-101  334.1   0.8    1.0  1  GH10.hmm  
+   2.5e-101  334.3   0.8   2.9e-101  334.1   0.8    1.0  1  GH10.hmm  
 
 
 Domain annotation for each model (and alignments):
 >> GH10.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  334.1   0.8  4.1e-104  1.5e-101       3     302 ..      33     346 ..      31     347 .. 0.93
+   1 !  334.1   0.8  4.1e-104  2.9e-101       3     302 ..      33     346 ..      31     347 .. 0.93
 
   Alignments for each domain:
   == domain 1  score: 334.1 bits;  conditional E-value: 4.1e-104
@@ -304,15 +304,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (356 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                        19  (0.0527778); expected 7.2 (0.02)
-Passed bias filter:                        7  (0.0194444); expected 7.2 (0.02)
-Passed Vit filter:                         3  (0.00833333); expected 0.4 (0.001)
-Passed Fwd filter:                         1  (0.00277778); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        41  (0.0592486); expected 13.8 (0.02)
+Passed bias filter:                       12  (0.017341); expected 13.8 (0.02)
+Passed Vit filter:                         3  (0.00433526); expected 0.7 (0.001)
+Passed Fwd filter:                         1  (0.00144509); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.00u 0.01s 00:00:00.01 Elapsed: 00:00:00.01
-# Mc/sec: 3094.53
+# CPU time: 0.01u 0.02s 00:00:00.03 Elapsed: 00:00:00.02
+# Mc/sec: 3100.35
 //
 Query:       tr|B6DQK8|B6DQK8_PHAND  [L=356]
 Description: Beta-xylanase OS=Phaeosphaeria nodorum PE=3 SV=1
@@ -320,14 +320,14 @@ Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
     E-value  score  bias    E-value  score  bias    exp  N  Model    Description
     ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-   1.1e-101  334.6   0.7   1.2e-101  334.4   0.7    1.0  1  GH10.hmm  
+   2.1e-101  334.6   0.7   2.4e-101  334.4   0.7    1.0  1  GH10.hmm  
 
 
 Domain annotation for each model (and alignments):
 >> GH10.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  334.4   0.7  3.4e-104  1.2e-101       3     302 ..      33     346 ..      31     347 .. 0.93
+   1 !  334.4   0.7  3.4e-104  2.4e-101       3     302 ..      33     346 ..      31     347 .. 0.93
 
   Alignments for each domain:
   == domain 1  score: 334.4 bits;  conditional E-value: 3.4e-104
@@ -356,57 +356,159 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (356 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                        21  (0.0583333); expected 7.2 (0.02)
-Passed bias filter:                        8  (0.0222222); expected 7.2 (0.02)
-Passed Vit filter:                         3  (0.00833333); expected 0.4 (0.001)
-Passed Fwd filter:                         1  (0.00277778); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        42  (0.0606936); expected 13.8 (0.02)
+Passed bias filter:                       13  (0.0187861); expected 13.8 (0.02)
+Passed Vit filter:                         3  (0.00433526); expected 0.7 (0.001)
+Passed Fwd filter:                         1  (0.00144509); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.01
-# Mc/sec: 3188.98
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
+# Mc/sec: 2724.71
 //
 Query:       tr|Q9Y7H9|Q9Y7H9_PHAND  [L=967]
 Description: Putative chitin synthase OS=Phaeosphaeria nodorum GN=chs2 PE=4 SV=1
 Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
-    E-value  score  bias    E-value  score  bias    exp  N  Model    Description
-    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-    4.2e-07   24.6   0.0    1.1e-06   23.3   0.0    1.7  1  GT2.hmm   
+    E-value  score  bias    E-value  score  bias    exp  N  Model                   Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------                -----------
+    7.5e-80  262.0   0.1    1.1e-79  261.5   0.1    1.3  1  GT2_Chitin_synth_1.hmm   Chitin synthase
+    1.8e-24   81.7   0.5    3.5e-21   70.8   0.0    2.3  2  GT2_Chitin_synth_2.hmm   Chitin synthase
+      5e-09   31.7   0.7      5e-09   31.7   0.7    2.2  3  GT2_Glyco_trans_2_3.hmm  Glycosyl transferase family group 2
+     0.0011   14.3   0.0      0.003   12.9   0.0    1.7  2  GT2_Glyco_tranf_2_3.hmm  Glycosyltransferase like family 2
 
 
 Domain annotation for each model (and alignments):
->> GT2.hmm  
+>> GT2_Chitin_synth_1.hmm  Chitin synthase
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !   23.3   0.0     3e-09   1.1e-06      72     166 ..     376     477 ..     242     478 .. 0.75
+   1 !  261.5   0.1   6.5e-82   1.1e-79       1     163 []     246     408 ..     246     408 .. 1.00
 
   Alignments for each domain:
-  == domain 1  score: 23.3 bits;  conditional E-value: 3e-09
-                 GT2.hmm  72 hglrha.tgdyviflDaDdaprpdfleklvsalkededvavvgtrqkfengdk.....krkklsqgaellsknvqegrd.llgggas 151
-                             +++  a + ++ i+lD  ++p p++l +l++a++ d  va   +++k   g+      + +  sq+ e++++n+ ++   +++g ++
-  tr|Q9Y7H9|Q9Y7H9_PHAND 376 NAFGRAlNPNVCILLDVGTKPGPKALYHLWKAFDTDSSVAGAAGEIKAGKGKAwlgllNPLVASQNFEYKMSNILDKPLeSVFGYIT 462
-                             444455578999***************************************999********************************* PP
+  == domain 1  score: 261.5 bits;  conditional E-value: 6.5e-82
+  GT2_Chitin_synth_1.hmm   1 mynEdkellarTLkgvmkNieelkkrkkskvwgkdsWkkivVcivsDGrekideetldllaalgvyqegvakkkvngkevkahlfey 87 
+                             mynE+++ ++rT++gvm+Ni+++++r ks++wgkd+W+kivVci+sDGr k++++tld++aa+g++qeg+ak++vn+kev+ah++ey
+  tr|Q9Y7H9|Q9Y7H9_PHAND 246 MYNENEIDFTRTMHGVMQNISHFCSRMKSRTWGKDGWQKIVVCIISDGRGKVHPRTLDAIAAMGCFQEGIAKNHVNQKEVTAHVYEY 332
+                             9************************************************************************************** PP
 
-                 GT2.hmm 152 altgsfalfrreale 166
-                             +l+g  +++r  al+
-  tr|Q9Y7H9|Q9Y7H9_PHAND 463 VLPGALSAYRYHALQ 477
-                             ************998 PP
+  GT2_Chitin_synth_1.hmm  88 ttqlsvdeelklkenekslvpvqllfclkeknakkinShrWffnafarllqPevcvlldvGtkpgkkslyklwkaf 163
+                             ttq+s+d++lk+k++ek++vp+q++fclke+n+kk+nShrWffnaf+r l+P+vc+lldvGtkpg+k+ly+lwkaf
+  tr|Q9Y7H9|Q9Y7H9_PHAND 333 TTQVSLDSDLKFKGAEKGIVPCQMIFCLKERNSKKLNSHRWFFNAFGRALNPNVCILLDVGTKPGPKALYHLWKAF 408
+                             **************************************************************************98 PP
+
+>> GT2_Chitin_synth_2.hmm  Chitin synthase
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   70.8   0.0     2e-23   3.5e-21     204     389 ..     386     575 ..     379     625 .. 0.77
+   2 !    7.5   1.4    0.0003     0.052     407     492 ..     674     766 ..     637     793 .. 0.73
+
+  Alignments for each domain:
+  == domain 1  score: 70.8 bits;  conditional E-value: 2e-23
+  GT2_Chitin_synth_2.hmm 204 ivlmvdadtkvfpdsltrlvaalvkdpeilglcGetkiankkeswvtai......qvfeyyishhlskafesvfGgvtclPGcfsly 284
+                             +++++d  tk  p +l +l  a+ +d+++ g  Ge k a k ++w+ ++      q fey +s  l k +esvfG +t lPG +s y
+  tr|Q9Y7H9|Q9Y7H9_PHAND 386 VCILLDVGTKPGPKALYHLWKAFDTDSSVAGAAGEIK-AGKGKAWLGLLnplvasQNFEYKMSNILDKPLESVFGYITVLPGALSAY 471
+                             68899******************************99.6788999754322233399****************************** PP
+
+  GT2_Chitin_synth_2.hmm 285 rikaakgsdgywvPilvspeiveeysenvvdtlhkknllllGedrylt.tlllktfpkrktvfvpkakcktvvPdkfkvllsqrrrw 370
+                             r +a ++ +    P+    +  e+   +  d     n ++l edr l   l+ k  ++   ++v+ a+ +t vPd+   ++sqrrrw
+  tr|Q9Y7H9|Q9Y7H9_PHAND 472 RYHALQNDHTGHGPLSQYFK-GETLHGQDADV-FTAN-MYLAEDRILCwELVAKRSEQWVLKYVKAATGETDVPDSVPEFISQRRRW 555
+                             *****998888888743322.23333344443.3444.689*****98469999999****************************** PP
+
+  GT2_Chitin_synth_2.hmm 371 instvhn.llelvlvrdlcG 389
+                             +n +    +  l+  +++  
+  tr|Q9Y7H9|Q9Y7H9_PHAND 556 LNGAFFAaVYSLLHFKQVWS 575
+                             **876531445555555544 PP
+
+  == domain 2  score: 7.5 bits;  conditional E-value: 0.0003
+  GT2_Chitin_synth_2.hmm 407 lvlPaaiaftlylivvailkskpvpvi.....s.lvl.laivlGlpailivltarklsyvawlvvyllalPifnfvlPlyafwkldd 486
+                             +++  +    +y++v+++  +k  +++     + l++  a  +Gl  ++  +    +++ +    y+  lP +  +l +yaf +  d
+  tr|Q9Y7H9|Q9Y7H9_PHAND 674 VIMAYTTFASFYIVVIQLKDPKAPKTLgnnvfTnLIIsSATTIGLYFVMSFMYFDPWHMFTSSAQYFALLPSYIATLQVYAFCNTHD 760
+                             4555555556788877777655444331111121333146789999999999999******************************** PP
+
+  GT2_Chitin_synth_2.hmm 487 fswGet 492
+                              +wG  
+  tr|Q9Y7H9|Q9Y7H9_PHAND 761 ITWGTK 766
+                             ****64 PP
+
+>> GT2_Glyco_trans_2_3.hmm  Glycosyl transferase family group 2
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   31.7   0.7   2.9e-11     5e-09      48     196 ..     440     613 ..     388     619 .. 0.76
+   2 ?   -4.2   0.4       2.9   5.1e+02     161     182 ..     718     740 ..     697     752 .. 0.43
+   3 ?   -3.5   0.6       1.8   3.1e+02     158     176 ..     855     873 ..     822     893 .. 0.41
+
+  Alignments for each domain:
+  == domain 1  score: 31.7 bits;  conditional E-value: 2.9e-11
+  GT2_Glyco_trans_2_3.hmm  48 aalffaedhgkdilvrealgrvvpsvGsgaflrrsalq.......................evggwdgdessvsEDfdmglrlqrk 110
+                              + ++++ + + d +  + +g  + ++G+ ++ r +alq                       +v +    +  ++ED  ++  l +k
+   tr|Q9Y7H9|Q9Y7H9_PHAND 440 QNFEYKMSNILDKPLESVFGYITVLPGALSAYRYHALQndhtghgplsqyfkgetlhgqdaDV-FTA--NMYLAEDRILCWELVAK 522
+                              5567888889999999999999****************8877777777777776444443333.333..469***********888 PP
+
+  GT2_Glyco_trans_2_3.hmm 111 G...yrvrfapeslvkekspltlraelrQrkRwayGc..eleklillvrllgylgsllwsalplhlallllfsllalalvllllll 191
+                                  +++ ++ ++   + +p+++  ++ Qr+Rw+ G+     + +l +++++ + + +w  ++lh+ +++ f  l + ++ l+ ++
+   tr|Q9Y7H9|Q9Y7H9_PHAND 523 RseqWVLKYVKAATGETDVPDSVPEFISQRRRWLNGAffAAVYSLLHFKQVWSTDHTIWRKILLHIEFVYQFVQLLFTFFSLANFY 608
+                              866688888888899*********************85433666668888899999999999999944433333333334444433 PP
+
+  GT2_Glyco_trans_2_3.hmm 192 laall 196
+                              l +++
+   tr|Q9Y7H9|Q9Y7H9_PHAND 609 LTFFF 613
+                              33333 PP
+
+  == domain 2  score: -4.2 bits;  conditional E-value: 2.9
+  GT2_Glyco_trans_2_3.hmm 161 sllwsalplhl.allllfsllal 182
+                              ++++++++  +   ++++s  ++
+   tr|Q9Y7H9|Q9Y7H9_PHAND 718 LYFVMSFMYFDpWHMFTSSAQYF 740
+                              22222222222111233333333 PP
+
+  == domain 3  score: -3.5 bits;  conditional E-value: 1.8
+  GT2_Glyco_trans_2_3.hmm 158 ylgsllwsalplhlallll 176
+                              y  + +++++ l ++l+ +
+   tr|Q9Y7H9|Q9Y7H9_PHAND 855 YGNRAVTNNFYLTFILWAV 873
+                              2222222222222222222 PP
+
+>> GT2_Glyco_tranf_2_3.hmm  Glycosyltransferase like family 2
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   -2.4   0.0       0.8   1.4e+02      74     110 ..     260     307 ..     254     317 .. 0.72
+   2 !   12.9   0.0   1.7e-05     0.003      86     229 ..     382     557 ..     359     558 .. 0.86
+
+  Alignments for each domain:
+  == domain 1  score: -2.4 bits;  conditional E-value: 0.8
+  GT2_Glyco_tranf_2_3.hmm  74 gksralnealravksd...........lvllvDdDtvvePdtlkrllq 110
+                              g ++++++ +++ ks+           + ++ D+   v+P+tl+++++
+   tr|Q9Y7H9|Q9Y7H9_PHAND 260 GVMQNISHFCSRMKSRtwgkdgwqkivVCIISDGRGKVHPRTLDAIAA 307
+                              567888888888884445555666655556778888899999988776 PP
+
+  == domain 2  score: 12.9 bits;  conditional E-value: 1.7e-05
+  GT2_Glyco_tranf_2_3.hmm  86 vksdlvllvDdDtvvePdtlkrllqff.ltpkvgavgtpvfllnrstl......vsalgalefaerhlrflaarralg.vltlnGs 163
+                               ++ + +l+D  t  +P +l  l  +f  +++v+ + +   +  ++++      + a++++e++  ++    +   +g ++ l G+
+   tr|Q9Y7H9|Q9Y7H9_PHAND 382 LNPNVCILLDVGTKPGPKALYHLWKAFdTDSSVAGAAGEIKAGKGKAWlgllnpLVASQNFEYKMSNILDKPLESVFGyITVLPGA 467
+                              5566677778888889999999999998888999999999999999888887777778*********999999988884455569* PP
+
+  GT2_Glyco_tranf_2_3.hmm 164 gslirrevlkele.....................gldplflltdDyelglrlrr...agfrtayvpgaavrevfpsslkayikqrn 225
+                              +s++r + l++                        ++++ +l++D +l+ +l +   + +  +yv+ a+ ++  p+s+ ++i qr+
+   tr|Q9Y7H9|Q9Y7H9_PHAND 468 LSAYRYHALQNDHtghgplsqyfkgetlhgqdadVFTANMYLAEDRILCWELVAkrsEQWVLKYVKAATGETDVPDSVPEFISQRR 553
+                              **********99999****************98778889*********999877668999999*****99999************* PP
+
+  GT2_Glyco_tranf_2_3.hmm 226 Rwvy 229
+                              Rw+ 
+   tr|Q9Y7H9|Q9Y7H9_PHAND 554 RWLN 557
+                              **86 PP
 
 
 
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (967 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                        14  (0.0388889); expected 7.2 (0.02)
-Passed bias filter:                        8  (0.0222222); expected 7.2 (0.02)
-Passed Vit filter:                         1  (0.00277778); expected 0.4 (0.001)
-Passed Fwd filter:                         1  (0.00277778); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
-Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.00u 0.01s 00:00:00.01 Elapsed: 00:00:00.01
-# Mc/sec: 6845.21
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        25  (0.0361272); expected 13.8 (0.02)
+Passed bias filter:                       18  (0.0260116); expected 13.8 (0.02)
+Passed Vit filter:                         4  (0.00578035); expected 0.7 (0.001)
+Passed Fwd filter:                         4  (0.00578035); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
+Domain search space  (domZ):               4  [number of targets reported over threshold]
+# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.03
+# Mc/sec: 6498.21
 //
 Query:       tr|Q68KX7|Q68KX7_PHAND  [L=874]
 Description: Beta-glucosidase OS=Phaeosphaeria nodorum GN=bgl1 PE=4 SV=1
@@ -414,14 +516,14 @@ Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
     E-value  score  bias    E-value  score  bias    exp  N  Model    Description
     ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-    3.6e-57  187.9   0.0    5.9e-57  187.2   0.0    1.4  1  GH3.hmm   
+    6.9e-57  187.9   0.0    1.1e-56  187.2   0.0    1.4  1  GH3.hmm   
 
 
 Domain annotation for each model (and alignments):
 >> GH3.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  187.2   0.0   1.6e-59   5.9e-57       3     216 .]      95     314 ..      93     314 .. 0.96
+   1 !  187.2   0.0   1.6e-59   1.1e-56       3     216 .]      95     314 ..      93     314 .. 0.96
 
   Alignments for each domain:
   == domain 1  score: 187.2 bits;  conditional E-value: 1.6e-59
@@ -445,15 +547,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (874 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                        18  (0.05); expected 7.2 (0.02)
-Passed bias filter:                       10  (0.0277778); expected 7.2 (0.02)
-Passed Vit filter:                         2  (0.00555556); expected 0.4 (0.001)
-Passed Fwd filter:                         1  (0.00277778); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        26  (0.0375723); expected 13.8 (0.02)
+Passed bias filter:                       13  (0.0187861); expected 13.8 (0.02)
+Passed Vit filter:                         2  (0.00289017); expected 0.7 (0.001)
+Passed Fwd filter:                         1  (0.00144509); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.01
-# Mc/sec: 7080.93
+# CPU time: 0.02u 0.00s 00:00:00.02 Elapsed: 00:00:00.02
+# Mc/sec: 8177.01
 //
 Query:       tr|Q68KX6|Q68KX6_PHAND  [L=874]
 Description: Beta-glucosidase OS=Phaeosphaeria nodorum GN=bgl1 PE=4 SV=1
@@ -461,14 +563,14 @@ Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
     E-value  score  bias    E-value  score  bias    exp  N  Model    Description
     ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-    3.6e-57  187.9   0.0    5.9e-57  187.2   0.0    1.4  1  GH3.hmm   
+    6.8e-57  187.9   0.0    1.1e-56  187.2   0.0    1.4  1  GH3.hmm   
 
 
 Domain annotation for each model (and alignments):
 >> GH3.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  187.2   0.0   1.6e-59   5.9e-57       3     216 .]      95     314 ..      93     314 .. 0.96
+   1 !  187.2   0.0   1.6e-59   1.1e-56       3     216 .]      95     314 ..      93     314 .. 0.96
 
   Alignments for each domain:
   == domain 1  score: 187.2 bits;  conditional E-value: 1.6e-59
@@ -492,15 +594,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (874 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                        17  (0.0472222); expected 7.2 (0.02)
-Passed bias filter:                        9  (0.025); expected 7.2 (0.02)
-Passed Vit filter:                         2  (0.00555556); expected 0.4 (0.001)
-Passed Fwd filter:                         1  (0.00277778); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        24  (0.0346821); expected 13.8 (0.02)
+Passed bias filter:                       11  (0.015896); expected 13.8 (0.02)
+Passed Vit filter:                         2  (0.00289017); expected 0.7 (0.001)
+Passed Fwd filter:                         1  (0.00144509); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.01u 0.00s 00:00:00.01 Elapsed: 00:00:00.01
-# Mc/sec: 7360.96
+# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.02
+# Mc/sec: 7678.46
 //
 Query:       tr|Q68KX9|Q68KX9_PHAND  [L=874]
 Description: Beta-glucosidase OS=Phaeosphaeria nodorum GN=bgl1 PE=4 SV=1
@@ -508,14 +610,14 @@ Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
     E-value  score  bias    E-value  score  bias    exp  N  Model    Description
     ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-    6.7e-57  187.0   0.0    1.1e-56  186.3   0.0    1.4  1  GH3.hmm   
+    1.3e-56  187.0   0.0    2.1e-56  186.3   0.0    1.4  1  GH3.hmm   
 
 
 Domain annotation for each model (and alignments):
 >> GH3.hmm  
    #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
  ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
-   1 !  186.3   0.0   3.1e-59   1.1e-56       3     216 .]      95     314 ..      93     314 .. 0.96
+   1 !  186.3   0.0   3.1e-59   2.1e-56       3     216 .]      95     314 ..      93     314 .. 0.96
 
   Alignments for each domain:
   == domain 1  score: 186.3 bits;  conditional E-value: 3.1e-59
@@ -539,43 +641,57 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (874 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                        17  (0.0472222); expected 7.2 (0.02)
-Passed bias filter:                       11  (0.0305556); expected 7.2 (0.02)
-Passed Vit filter:                         3  (0.00833333); expected 0.4 (0.001)
-Passed Fwd filter:                         1  (0.00277778); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        28  (0.0404624); expected 13.8 (0.02)
+Passed bias filter:                       17  (0.0245665); expected 13.8 (0.02)
+Passed Vit filter:                         3  (0.00433526); expected 0.7 (0.001)
+Passed Fwd filter:                         1  (0.00144509); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.01
-# Mc/sec: 7131.62
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
+# Mc/sec: 8047.98
 //
 Query:       tr|Q9Y7I0|Q9Y7I0_PHAND  [L=125]
 Description: Putative chitin synthase (Fragment) OS=Phaeosphaeria nodorum GN=chs1 PE=4 SV=1
 Scores for complete sequence (score includes all domains):
    --- full sequence ---   --- best 1 domain ---    -#dom-
-    E-value  score  bias    E-value  score  bias    exp  N  Model    Description
-    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
-
-   [No hits detected that satisfy reporting thresholds]
+    E-value  score  bias    E-value  score  bias    exp  N  Model                  Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------               -----------
+    5.1e-55  181.3   1.3    5.6e-55  181.2   1.3    1.0  1  GT2_Chitin_synth_1.hmm  Chitin synthase
 
 
 Domain annotation for each model (and alignments):
+>> GT2_Chitin_synth_1.hmm  Chitin synthase
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !  181.2   1.3     8e-58   5.6e-55       6     129 ..       2     125 .]       1     125 [] 0.98
 
-   [No targets detected that satisfy reporting thresholds]
+  Alignments for each domain:
+  == domain 1  score: 181.2 bits;  conditional E-value: 8e-58
+  GT2_Chitin_synth_1.hmm   6 kellarTLkgvmkNieelkkrkkskvwgkdsWkkivVcivsDGrekideetldllaalgvyqegvakkkvngkevkahlfeyttqls 92 
+                             +el+arT++gv+kNie++ +r++sk+wgkd+WkkivVc+vsDGr ki+++t ++laalgvyq+g+ak++vngk+v+ah++eyttq++
+  tr|Q9Y7I0|Q9Y7I0_PHAND   2 DELFARTMTGVIKNIEYMNSRTNSKTWGKDAWKKIVVCVVSDGRAKINPRTRAVLAALGVYQDGIAKQQVNGKDVTAHIYEYTTQMT 88 
+                             689************************************************************************************ PP
+
+  GT2_Chitin_synth_1.hmm  93 vdeelklkenekslvpvqllfclkeknakkinShrWf 129
+                             +d +  + + +k+++pvq+lfclkekn+kkinShrWf
+  tr|Q9Y7I0|Q9Y7I0_PHAND  89 LDIKKGVVGVKKGNTPVQMLFCLKEKNQKKINSHRWF 125
+                             ***99*******************************8 PP
+
 
 
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (125 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                        18  (0.05); expected 7.2 (0.02)
-Passed bias filter:                        6  (0.0166667); expected 7.2 (0.02)
-Passed Vit filter:                         0  (0); expected 0.4 (0.001)
-Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
-Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.00u 0.01s 00:00:00.01 Elapsed: 00:00:00.01
-# Mc/sec: 1168.72
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        36  (0.0520231); expected 13.8 (0.02)
+Passed bias filter:                       17  (0.0245665); expected 13.8 (0.02)
+Passed Vit filter:                         1  (0.00144509); expected 0.7 (0.001)
+Passed Fwd filter:                         1  (0.00144509); expected 0.0 (1e-05)
+Initial search space (Z):                692  [actual number of targets]
+Domain search space  (domZ):               1  [number of targets reported over threshold]
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.01
+# Mc/sec: 1523.17
 //
 Query:       sp|Q0V3H0|ARO1_PHANO  [L=1661]
 Description: Pentafunctional AROM polypeptide OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=SNOG_01444 PE=3 SV=2
@@ -595,15 +711,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (1661 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                         5  (0.0138889); expected 7.2 (0.02)
-Passed bias filter:                        5  (0.0138889); expected 7.2 (0.02)
-Passed Vit filter:                         0  (0); expected 0.4 (0.001)
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                         9  (0.0130058); expected 13.8 (0.02)
+Passed bias filter:                        9  (0.0130058); expected 13.8 (0.02)
+Passed Vit filter:                         0  (0); expected 0.7 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.01u 0.00s 00:00:00.01 Elapsed: 00:00:00.01
-# Mc/sec: 12458.59
+# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.02
+# Mc/sec: 13327.69
 //
 Query:       sp|Q0U4L8|HOG1_PHANO  [L=355]
 Description: Mitogen-activated protein kinase HOG1 OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=HOG1 PE=3 SV=2
@@ -623,15 +739,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (355 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                         6  (0.0166667); expected 7.2 (0.02)
-Passed bias filter:                        6  (0.0166667); expected 7.2 (0.02)
-Passed Vit filter:                         0  (0); expected 0.4 (0.001)
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        12  (0.017341); expected 13.8 (0.02)
+Passed bias filter:                       11  (0.015896); expected 13.8 (0.02)
+Passed Vit filter:                         0  (0); expected 0.7 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.00u 0.01s 00:00:00.01 Elapsed: 00:00:00.01
-# Mc/sec: 3887.37
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.01
+# Mc/sec: 4040.13
 //
 Query:       sp|Q0V6P9|MET3_PHANO  [L=574]
 Description: Sulfate adenylyltransferase OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=MET3 PE=3 SV=1
@@ -651,15 +767,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (574 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                         7  (0.0194444); expected 7.2 (0.02)
-Passed bias filter:                        7  (0.0194444); expected 7.2 (0.02)
-Passed Vit filter:                         0  (0); expected 0.4 (0.001)
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        18  (0.0260116); expected 13.8 (0.02)
+Passed bias filter:                       17  (0.0245665); expected 13.8 (0.02)
+Passed Vit filter:                         1  (0.00144509); expected 0.7 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.01u 0.00s 00:00:00.01 Elapsed: 00:00:00.01
-# Mc/sec: 5432.10
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
+# Mc/sec: 5502.84
 //
 Query:       tr|Q0U1Y0|Q0U1Y0_PHANO  [L=528]
 Description: Adenylyltransferase and sulfurtransferase uba4 OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=uba4 PE=3 SV=1
@@ -679,15 +795,15 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (528 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                         6  (0.0166667); expected 7.2 (0.02)
-Passed bias filter:                        6  (0.0166667); expected 7.2 (0.02)
-Passed Vit filter:                         1  (0.00277778); expected 0.4 (0.001)
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                        10  (0.0144509); expected 13.8 (0.02)
+Passed bias filter:                       10  (0.0144509); expected 13.8 (0.02)
+Passed Vit filter:                         1  (0.00144509); expected 0.7 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.01u 0.00s 00:00:00.01 Elapsed: 00:00:00.01
-# Mc/sec: 5259.95
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.01
+# Mc/sec: 6095.99
 //
 Query:       sp|Q0U1A1|H2A_PHANO  [L=134]
 Description: Histone H2A OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=HTA1 PE=3 SV=1
@@ -707,14 +823,14 @@ Domain annotation for each model (and alignments):
 Internal pipeline statistics summary:
 -------------------------------------
 Query sequence(s):                         1  (134 residues searched)
-Target model(s):                         360  (112889 nodes)
-Passed MSV filter:                         1  (0.00277778); expected 7.2 (0.02)
-Passed bias filter:                        1  (0.00277778); expected 7.2 (0.02)
-Passed Vit filter:                         0  (0); expected 0.4 (0.001)
+Target model(s):                         692  (214849 nodes)
+Passed MSV filter:                         1  (0.00144509); expected 13.8 (0.02)
+Passed bias filter:                        1  (0.00144509); expected 13.8 (0.02)
+Passed Vit filter:                         0  (0); expected 0.7 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
-Initial search space (Z):                360  [actual number of targets]
+Initial search space (Z):                692  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.00
-# Mc/sec: 1544.84
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.01
+# Mc/sec: 1723.64
 //
 [ok]

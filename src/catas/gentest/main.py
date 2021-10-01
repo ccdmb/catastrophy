@@ -2,7 +2,8 @@
 
 import sys
 import traceback
-from os.path import basename
+from os import makedirs
+from os.path import basename, splitext
 from os.path import join as pjoin
 
 from catas import parsers
@@ -15,7 +16,7 @@ from catas.gentest.cli import cli
 from catas.count import cazy_counts_multi
 from catas.count import HMMError
 
-from catas.model import Model
+from catas.model import Model, RCDResult, PCAWithLabels
 
 from catas.data import hmmscan_parser
 
@@ -75,18 +76,23 @@ def runner(
     hmms: str,
     model_fname: str,
     version: str,
-    today: str,
     outdir: str,
     hmmscan_cmd: str,
 ):
     """ Runs the pipeline. """
 
-    fname_prefix = pjoin(outdir, f"{version}-{today}")
-    domtab_filename = f"{fname_prefix}-test_hmmer.csv"
-    hmmer_filename = f"{fname_prefix}-test_hmmer.txt"
-    dbcan_filename = f"{fname_prefix}-test_dbcan.csv"
-    counts_filename = f"{fname_prefix}-test_counts.npz"
-    pcs_filename = f"{fname_prefix}-test_pcs.npz"
+    makedirs(outdir, exist_ok=False)
+
+    # Just touch it to make easier to integrate into package.
+    with open(pjoin(outdir, "__init__.py"), "w") as handle:
+            print('', file=handle)
+
+    domtab_filename = pjoin(outdir, "hmmer_domtab.tsv")
+    hmmer_filename = pjoin(outdir, "hmmer_text.txt")
+    dbcan_filename = pjoin(outdir, "hmmer_dbcan.tsv")
+    counts_filename = pjoin(outdir, "counts.tsv")
+    pca_filename = pjoin(outdir, "pca.tsv")
+    rcd_filename = pjoin(outdir, "rcd.tsv")
 
     with open(model_fname, "rb") as model_handle:
         model = Model.read(model_handle)
@@ -96,6 +102,7 @@ def runner(
     hmmscan_parser_cmd = hmmscan_parser()
     call_hmmscan_parser(domtab_filename, dbcan_filename, hmmscan_parser_cmd)
 
+    required_cols = list(model.hmm_lengths.keys())
     with open(dbcan_filename, "r") as dbcan_handle:
         parsed = parsers.parse(
             dbcan_handle,
@@ -103,12 +110,20 @@ def runner(
             hmm_lens=model.hmm_lengths
         )
 
-    required_cols = list(model.hmm_lengths.keys())
-    counts = cazy_counts_multi([parsed], [basename(infile)], required_cols)
-    counts.write(counts_filename)
+        label = splitext(basename(infile))[0]
+        counts = cazy_counts_multi([parsed], [label], required_cols)
+        counts.write_tsv(counts_filename)
 
-    mat_pca = model.pca_model.transform(counts)
-    mat_pca.write(pcs_filename)
+    predictions = model.predict(counts)
+
+    with open(pca_filename, "w") as pca_handle:
+        (PCAWithLabels
+         .concat([predictions])
+         .write_tsv(pca_handle))
+
+    with open(rcd_filename, "w") as rcd_handle:
+        RCDResult.write_tsv(rcd_handle, predictions.rcd)
+
     return
 
 
@@ -119,14 +134,18 @@ def main():  # noqa
         print(e.message, file=sys.stderr)
         sys.exit(e.errno)
 
+    if args.outdir is None:
+        outdir = f"test_{args.version}"
+    else:
+        outdir = args.outdir
+
     try:
         runner(
             args.infile,
             args.hmms,
             args.model,
             args.version,
-            args.today,
-            args.outdir,
+            outdir,
             args.hmmscan_path
         )
 

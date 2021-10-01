@@ -66,10 +66,12 @@ class Version(MyEnum):
     v6 = 6
     v7 = 7
     v8 = 8
+    v9 = 9
+    v10 = 10
 
     @classmethod
     def latest(cls) -> "Version":
-        return cls.v8
+        return cls.v10
 
 
 def hmmscan_parser() -> str:
@@ -85,11 +87,13 @@ def model_filepath(
     versionp = Version.from_other(version)
 
     version_files = {
-        Version.v4: resource_filename(__name__, "model_v4_20200114.npz"),
-        Version.v5: resource_filename(__name__, "model_v5_20200114.npz"),
-        Version.v6: resource_filename(__name__, "model_v6_20200114.npz"),
-        Version.v7: resource_filename(__name__, "model_v7_20200114.npz"),
-        Version.v8: resource_filename(__name__, "model_v8_20200114.npz"),
+        Version.v4: resource_filename(__name__, "model_v4_20211001.npz"),
+        Version.v5: resource_filename(__name__, "model_v5_20211001.npz"),
+        Version.v6: resource_filename(__name__, "model_v6_20211001.npz"),
+        Version.v7: resource_filename(__name__, "model_v7_20211001.npz"),
+        Version.v8: resource_filename(__name__, "model_v8_20211001.npz"),
+        Version.v9: resource_filename(__name__, "model_v9_20211001.npz"),
+        Version.v10: resource_filename(__name__, "model_v10_20211001.npz"),
     }
 
     return version_files[versionp]
@@ -135,11 +139,14 @@ def test_files(
         Version.v6: "test_v6",
         Version.v7: "test_v7",
         Version.v8: "test_v8",
+        Version.v8: "test_v9",
+        Version.v8: "test_v10",
     }
 
     want_files = {
         "hmmer_text": "hmmer_text.txt",
         "hmmer_domtab": "hmmer_domtab.csv",
+        "hmmer_dbcan": "hmmer_dbcan.csv",
         "pca": "pca.csv",
         "rcd": "rcd.csv",
         "counts": "counts.csv",

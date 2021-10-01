@@ -1,11 +1,11 @@
 # hmmscan :: search sequence(s) against a profile database
-# HMMER 3.2.1 (June 2018); http://hmmer.org/
-# Copyright (C) 2018 Howard Hughes Medical Institute.
+# HMMER 3.3 (Nov 2019); http://hmmer.org/
+# Copyright (C) 2019 Howard Hughes Medical Institute.
 # Freely distributed under the BSD open source license.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# query sequence file:             test_data.fasta
-# target HMM database:             database.txt
-# per-dom hits tabular output:     test_data.csv
+# query sequence file:             /home/ubuntu/catastrophy/src/catas/data/test_data.fasta
+# target HMM database:             data/dbCAN-HMMdb-V6.txt
+# per-dom hits tabular output:     test_v6/hmmer_domtab.tsv
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Query:       tr|Q0U6B6|Q0U6B6_PHANO  [L=637]
@@ -67,8 +67,8 @@ Passed Vit filter:                         4  (0.00683761); expected 0.6 (0.001)
 Passed Fwd filter:                         1  (0.0017094); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.03u 0.01s 00:00:00.04 Elapsed: 00:00:00.05
-# Mc/sec: 2256.76
+# CPU time: 0.01u 0.02s 00:00:00.03 Elapsed: 00:00:00.04
+# Mc/sec: 2796.78
 //
 Query:       tr|Q0UA13|Q0UA13_PHANO  [L=452]
 Description: Beta-xylanase OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=SNOG_11401 PE=3 SV=1
@@ -155,8 +155,8 @@ Passed Vit filter:                         3  (0.00512821); expected 0.6 (0.001)
 Passed Fwd filter:                         3  (0.00512821); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               3  [number of targets reported over threshold]
-# CPU time: 0.03u 0.01s 00:00:00.04 Elapsed: 00:00:00.05
-# Mc/sec: 1632.29
+# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.02
+# Mc/sec: 3192.42
 //
 Query:       tr|B6DQK6|B6DQK6_PHAND  [L=452]
 Description: Beta-xylanase OS=Phaeosphaeria nodorum PE=3 SV=1
@@ -243,8 +243,8 @@ Passed Vit filter:                         3  (0.00512821); expected 0.6 (0.001)
 Passed Fwd filter:                         3  (0.00512821); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               3  [number of targets reported over threshold]
-# CPU time: 0.03u 0.01s 00:00:00.04 Elapsed: 00:00:00.03
-# Mc/sec: 2068.58
+# CPU time: 0.01u 0.02s 00:00:00.03 Elapsed: 00:00:00.02
+# Mc/sec: 3516.04
 //
 Query:       tr|Q9UVY9|Q9UVY9_PHAND  [L=123]
 Description: Endo-1,4-beta-xylanase (Fragment) OS=Phaeosphaeria nodorum GN=snodxyl PE=3 SV=1
@@ -305,8 +305,8 @@ Passed Vit filter:                         3  (0.00512821); expected 0.6 (0.001)
 Passed Fwd filter:                         2  (0.0034188); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               2  [number of targets reported over threshold]
-# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.02
-# Mc/sec: 790.77
+# CPU time: 0.01u 0.00s 00:00:00.01 Elapsed: 00:00:00.01
+# Mc/sec: 1267.35
 //
 Query:       tr|Q0UXC1|Q0UXC1_PHANO  [L=356]
 Description: Beta-xylanase OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=SNOG_03593 PE=3 SV=1
@@ -357,8 +357,8 @@ Passed Vit filter:                         3  (0.00512821); expected 0.6 (0.001)
 Passed Fwd filter:                         1  (0.0017094); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
-# Mc/sec: 2361.95
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.01
+# Mc/sec: 3232.56
 //
 Query:       tr|B6DQK8|B6DQK8_PHAND  [L=356]
 Description: Beta-xylanase OS=Phaeosphaeria nodorum PE=3 SV=1
@@ -409,8 +409,8 @@ Passed Vit filter:                         3  (0.00512821); expected 0.6 (0.001)
 Passed Fwd filter:                         1  (0.0017094); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.02
-# Mc/sec: 2333.34
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
+# Mc/sec: 3161.70
 //
 Query:       tr|Q9Y7H9|Q9Y7H9_PHAND  [L=967]
 Description: Putative chitin synthase OS=Phaeosphaeria nodorum GN=chs2 PE=4 SV=1
@@ -451,8 +451,8 @@ Passed Vit filter:                         1  (0.0017094); expected 0.6 (0.001)
 Passed Fwd filter:                         1  (0.0017094); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.03u 0.01s 00:00:00.04 Elapsed: 00:00:00.03
-# Mc/sec: 4686.04
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
+# Mc/sec: 7060.23
 //
 Query:       tr|Q68KX7|Q68KX7_PHAND  [L=874]
 Description: Beta-glucosidase OS=Phaeosphaeria nodorum GN=bgl1 PE=4 SV=1
@@ -498,8 +498,8 @@ Passed Vit filter:                         3  (0.00512821); expected 0.6 (0.001)
 Passed Fwd filter:                         1  (0.0017094); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.03
-# Mc/sec: 4742.43
+# CPU time: 0.01u 0.02s 00:00:00.03 Elapsed: 00:00:00.02
+# Mc/sec: 6608.77
 //
 Query:       tr|Q68KX6|Q68KX6_PHAND  [L=874]
 Description: Beta-glucosidase OS=Phaeosphaeria nodorum GN=bgl1 PE=4 SV=1
@@ -545,8 +545,8 @@ Passed Vit filter:                         3  (0.00512821); expected 0.6 (0.001)
 Passed Fwd filter:                         1  (0.0017094); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.02
-# Mc/sec: 5373.62
+# CPU time: 0.00u 0.02s 00:00:00.02 Elapsed: 00:00:00.02
+# Mc/sec: 6630.21
 //
 Query:       tr|Q68KX9|Q68KX9_PHAND  [L=874]
 Description: Beta-glucosidase OS=Phaeosphaeria nodorum GN=bgl1 PE=4 SV=1
@@ -592,8 +592,8 @@ Passed Vit filter:                         4  (0.00683761); expected 0.6 (0.001)
 Passed Fwd filter:                         1  (0.0017094); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               1  [number of targets reported over threshold]
-# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.03
-# Mc/sec: 5231.98
+# CPU time: 0.01u 0.02s 00:00:00.03 Elapsed: 00:00:00.02
+# Mc/sec: 6394.69
 //
 Query:       tr|Q9Y7I0|Q9Y7I0_PHAND  [L=125]
 Description: Putative chitin synthase (Fragment) OS=Phaeosphaeria nodorum GN=chs1 PE=4 SV=1
@@ -620,8 +620,8 @@ Passed Vit filter:                         0  (0); expected 0.6 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
-# Mc/sec: 1092.37
+# CPU time: 0.00u 0.02s 00:00:00.02 Elapsed: 00:00:00.01
+# Mc/sec: 1229.80
 //
 Query:       sp|Q0V3H0|ARO1_PHANO  [L=1661]
 Description: Pentafunctional AROM polypeptide OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=SNOG_01444 PE=3 SV=2
@@ -648,8 +648,8 @@ Passed Vit filter:                         0  (0); expected 0.6 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.03
-# Mc/sec: 9319.29
+# CPU time: 0.02u 0.00s 00:00:00.02 Elapsed: 00:00:00.02
+# Mc/sec: 11620.69
 //
 Query:       sp|Q0U4L8|HOG1_PHANO  [L=355]
 Description: Mitogen-activated protein kinase HOG1 OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=HOG1 PE=3 SV=2
@@ -676,8 +676,8 @@ Passed Vit filter:                         0  (0); expected 0.6 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
-# Mc/sec: 2811.73
+# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.01
+# Mc/sec: 3237.56
 //
 Query:       sp|Q0V6P9|MET3_PHANO  [L=574]
 Description: Sulfate adenylyltransferase OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=MET3 PE=3 SV=1
@@ -704,8 +704,8 @@ Passed Vit filter:                         0  (0); expected 0.6 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.02u 0.01s 00:00:00.03 Elapsed: 00:00:00.02
-# Mc/sec: 4165.83
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.01
+# Mc/sec: 5241.76
 //
 Query:       tr|Q0U1Y0|Q0U1Y0_PHANO  [L=528]
 Description: Adenylyltransferase and sulfurtransferase uba4 OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=uba4 PE=3 SV=1
@@ -733,7 +733,7 @@ Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
 # CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
-# Mc/sec: 3720.90
+# Mc/sec: 4723.29
 //
 Query:       sp|Q0U1A1|H2A_PHANO  [L=134]
 Description: Histone H2A OS=Phaeosphaeria nodorum (strain SN15 / ATCC MYA-4574 / FGSC 10173) GN=HTA1 PE=3 SV=1
@@ -760,7 +760,7 @@ Passed Vit filter:                         0  (0); expected 0.6 (0.001)
 Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
 Initial search space (Z):                585  [actual number of targets]
 Domain search space  (domZ):               0  [number of targets reported over threshold]
-# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.02
-# Mc/sec: 1183.53
+# CPU time: 0.01u 0.01s 00:00:00.02 Elapsed: 00:00:00.01
+# Mc/sec: 1378.17
 //
 [ok]

@@ -1,0 +1,35 @@
+#                                                                              --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name             accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- -----   -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+GH47.hmm             -            446 tr|Q0U6B6|Q0U6B6_PHANO -            637  5.5e-154  508.8   0.0   1   1  9.6e-157  6.5e-154  508.5   0.0     2   446   127   632   126   632 0.91 -
+GH10.hmm             -            303 tr|Q0UA13|Q0UA13_PHANO -            452   1.3e-96  318.8   0.4   1   1   4.5e-99   1.5e-96  318.5   0.4     1   301   155   448   155   450 0.96 -
+CBM1.hmm             -             29 tr|Q0UA13|Q0UA13_PHANO -            452   8.6e-14   46.7   8.5   1   1   6.9e-16   2.4e-13   45.3   8.5     1    29    27    55    27    55 0.98 -
+GH10.hmm             -            303 tr|B6DQK6|B6DQK6_PHAND -            452   2.2e-95  314.7   0.3   1   1   7.8e-98   2.6e-95  314.5   0.3     1   301   155   448   155   450 0.96 -
+CBM1.hmm             -             29 tr|B6DQK6|B6DQK6_PHAND -            452   8.5e-14   46.7   8.5   1   1   6.9e-16   2.4e-13   45.3   8.5     1    29    27    55    27    55 0.98 -
+GH11.hmm             -            177 tr|Q9UVY9|Q9UVY9_PHAND -            123   2.8e-53  175.5   4.9   1   1   9.3e-56   3.2e-53  175.3   4.9    44   157    10   123     2   123 0.96 -
+CBM60.hmm            -            108 tr|Q9UVY9|Q9UVY9_PHAND -            123    0.0035   13.2   0.4   1   2     1e-05    0.0035   13.2   0.4    43    92    10    57     3    69 0.79 -
+CBM60.hmm            -            108 tr|Q9UVY9|Q9UVY9_PHAND -            123    0.0035   13.2   0.4   2   2      0.14        47   -0.1   0.3    35    60    74    99    54   114 0.51 -
+GH10.hmm             -            303 tr|Q0UXC1|Q0UXC1_PHANO -            356  2.5e-101  334.3   0.8   1   1  4.1e-104  2.8e-101  334.1   0.8     3   302    33   346    31   347 0.93 -
+GH10.hmm             -            303 tr|B6DQK8|B6DQK8_PHAND -            356    2e-101  334.6   0.7   1   1  3.4e-104  2.3e-101  334.4   0.7     3   302    33   346    31   347 0.93 -
+GT2_Chitin_synth_1.hmm  PF01644.16   163 tr|Q9Y7H9|Q9Y7H9_PHAND -            967   7.4e-80  262.0   0.1   1   1   6.5e-82   1.1e-79  261.5   0.1     1   163   246   408   246   408 1.00 Chitin synthase
+GT2_Chitin_synth_2.hmm  PF03142.14   527 tr|Q9Y7H9|Q9Y7H9_PHAND -            967   1.7e-24   81.7   0.5   1   2     2e-23   3.4e-21   70.8   0.0   204   389   386   575   379   625 0.77 Chitin synthase
+GT2_Chitin_synth_2.hmm  PF03142.14   527 tr|Q9Y7H9|Q9Y7H9_PHAND -            967   1.7e-24   81.7   0.5   2   2    0.0003     0.051    7.5   1.4   407   492   674   766   637   793 0.73 Chitin synthase
+GT2_Glyco_trans_2_3.hmm PF13632.5    197 tr|Q9Y7H9|Q9Y7H9_PHAND -            967   4.9e-09   31.7   0.7   1   3   2.9e-11   4.9e-09   31.7   0.7    48   196   440   613   388   619 0.76 Glycosyl transferase family group 2
+GT2_Glyco_trans_2_3.hmm PF13632.5    197 tr|Q9Y7H9|Q9Y7H9_PHAND -            967   4.9e-09   31.7   0.7   2   3       2.9     5e+02   -4.2   0.4   161   182   718   740   697   752 0.43 Glycosyl transferase family group 2
+GT2_Glyco_trans_2_3.hmm PF13632.5    197 tr|Q9Y7H9|Q9Y7H9_PHAND -            967   4.9e-09   31.7   0.7   3   3       1.8     3e+02   -3.5   0.6   158   176   855   873   822   893 0.41 Glycosyl transferase family group 2
+GT2_Glyco_tranf_2_3.hmm PF13641.5    230 tr|Q9Y7H9|Q9Y7H9_PHAND -            967    0.0011   14.3   0.0   1   2       0.8   1.4e+02   -2.4   0.0    74   110   260   307   254   317 0.72 Glycosyltransferase like family 2
+GT2_Glyco_tranf_2_3.hmm PF13641.5    230 tr|Q9Y7H9|Q9Y7H9_PHAND -            967    0.0011   14.3   0.0   2   2   1.7e-05    0.0029   12.9   0.0    86   229   382   557   359   558 0.86 Glycosyltransferase like family 2
+GH3.hmm              -            216 tr|Q68KX7|Q68KX7_PHAND -            874   6.7e-57  187.9   0.0   1   1   1.6e-59   1.1e-56  187.2   0.0     3   216    95   314    93   314 0.96 -
+GH3.hmm              -            216 tr|Q68KX6|Q68KX6_PHAND -            874   6.7e-57  187.9   0.0   1   1   1.6e-59   1.1e-56  187.2   0.0     3   216    95   314    93   314 0.96 -
+GH3.hmm              -            216 tr|Q68KX9|Q68KX9_PHAND -            874   1.3e-56  187.0   0.0   1   1   3.1e-59   2.1e-56  186.3   0.0     3   216    95   314    93   314 0.96 -
+GT2_Chitin_synth_1.hmm PF01644.16   163 tr|Q9Y7I0|Q9Y7I0_PHAND -            125     5e-55  181.3   1.3   1   1     8e-58   5.5e-55  181.2   1.3     6   129     2   125     1   125 0.98 Chitin synthase
+#
+# Program:         hmmscan
+# Version:         3.3 (Nov 2019)
+# Pipeline mode:   SCAN
+# Query file:      /home/ubuntu/catastrophy/src/catas/data/test_data.fasta
+# Target file:     data/dbCAN-HMMdb-V9.txt
+# Option settings: hmmscan --domtblout test_v9/hmmer_domtab.tsv data/dbCAN-HMMdb-V9.txt /home/ubuntu/catastrophy/src/catas/data/test_data.fasta 
+# Current dir:     /home/ubuntu/catastrophy/notebooks/fasta_for_catastrophy
+# Date:            Fri Oct  1 04:59:07 2021
+# [ok]
