@@ -55,6 +55,8 @@ def runner(
     # the classes tsv, and vice-versa. We want 1-1.
     if len(set(c.label for c in class_labels)
            .symmetric_difference(labels)) != 0:
+        print(set(c.label for c in class_labels)
+           .symmetric_difference(labels))
         raise ValueError("The file labels and the class labels are different.")
 
     class_labels_nomenclatures = {
