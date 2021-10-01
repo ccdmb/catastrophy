@@ -91,7 +91,8 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-        'catas': ['**.json', '**.csv', '**.npz', '**.txt', '**.fasta'],
+        'catas': ['**.json', '**.csv', '**.npz',
+                  '**.txt', '**.fasta', "**.sh"],
     },
     include_package_data=True,
 
@@ -102,6 +103,7 @@ setup(
         'console_scripts': [
             'catastrophy=catas.main:main',
             'catastrophy-train=catas.train.main:main',
+            'catastrophy-gentest=catas.gentest.main:main',
         ],
     },
 )

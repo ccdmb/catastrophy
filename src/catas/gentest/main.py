@@ -10,7 +10,7 @@ from catas.parsers import FileType
 from catas.parsers import ParseError
 
 from catas.cli import MyArgumentError
-from catas.train.cli import cli
+from catas.gentest.cli import cli
 
 from catas.count import cazy_counts_multi
 from catas.count import HMMError
