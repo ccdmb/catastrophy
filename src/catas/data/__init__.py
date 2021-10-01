@@ -139,17 +139,17 @@ def test_files(
         Version.v6: "test_v6",
         Version.v7: "test_v7",
         Version.v8: "test_v8",
-        Version.v8: "test_v9",
-        Version.v8: "test_v10",
+        Version.v9: "test_v9",
+        Version.v10: "test_v10",
     }
 
     want_files = {
         "hmmer_text": "hmmer_text.txt",
-        "hmmer_domtab": "hmmer_domtab.csv",
-        "hmmer_dbcan": "hmmer_dbcan.csv",
-        "pca": "pca.csv",
-        "rcd": "rcd.csv",
-        "counts": "counts.csv",
+        "hmmer_domtab": "hmmer_domtab.tsv",
+        "hmmer_dbcan": "hmmer_dbcan.tsv",
+        "pca": "pca.tsv",
+        "rcd": "rcd.tsv",
+        "counts": "counts.tsv",
     }
 
     files = dict()

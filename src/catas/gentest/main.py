@@ -18,57 +18,12 @@ from catas.count import HMMError
 
 from catas.model import Model, RCDResult, PCAWithLabels
 
-from catas.data import hmmscan_parser
+from catas.external import call_hmmscan, call_hmmscan_parser
 
 from catas import __email__
 from catas.exitcodes import (
     EXIT_KEYBOARD, EXIT_UNKNOWN, EXIT_INPUT_FORMAT, EXIT_SYSERR
 )
-
-
-def call_hmmer(
-    infile: str,
-    db: str,
-    domtab: str,
-    hmmer: str,
-    cmd: str = "hmmscan"
-) -> None:
-    from subprocess import Popen
-    from subprocess import PIPE
-
-    command = [
-        cmd,
-        "--domtblout", domtab,
-        db,
-        infile
-    ]
-    call = Popen(command, stdout=PIPE)
-    stdout, stderr = call.communicate()
-
-    with open(hmmer, "wb") as handle:
-        handle.write(stdout)
-    return
-
-
-def call_hmmscan_parser(
-    infile: str,
-    outfile: str,
-    cmd: str = "hmmscan-parser.sh"
-) -> None:
-    from subprocess import Popen
-    from subprocess import PIPE
-
-    command = [
-        "bash",
-        cmd,
-        infile
-    ]
-    call = Popen(command, stdout=PIPE)
-    stdout, stderr = call.communicate()
-
-    with open(outfile, "wb") as handle:
-        handle.write(stdout)
-    return
 
 
 def runner(
@@ -85,7 +40,7 @@ def runner(
 
     # Just touch it to make easier to integrate into package.
     with open(pjoin(outdir, "__init__.py"), "w") as handle:
-            print('', file=handle)
+        print('', file=handle)
 
     domtab_filename = pjoin(outdir, "hmmer_domtab.tsv")
     hmmer_filename = pjoin(outdir, "hmmer_text.txt")
@@ -97,10 +52,8 @@ def runner(
     with open(model_fname, "rb") as model_handle:
         model = Model.read(model_handle)
 
-    call_hmmer(infile, hmms, domtab_filename, hmmer_filename, hmmscan_cmd)
-
-    hmmscan_parser_cmd = hmmscan_parser()
-    call_hmmscan_parser(domtab_filename, dbcan_filename, hmmscan_parser_cmd)
+    call_hmmscan(infile, hmms, domtab_filename, hmmer_filename, hmmscan_cmd)
+    call_hmmscan_parser(domtab_filename, dbcan_filename)
 
     required_cols = list(model.hmm_lengths.keys())
     with open(dbcan_filename, "r") as dbcan_handle:

@@ -104,6 +104,7 @@ setup(
             'catastrophy=catas.main:main',
             'catastrophy-train=catas.train.main:main',
             'catastrophy-gentest=catas.gentest.main:main',
+            'catastrophy-pipeline=catas.pipeline.main:main',
         ],
     },
 )
