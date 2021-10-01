@@ -6,7 +6,6 @@ for each database release. The latest version will always we the default one.
 """
 
 import json
-from os.path import join as pjoin
 from enum import Enum
 
 from typing import Dict
@@ -20,9 +19,10 @@ T = TypeVar('T', bound="MyEnum")
 def resource_filename(module, resource):
     """ Emulates the behaviour of the old setuptools resource_filename command.
 
-    Basically it just gets rid of the context manager thing, because it's not needed.
-    None of the files are zip files or create any temporary files that need to be
-    cleaned up.
+    Basically it just gets rid of the context manager thing, because it's not
+    needed. None of the files are zip files or create any temporary files
+    that need to be cleaned up.
+
     This function would be unsafe to use with anything that will be extracted.
     """
 
@@ -70,6 +70,10 @@ class Version(MyEnum):
     @classmethod
     def latest(cls) -> "Version":
         return cls.v8
+
+
+def hmmscan_parser() -> str:
+    return resource_filename(__name__, "hmmscan-parser.sh")
 
 
 def model_filepath(
