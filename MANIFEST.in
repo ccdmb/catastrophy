@@ -2,4 +2,4 @@ include *.md
 include LICENSE
 include tox.ini
 include .travis.yml
-include catastrophy/data/*
+include src/catas/data/*
