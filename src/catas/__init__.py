@@ -1,5 +1,5 @@
 __program__ = "catastrophy"
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __authors__ = ", ".join(["Darcy Jones", "James Hane"])
 __date__ = "31 September 2021"
 __email__ = "darcy.a.jones@curtin.edu.au"
