@@ -107,6 +107,13 @@ def cli(prog: str, args: List[str]) -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-c", "--correct",
+        action="store_true",
+        default=False,
+        help="Replace invalid characters in Fasta files."
+    )
+
+    parser.add_argument(
         "-q", "--quiet",
         action="store_true",
         default=False,

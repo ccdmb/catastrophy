@@ -86,7 +86,7 @@ setup(
     extras_require={
         'dev': ['check-manifest', 'mypy', 'scipy', 'scikit-learn',
                 'jupyter', 'matplotlib', 'seaborn'],
-        'test': ['coverage', "pytest"],
+        'test': ['coverage', "pytest", "mypy", "types-requests"],
     },
 
     # If there are data files included in your packages that need to be

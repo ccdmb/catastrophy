@@ -23,6 +23,8 @@ from catas.data import Version, model_filepath
 from catas.model import Model
 
 from catas.parsers import FileType
+from catas.sanitise import sanitise_fasta, FastaError
+
 from catas.main import runner as catas_runner
 
 from catas import __email__
@@ -53,6 +55,38 @@ def download_dbcan(version: Version, outdir: str) -> str:
     return url_fname
 
 
+def check_fastas(infiles: List[str], correct: bool, outdir: str) -> List[str]:
+    from Bio import SeqIO
+    errors = []
+
+    if correct:
+        new_infiles = []
+    else:
+        new_infiles = infiles
+
+    if correct:
+        makedirs(pjoin(outdir, "fastas"), exist_ok=True)
+
+    for f in infiles:
+        with open(f, "r") as handle:
+            try:
+                seqs = sanitise_fasta(handle, correct)
+            except FastaError as e:
+                errors.extend(e.messages)
+                continue
+
+        if correct:
+            new_filename = pjoin(outdir, "fastas", basename(f))
+            SeqIO.write(seqs, new_filename, "fasta")
+            new_infiles.append(new_filename)
+
+    if len(errors) > 0:
+        raise FastaError(errors)
+
+    assert len(infiles) == len(new_infiles)
+    return new_infiles
+
+
 def runner(  # noqa
     infiles: List[str],
     version: Version,
@@ -61,6 +95,7 @@ def runner(  # noqa
     hmmscan_path: str,
     hmmpress_path: str,
     ncpu: int,
+    correct: bool,
     quiet: bool,
 ):
     """ Runs the pipeline. """
@@ -70,6 +105,10 @@ def runner(  # noqa
         print(f"# CATAStrophy v{__version__}\n")
 
     makedirs(outdir, exist_ok=True)
+
+    if not quiet:
+        print("checking Fasta files")
+    infiles = check_fastas(infiles, correct, outdir)
 
     if hmms is None:
         if not quiet:
@@ -166,6 +205,7 @@ def main():  # noqa
             args.hmmscan_path,
             args.hmmpress_path,
             args.ncpu,
+            args.correct,
             args.quiet
         )
 
@@ -185,6 +225,14 @@ def main():  # noqa
             f"Offending HMMs were: {', '.join(e.hmms)}"
         )
         print(msg, file=sys.stderr)
+        sys.exit(EXIT_INPUT_FORMAT)
+
+    except FastaError as e:
+        msg = [
+            "Encountered an error while checking input fasta files."
+        ]
+        msg.extend(e.messages)
+        print("\n".join(msg), file=sys.stderr)
         sys.exit(EXIT_INPUT_FORMAT)
 
     except HTTPError as e:
