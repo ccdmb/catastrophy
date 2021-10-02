@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:36919ce7f12e8d4a65536fe22dae6ebdb7e42283275349d5a83372f309e9f4b2
-size 388
+{
+ "nomenclature1": ["saprotroph", "biotroph", "hemibiotroph", "necrotroph", "symbiont"],
+ "nomenclature2": ["saprotroph", "monomertroph", "mesotroph", "polymertroph", "vasculartroph"],
+ "nomenclature3": ["saprotroph", "monomertroph1", "monomertroph2", "monomertroph3", "mesotroph_intracellular", "mesotroph_extracellular", "polymertroph_narrow", "polymertroph_broad", "vasculartroph"]
+}
