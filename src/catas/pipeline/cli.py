@@ -22,9 +22,7 @@ def cli(prog: str, args: List[str]) -> argparse.Namespace:
         description=(
             "Examples:\n\n"
             "```bash\n"
-            "$ %(prog)s -o prediction.csv proteome.fasta\n"
-            "$ %(prog)s -l result1 result2 -o prediction.csv "
-            "proteome_1.fasta proteome_2.fasta\n"
+            "$ %(prog)s -o outdir proteome_1.fasta proteome_2.fasta\n"
             "```\n"
         ),
         epilog=(

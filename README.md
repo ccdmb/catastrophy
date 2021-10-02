@@ -39,8 +39,6 @@ It can be installed from PyPI <https://pypi.org/project/catastrophy/> using [pip
 Users that are less familiar with python and pip might like to read our [INSTALL.md](https://github.com/ccdmb/catastrophy/blob/master/INSTALL.md) document which explains things in more detail, including where things will be installed and how to use virtual environments.
 For details on installing and using conda see their [getting-started guide](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html).
 
-CATAStrophy is tested to work with python 3.6+, and it depends on [numpy](http://www.numpy.org/) and [BioPython](https://biopython.org/).
-
 To install CATAStrophy and dependencies with pip:
 
 ```bash
@@ -56,13 +54,19 @@ conda install -c darcyabjones catastrophy
 
 ## Using CATAStrophy
 
+CATAStrophy uses results [HMMER3](http://hmmer.org/) `hmmscan` searches against dbCAN.
+The package includes a [pipeline which will download dbCAN and run HMMER3 for you](#using-the-catastrophy-pipeline),
+or you can [run HMMER yourself](#running-HMMER-separately) and provide the files to CATAStrophy manually.
+
+### Running HMMER separately
+
 To run CATAStrophy you need to supply the input files and where to put the output.
-Catastrophy uses [HMMER3](http://hmmer.org/) `hmmscan` searches against dbCAN as input.
 Either the plain text (stdout) or "domain table" (`--domtblout`) outputs can be used.
 
 The easiest way to get a HMMER3 plain text file is to annotate your proteome using
 the dbCAN online tool at <http://bcb.unl.edu/dbCAN2/blast.php> (make sure the HMMER tool is selected to run), and
 save the HMMER3 raw text (Select the HMMER tab, then "Download Raw HMMER output") results locally.
+Alternatively you can [run HMMER locally](#running-dbCAN-locally), or use the [pipeline script](#using-the-catastrophy-pipeline) which will do this for you.
 
 > **WARNING**: Before you run any dbCAN searches, please [read the section below on database versions](https://github.com/ccdmb/catastrophy#database-versions).
 
@@ -96,7 +100,7 @@ CATAStrophy will attempt to check for mismatched model versions and alert you, b
 **It is very important that you match the database version with the CATAStrophy model.**
 
 To specify the version of the model to use, include the `-m/--model`
-flag with one of the valid options (`v4`, `v5`, `v6`, `v7`, or `v8`;see `catastrophy -h` for the available model versions in your installation).
+flag with one of the valid options (`v4`, `v5`, `v6`, `v7`, `v8`, `v9`, or `v10`; see `catastrophy -h` for the available model versions in your installation).
 
 ```bash
 catastrophy --model v7 -o my_catastrophy_results.csv my_dbcan_results.txt
@@ -169,13 +173,55 @@ catastrophy -o results.csv -l mylabel1 mylabel2 infile1.txt infile2.txt  # Dange
 catastrophy -o results.csv -l mylabel1 mylabel2 -- infile1.txt infile2.txt
 ```
 
+### Using the CATAStrophy pipeline
+
+The CATAStrophy pipeline script captures all of the steps described in later sections.
+This is the easiest way to run the pipeline locally, and can take many Fasta files.
+
+The pipeline:
+
+1) Verifies that input Fasta files won't cause errors when running HMMER.
+2) Downloads the specified version of dbCAN.
+3) Prepares the HMMER formatted database.
+4) Runs hmmscan in parallel (single node only, sorry) on all fasta files.
+5) Runs the CATAStrophy pipeline on the results, captuting all outputs and making labels pretty.
+
+
+```
+catastrophy-pipeline --model v10 --outdir results --ncpu 4 proteome1.fasta proteome2.fasta
+```
+
+The pipeline expect `hmmscan` and `hmmpress` to be installed in your `$PATH`.
+You can also specify the full paths to the executables with the arguments `--hmmscan_path /path/hmmscan --hmmpress_path /path/hmmpress`.
+
+The program will raise an error early if there are weird characters in your fasta files.
+Basic errors such as non-standard amino acids (OBJZ etc) or gaps can be "fixed" with the `--correct` flag.
+Essentially, gaps, spaces, and terminating stops are removed, and non-standard characters and internal stops are replaced with 'X'.
+
+If you wish to provide the dbCAN database yourself, you can provide it to the `--hmms` parameter. Please make sure that it matches the version specified by `--model`.
+
+The output directory (default: `results`) will contain all of the outputs and intermediate results.
+It has the basic structure.
+
+```
+results/
+  downloads/
+    dbcan-database.hmm
+  fastas/
+    corrected.fasta  # Only if the --correct flag used
+  search/
+    proteome1_domtab.tsv
+    proteome1_hmmer.txt
+  counts.tsv  # The CAZyme counts for each proteome.
+  pca.tsv  # The 16 principle components for the proteomes.
+  classifications.tsv  # The trophy classifications and RCD values.
+```
+
 
 ## Running dbCAN locally
 
 If you have lots of proteomes to run or CATAStrophy hasn't been trained on the latest version of dbCAN yet, then you probably don't want to use the web interface.
 In that case you can run the dbCAN pipeline locally using [HMMER](http://hmmer.org/).
-
-There is a pipeline available at [https://github.com/ccdmb/catastrophy-pipeline](https://github.com/ccdmb/catastrophy-pipeline) that can automate much of the following steps for you.
 
 The following steps assume that you've installed [HMMER](http://hmmer.org/) and are using a unix-like OS.
 
