@@ -14,11 +14,15 @@ source:
 build:
   entry_points:
     - catastrophy=catas.main:main
+    - catastrophy-train=catas.train.main:main
+    - catastrophy-gentest=catas.gentest.main:main
+    - catastrophy-pipeline=catas.pipeline.main:main
   script: "{{ PYTHON }} setup.py install --single-version-externally-managed --record=record.txt"
 
 requirements:
   host:
     - python {{ python }}
+    - setuptools
     - biopython >=1.70
     - numpy
     - pip
@@ -26,16 +30,18 @@ requirements:
     - python
     - biopython >=1.70
     - numpy
+    - joblib
+    - requests
 
 test:
   imports:
     - catas
     - catas.data
-    - test
   commands:
     - catastrophy --help
-  requires:
-    - pytest
+    - catastrophy-train --help
+    - catastrophy-gentest --help
+    - catastrophy-pipeline --help
 
 about:
   home: "{{ url }}"
@@ -48,6 +54,6 @@ about:
 
 extra:
   maintainers:
-    - Darcy Jones <darcy.a.jones@postgrad.curtin.edu.au>
+    - Darcy Jones <darcy.a.jones@curtin.edu.au>
   recipe-maintainers:
     - darcyabjones
