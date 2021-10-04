@@ -6,13 +6,13 @@
 [![Anaconda-Server Badge](https://anaconda.org/darcyabjones/catastrophy/badges/version.svg)](https://anaconda.org/darcyabjones/catastrophy)
 
 
-CATAStrophy is a classification method for describing lifestyles/trophic characteristics
+CATAStrophy is a classification method for describing the lifestyles/trophic characteristics
 of filamentous plant pathogens using carbohydrate-active enzymes (CAZymes).
 The name CATAStrophy is a backronym portmanteau hybrid where "CATAS" means
 CAZyme Assisted Training And Sorting.
 
 CATAStrophy takes HMMER3 files from searches against the [dbCAN](http://bcb.unl.edu/dbCAN2/) CAZyme database
-as input and returns a pseudo-probabilities called the relative centroid distance (RCD) of trophic class memberships for each file.
+as input, and returns pseudo-probabilities called the relative centroid distance (RCD) of trophic class memberships for each file.
 
 To train these models, we performed principal component analysis (PCA) on the frequencies of CAZymes for a set of curated proteomes with literature support for their trophic lifestyles.
 For each class in our classification system, we find the centre/geometric mean of the class in the first 16 principal components.
@@ -54,11 +54,11 @@ conda install -c darcyabjones catastrophy
 
 ## Using CATAStrophy
 
-CATAStrophy uses results [HMMER3](http://hmmer.org/) `hmmscan` searches against dbCAN.
+CATAStrophy uses results of [HMMER3](http://hmmer.org/) `hmmscan` searches against the dbCAN database.
 The package includes a [pipeline which will download dbCAN and run HMMER3 for you](#using-the-catastrophy-pipeline),
-or you can [run HMMER yourself](#running-HMMER-separately) and provide the files to CATAStrophy manually.
+or you can run HMMER yourself either locally or via the dbCAN website and provide the files to CATAStrophy manually.
 
-### Running HMMER separately
+### Running CATAStrophy
 
 To run CATAStrophy you need to supply the input files and where to put the output.
 Either the plain text (stdout) or "domain table" (`--domtblout`) outputs can be used.
@@ -66,7 +66,7 @@ Either the plain text (stdout) or "domain table" (`--domtblout`) outputs can be 
 The easiest way to get a HMMER3 plain text file is to annotate your proteome using
 the dbCAN online tool at <http://bcb.unl.edu/dbCAN2/blast.php> (make sure the HMMER tool is selected to run), and
 save the HMMER3 raw text (Select the HMMER tab, then "Download Raw HMMER output") results locally.
-Alternatively you can [run HMMER locally](#running-dbCAN-locally), or use the [pipeline script](#using-the-catastrophy-pipeline) which will do this for you.
+Alternatively you can [run HMMER locally](#running-HMMER-locally), or use the [pipeline script](#using-the-catastrophy-pipeline) which will do this for you.
 
 > **WARNING**: Before you run any dbCAN searches, please [read the section below on database versions](https://github.com/ccdmb/catastrophy#database-versions).
 
@@ -191,8 +191,9 @@ The pipeline:
 catastrophy-pipeline --model v10 --outdir results --ncpu 4 proteome1.fasta proteome2.fasta
 ```
 
-The pipeline expect `hmmscan` and `hmmpress` to be installed in your `$PATH`.
+The pipeline expects `hmmscan` and `hmmpress` from [HMMER](http://hmmer.org/) to be installed in your `$PATH`.
 You can also specify the full paths to the executables with the arguments `--hmmscan_path /path/hmmscan --hmmpress_path /path/hmmpress`.
+The easiest way to install these programs is using conda: `conda install -c bioconda hmmer`, or on some Ubuntu or Debian linux distros you can install with apt: `sudo apt install hmmer`.
 
 The program will raise an error early if there are weird characters in your fasta files.
 Basic errors such as non-standard amino acids (OBJZ etc) or gaps can be "fixed" with the `--correct` flag.
@@ -218,7 +219,7 @@ results/
 ```
 
 
-## Running dbCAN locally
+## Running HMMER locally
 
 If you have lots of proteomes to run or CATAStrophy hasn't been trained on the latest version of dbCAN yet, then you probably don't want to use the web interface.
 In that case you can run the dbCAN pipeline locally using [HMMER](http://hmmer.org/).
