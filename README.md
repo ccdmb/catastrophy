@@ -134,6 +134,27 @@ catastrophy infile1.txt infile2.txt
 | infile2.txt | nomenclature1 | monomertroph1 | 0.2 |
 
 
+You can also output the principal components of your proteomes along with the training data samples to reproduce the scatterplots presented in the CATAStrophy paper.
+This table is not written by default, but can be specified using the `--pca my_pcs.tsv`.
+
+The output PCA TSV file will have the following columns looks like this:
+
+| column name | column type | description |
+| :---------- | :-----      | :----       |
+| label       | string      | the label of your sample or the name of the proteome from the training data. |
+| nomenclature1 | string | The literature annotation of proteomes in the training data. According to nomenclature1 from the paper. New samples will have missing values '.' |
+| nomenclature2 | string | " |
+| nomenclature3 | string | " |
+| nomenclature1_pred | string | The main predicted nomenclature based on the RCD scores. |
+| nomenclature2_pred | string | " |
+| nomenclature3_pred | string | " |
+| nomenclature1_ancillary | Comma ceparated strings | Other predicted nomenclature1 classes with an RCD score > 0.8 |
+| nomenclature2_ancillary | Comma ceparated strings | " |
+| nomenclature3_ancillary | Comma ceparated strings | " |
+| PC1 | float | The value of the principal component for this proteome |
+| ... | float | " |
+| PC16 | float | " |
+
 ### Labels
 
 By default the filenames (including directories and extensions) are used as the label in the output, but you can explicitly specify
