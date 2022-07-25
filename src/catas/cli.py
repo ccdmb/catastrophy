@@ -77,12 +77,12 @@ def cli(prog: str, args: List[str]) -> argparse.Namespace:
         "-f", "--format",
         dest="file_format",
         type=FileType.from_string,
-        default=FileType.hmmer_text,
+        default=FileType.hmmer_domtab,
         choices=list(FileType),
         help=(
             "The format that the input is provided in. If multiple files are "
             "specified, all input must be in the same format. HMMER raw "
-            "(hmmer_text, default) and domain table (hmmer_domtab) formatted "
+            "(hmmer_text) and domain table (hmmer_domtab, default) formatted "
             "files are accepted. Files processed by the dbCAN formatter "
             "`hmmscan-parser.sh` are also accepted using the `dbcan` option."
         )

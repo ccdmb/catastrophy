@@ -4,7 +4,7 @@
 
 [![PyPI version](https://badge.fury.io/py/catastrophy.svg)](https://badge.fury.io/py/catastrophy)
 [![Anaconda-Server Badge](https://anaconda.org/darcyabjones/catastrophy/badges/version.svg)](https://anaconda.org/darcyabjones/catastrophy)
-
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ccdmb/catastrophy/blob/master/CATAStropy.ipynb)
 
 CATAStrophy is a classification method for describing the lifestyles/trophic characteristics
 of filamentous plant pathogens using carbohydrate-active enzymes (CAZymes).
@@ -65,7 +65,7 @@ Either the plain text (stdout) or "domain table" (`--domtblout`) outputs can be 
 
 The easiest way to get a HMMER3 plain text file is to annotate your proteome using
 the dbCAN online tool at <http://bcb.unl.edu/dbCAN2/blast.php> (make sure the HMMER tool is selected to run), and
-save the HMMER3 raw text (Select the HMMER tab, then "Download Raw HMMER output") results locally.
+save the HMMER3 raw text (Select the HMMER tab, then "Download Raw HMMER output". Note that as of 2022-07-25 this is actually the domain-table output from HMMER3) results locally.
 Alternatively you can [run HMMER locally](#running-HMMER-locally), or use the [pipeline script](#using-the-catastrophy-pipeline) which will do this for you.
 
 > **WARNING**: Before you run any dbCAN searches, please [read the section below on database versions](https://github.com/ccdmb/catastrophy#database-versions).
@@ -73,12 +73,12 @@ Alternatively you can [run HMMER locally](#running-HMMER-locally), or use the [p
 Assuming that you have this file locally you can run CATAStrophy like so:
 
 ```bash
-catastrophy -f hmmer -o my_catastrophy_results.csv my_dbcan_results.txt
+catastrophy -f hmmer_domtab -o my_catastrophy_results.csv my_dbcan_results.txt
 ```
 
 The input files are provided as positional arguments after all of the optional parameters.
 The output will be a tab-delimited file (which you can open in excel) containing RCD results for each nomenclature and trophic class for each of the input files.
-The `-f/--format` flag specified the format of the input file and defaults to `hmmer`.
+The `-f/--format` flag specified the format of the input file and defaults to `hmmer_domtab`.
 
 
 Multiple input files can be provided using spaces to separate them:
@@ -262,7 +262,7 @@ Alternatively you can use the bash commands below to download it, setting the va
 
 
 ```bash
-DBCAN_VERSION="V7"
+DBCAN_VERSION="V10"
 
 mkdir -p ./data
 wget -qc -P ./data "http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-${DBCAN_VERSION}.txt"
@@ -274,7 +274,7 @@ wget -qc -P ./data "http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-${D
 Now we can convert the file containing HMM definitions into a HMMER database.
 
 ```bash
-hmmpress ./data/dbCAN-HMMdb-V7.txt
+hmmpress ./data/dbCAN-HMMdb-V10.txt
 ```
 
 This will create several files at the same location as the `.txt` file, so it's good to do this
@@ -287,7 +287,7 @@ Now we can run HMMER `hmmscan` to find matches to the dbCAN HMMs.
 For demonstration, we'll save both the domain table and plain text outputs.
 
 ```bash
-hmmscan --domtblout my_fasta_hmmer.csv ./data/dbCAN-HMMdb-V7.txt my_fasta.fasta > my_fasta_hmmer.txt
+hmmscan --domtblout my_fasta_hmmer.csv ./data/dbCAN-HMMdb-V10.txt my_fasta.fasta > my_fasta_hmmer.txt
 ```
 
 The domain table is now in the file `my_fasta_hmmer.csv` and the plain hmmer
@@ -304,10 +304,10 @@ To use the files created in step 3, you can run either of the following commands
 Remember to match the version of dbCAN with the model version in catastrophy.
 
 ```bash
-catastrophy --model v7 --format domtab -o my_catastrophy_results.csv my_fasta_hmmer.csv
+catastrophy --model v10 --format hmmer_domtab -o my_catastrophy_results.csv my_fasta_hmmer.csv
 
 # or
-catastrophy --model v7 --format hmmer -o my_catastrophy_results.csv my_fasta_hmmer.txt
+catastrophy --model v10 --format hmmer_text -o my_catastrophy_results.csv my_fasta_hmmer.txt
 ```
 
 
@@ -320,7 +320,7 @@ Other optional parameters are below:
 | :---      | :---    | :---        |
 | `-h`/`--help` | flag | Show help text and exit. |
 | `--version` | flag | Show program version information and exit. |
-| `-f`/`--format` | "hmmer_text" | The format that the input is provided in. All input files must be in the same format. HMMER raw (hmmer_text, default) and domain table (hmmer_domtab) formatted files are accepted. Files processed by the dbCAN formatter `hmmscan-parser.sh` are also accepted using the `dbcan` option. |
+| `-f`/`--format` | "hmmer_domtab" | The format that the input is provided in. All input files must be in the same format. HMMER raw (hmmer_domtab) and domain table (hmmer_domtab, default) formatted files are accepted. Files processed by the dbCAN formatter `hmmscan-parser.sh` are also accepted using the `dbcan` option. |
 | `-l`/`--label` | filenames | Label to give the prediction for the input file(s). Specify more than one label by separating them with a space. The number of labels should be the same as the number of input files.  By default, the filenames are used as labels. |
 | `-o`/`--outfile` | stdout | File path to write tab delimited output to. |
 | `-c`/`--counts` | Not written | Write the CAZyme counts to this tab delimited file. |
@@ -340,3 +340,8 @@ catastrophy -o results.csv infile1.txt infile2.txt
 # To take input from stdin use a "-"
 cat infile1.txt | catastrophy - > results.csv
 ```
+
+
+# Changes
+
+- V0.1.0: `hmmer_domtab` is now the default input format, as dbCAN now outputs that for the HMMER results. Added a warning about proteomes with zero counts.

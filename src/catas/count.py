@@ -2,6 +2,8 @@
 Functions to count the number of specific classes of CAZymes.
 """
 
+import sys
+
 from typing import List, Sequence
 from typing import Iterable
 from typing import Union
@@ -40,6 +42,27 @@ def cazy_counts_multi(
     """ Computes counts for many files. """
 
     counts = [cazy_counts(m, required_cols) for m in handles]
+    for label, c in zip(labels, counts):
+        if (counts == 0).all():
+            print(
+                f"WARNING: input {label} has zero CAZymes detected.",
+                file=sys.stderr
+            )
+            print(
+                "WARNING: This will result in poor predictions.",
+                file=sys.stderr
+            )
+            print(
+                "WARNING: Please double check that you have "
+                "specified the correct file format.",
+                file=sys.stderr
+            )
+            print(
+                "For HMMER output, try using the alternate format "
+                "e.g. 'hmmer_text' or 'hmmer_domtab'.",
+                file=sys.stderr
+            )
+
     return Matrix(
         rows=list(labels),
         columns=list(required_cols),
