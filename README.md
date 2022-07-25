@@ -24,6 +24,10 @@ If a new proteome is equidistant between two class centroids and they are closer
 This is useful when evaluating your organism, because it might have characteristics of multiple classes (or be so dissimilar to any class that the distance is meaningless).
 
 
+**NEW**: Users with a google account can now run the whole pipeline easily using our [Google colab notebook](https://colab.research.google.com/github/ccdmb/catastrophy/blob/master/CATAStrophy.ipynb).
+This offers a relatively user friendly click-interface to the pipeline (i.e. no coding experience or software installation required).
+
+
 ## Citation and further information
 
 The CATAStrophy method and trophic classification systems is described [here](https://doi.org/10.3389/fmicb.2019.03088):
