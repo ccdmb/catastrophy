@@ -1,5 +1,6 @@
 from io import StringIO
 from enum import Enum
+import sys
 import re
 
 from typing import NamedTuple
@@ -18,6 +19,45 @@ from Bio.SearchIO._model.hsp import HSP
 
 
 REGEX = re.compile(r"\.p?hmm$")
+TEXT_FIRSTLINE = re.compile(r"^# hmmscan ::")  # noqa: E501
+DOMTAB_FIRSTLINE = re.compile(r"^#\s+--- full sequence ---.*$")  # noqa: E501
+DBCAN_FIRSTLINE = re.compile("\t".join([
+    r"\S+", "[0-9]+", r"\S+", "[0-9]+",
+    r"([0-9]*[.])?[0-9]+([eE][-+]?\d+)?",
+    "[0-9]+", "[0-9]+", "[0-9]+", "[0-9]+",
+    r"([0-9]*[.])?[0-9]+([eE][-+]?\d+)?",
+]))
+
+
+def predict_filetype(handle: TextIO):
+
+    handle.seek(0)
+    line = ""
+
+    # Just in case there is a blank line at the top.
+    while line == "":
+        line = handle.readline().strip()
+
+    if TEXT_FIRSTLINE.match(line):
+        return "hmmer_text"
+    elif DOMTAB_FIRSTLINE.match(line):
+        return "hmmer_domtab"
+    elif DBCAN_FIRSTLINE.match(line):
+        return "dbcan"
+    else:
+        msg = (
+            "The input file does not appear to be in any "
+            "of the supported formats.\n"
+            "Please check your inputs and if you believe that "
+            "this is an error, please contact us."
+        )
+
+        if hasattr(handle, "name"):
+            name: Optional[str] = handle.name
+        else:
+            name = None
+
+        raise ParseError(name, None, msg)
 
 
 class FileType(Enum):
@@ -202,6 +242,7 @@ class DBCAN(NamedTuple):
     def from_file(cls, handle: TextIO) -> Iterator["DBCAN"]:
         """ Parse a DBCAN file into generator of rows. """
 
+        nmatches = 0
         for line_number, line in enumerate(handle, 1):
             line = line.strip()
             # Skip comment lines
@@ -211,12 +252,51 @@ class DBCAN(NamedTuple):
             elif line == "":
                 continue
 
+            nmatches += 1
             try:
                 parsed = cls.from_string(line)
             except LineParseError as e:
-                raise ParseError(handle.name, line_number, e.message)
+                predicted = predict_filetype(handle)
+                if hasattr(handle, "name"):
+                    name = handle.name
+                else:
+                    name = None
+
+                if predicted != "dbcan":
+                    msg = (
+                        "Couldn't parse file as dbcan format.\n"
+                        "Double check that the input file is in the right format "
+                        "(i.e. dbcan vs hmmer_text vs hmmer_domtab).\n"
+                        "Based on the file contents, we think this is in "
+                        "'{}' format.\n"
+                        "If you believe this is an error, please contact us."
+                    ).format(predicted)
+                    raise ParseError(name, None, msg)
+
+                else:
+                    raise ParseError(name, line_number, e.message)
 
             yield parsed
+
+        if nmatches == 0:
+            if hasattr(handle, "name"):
+                name = handle.name
+            else:
+                name = None
+
+            print(
+                f"WARNING: input {name} has zero CAZymes detected.",
+                file=sys.stderr
+            )
+            print(
+                "WARNING: This will result in poor predictions.",
+                file=sys.stderr
+            )
+            print(
+                "WARNING: Please double check that you have "
+                "specified the correct file format.",
+                file=sys.stderr
+            )
         return
 
 
@@ -234,7 +314,7 @@ class HMMER(NamedTuple):
     coverage: float
 
     @classmethod
-    def from_file(
+    def from_file(  # noqa: C901
         cls,
         handle: TextIO,
         hmm_lens: Dict[str, int],
@@ -266,6 +346,8 @@ class HMMER(NamedTuple):
         # the same.
         overlap_thres = 0.5
 
+        qcounts = 0
+
         # Parse the file using Biopython.
         matches = SearchIO.parse(handle, format=format)
 
@@ -273,6 +355,7 @@ class HMMER(NamedTuple):
         try:
             for query in matches:
                 # For each HMM type that matches the sequence
+                qcounts += 1
 
                 query_matches = list()
                 for hit in query.hits:
@@ -302,12 +385,15 @@ class HMMER(NamedTuple):
                         yield winner
 
         except AssertionError:
+            predicted = predict_filetype(handle)
             msg = (
                 "Couldn't parse file as {} format.\n"
                 "Double check that the input file is in the right format "
-                "(i.e. hmmer_text vs hmmer_domtab).\n"
+                "(i.e. dbcan vs hmmer_text vs hmmer_domtab).\n"
+                "Based on the file contents, we think this is in "
+                "'{}' format.\n"
                 "If you believe this is an error, please contact us."
-            ).format(format)
+            ).format(format, predicted)
 
             if hasattr(handle, "name"):
                 name: Optional[str] = handle.name
@@ -331,6 +417,43 @@ class HMMER(NamedTuple):
                 name = None
 
             raise ParseError(name, None, msg)
+
+        if qcounts == 0:
+            if hasattr(handle, "name"):
+                name: Optional[str] = handle.name
+            else:
+                name = None
+
+            predicted = predict_filetype(handle)
+            if format != predicted:
+                msg = (
+                    "Couldn't parse file as {} format.\n"
+                    "Double check that the input file is in the right format "
+                    "(i.e. dbcan vs hmmer_text vs hmmer_domtab).\n"
+                    "Based on the file contents, we think this is in "
+                    "'{}' format.\n"
+                    "If you believe this is an error, please contact us."
+                ).format(format, predicted)
+                raise ParseError(name, None, msg)
+            else:
+                print(
+                    f"WARNING: input {name} has zero CAZymes detected.",
+                    file=sys.stderr
+                )
+                print(
+                    "WARNING: This will result in poor predictions.",
+                    file=sys.stderr
+                )
+                print(
+                    "WARNING: Please double check that you have "
+                    "specified the correct file format.",
+                    file=sys.stderr
+                )
+                print(
+                    "WARNING: For HMMER output, try using the alternate "
+                    "format e.g. 'hmmer_text' or 'hmmer_domtab'.",
+                    file=sys.stderr
+                )
         return
 
     @classmethod
