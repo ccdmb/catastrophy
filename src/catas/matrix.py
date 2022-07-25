@@ -4,6 +4,7 @@ A simpler alternative to a pandas dataframe for non-interactive work.
 
 import csv
 import pathlib  # noqa
+from typing import cast
 from typing import List, Sequence
 from typing import Dict, Mapping
 from typing import Union
@@ -118,7 +119,7 @@ class Matrix(object):
         """ Writes matrix out as a numpy file. """
         np.savez(
             handle,
-            self.as_dict_of_arrays(prefix=prefix)
+            *self.as_dict_of_arrays(prefix=prefix)
         )
         return
 
@@ -144,7 +145,7 @@ class Matrix(object):
         """
         try:
             if isinstance(filename, str):
-                handle = open(filename, 'w', newline='')
+                handle: TextIO = open(filename, 'w', newline='')
             else:
                 handle = filename
 

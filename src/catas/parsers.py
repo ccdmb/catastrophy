@@ -35,8 +35,24 @@ def predict_filetype(handle: TextIO):
     line = ""
 
     # Just in case there is a blank line at the top.
-    while line == "":
-        line = handle.readline().strip()
+    for line in handle:
+        line = line.strip()
+        if line != "":
+            break
+
+    if line == "":
+        msg = (
+            "The input file does not contain any non-empty lines.\n"
+            "Please check your inputs and if you believe that "
+            "this is an error, please contact us."
+        )
+
+        if hasattr(handle, "name"):
+            name: Optional[str] = handle.name
+        else:
+            name = None
+
+        raise ParseError(name, None, msg)
 
     if TEXT_FIRSTLINE.match(line):
         return "hmmer_text"
@@ -53,7 +69,7 @@ def predict_filetype(handle: TextIO):
         )
 
         if hasattr(handle, "name"):
-            name: Optional[str] = handle.name
+            name = handle.name
         else:
             name = None
 
@@ -265,8 +281,8 @@ class DBCAN(NamedTuple):
                 if predicted != "dbcan":
                     msg = (
                         "Couldn't parse file as dbcan format.\n"
-                        "Double check that the input file is in the right format "
-                        "(i.e. dbcan vs hmmer_text vs hmmer_domtab).\n"
+                        "Double check that the input file is in the right "
+                        "format (i.e. dbcan vs hmmer_text vs hmmer_domtab).\n"
                         "Based on the file contents, we think this is in "
                         "'{}' format.\n"
                         "If you believe this is an error, please contact us."
@@ -396,7 +412,7 @@ class HMMER(NamedTuple):
             ).format(format, predicted)
 
             if hasattr(handle, "name"):
-                name: Optional[str] = handle.name
+                name = handle.name
             else:
                 name = None
 
@@ -420,7 +436,7 @@ class HMMER(NamedTuple):
 
         if qcounts == 0:
             if hasattr(handle, "name"):
-                name: Optional[str] = handle.name
+                name = handle.name
             else:
                 name = None
 
