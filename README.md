@@ -34,6 +34,9 @@ The CATAStrophy method and trophic classification systems is described [here](ht
 
 James K. Hane, Jonathan Paxman, Darcy A. B. Jones, Richard P. Oliver and Pierre de Wit (2020). "CATAStrophy", a Genome-Informed Trophic Classification of Filamentous Plant Pathogens – How Many Different Types of Filamentous Plant Pathogens Are There? _Frontiers in Microbiology_. doi: [10.3389/fmicb.2019.03088](https://doi.org/10.3389/fmicb.2019.03088)
 
+For any questions about the method or interpreting results, please email James Hane (james.hane@curtin.edu.au).
+For any technical questions or bug reports please raise an issue on GitHub, or email us if you don't want to create a GitHub account.
+
 
 ## Installing
 
